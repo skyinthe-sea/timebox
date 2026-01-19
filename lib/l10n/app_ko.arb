@@ -1,0 +1,104 @@
+{
+  "@@locale": "ko",
+  "@@last_modified": "2026-01-19",
+
+  "appName": "타임박스 플래너",
+  "@appName": {
+    "description": "앱 이름"
+  },
+
+  "inbox": "인박스",
+  "calendar": "캘린더",
+  "focus": "집중",
+  "analytics": "분석",
+  "settings": "설정",
+
+  "task": "할 일",
+  "tasks": "할 일 목록",
+  "addTask": "할 일 추가",
+  "editTask": "할 일 편집",
+  "deleteTask": "할 일 삭제",
+  "taskTitle": "제목",
+  "taskNote": "메모",
+  "estimatedDuration": "예상 소요 시간",
+  "subtasks": "하위 할 일",
+  "addSubtask": "하위 할 일 추가",
+
+  "priority": "우선순위",
+  "priorityHigh": "높음",
+  "priorityMedium": "보통",
+  "priorityLow": "낮음",
+
+  "status": "상태",
+  "statusTodo": "할 일",
+  "statusInProgress": "진행 중",
+  "statusCompleted": "완료",
+  "statusDelayed": "지연됨",
+  "statusSkipped": "건너뜀",
+
+  "tag": "태그",
+  "tags": "태그들",
+  "addTag": "태그 추가",
+
+  "timeBlock": "타임 블록",
+  "createTimeBlock": "타임 블록 생성",
+  "moveTimeBlock": "타임 블록 이동",
+  "resizeTimeBlock": "타임 블록 크기 조정",
+  "conflictDetected": "일정 충돌이 감지되었습니다",
+
+  "focusMode": "집중 모드",
+  "startFocus": "집중 시작",
+  "pauseFocus": "일시 정지",
+  "resumeFocus": "재개",
+  "completeFocus": "완료",
+  "skipFocus": "건너뛰기",
+  "timeRemaining": "남은 시간",
+
+  "today": "오늘",
+  "tomorrow": "내일",
+  "thisWeek": "이번 주",
+
+  "minutes": "분",
+  "hours": "시간",
+  "minutesShort": "{count}분",
+  "@minutesShort": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "hoursShort": "{count}시간",
+  "@hoursShort": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "productivityScore": "생산성 점수",
+  "plannedVsActual": "계획 vs 실제",
+  "completionRate": "완료율",
+  "rolloverTasks": "이월된 할 일",
+
+  "darkMode": "다크 모드",
+  "language": "언어",
+  "notifications": "알림",
+  "calendarSync": "캘린더 동기화",
+  "profile": "프로필",
+  "logout": "로그아웃",
+
+  "save": "저장",
+  "cancel": "취소",
+  "delete": "삭제",
+  "confirm": "확인",
+  "edit": "편집",
+  "done": "완료",
+
+  "emptyInbox": "인박스가 비어있습니다",
+  "emptyInboxDescription": "새로운 할 일을 추가해보세요",
+  "emptyCalendar": "오늘 일정이 없습니다",
+  "emptyCalendarDescription": "할 일을 드래그하여 일정을 만들어보세요",
+
+  "error": "오류",
+  "errorGeneric": "문제가 발생했습니다",
+  "errorNetwork": "네트워크 연결을 확인해주세요",
+  "retry": "다시 시도"
+}

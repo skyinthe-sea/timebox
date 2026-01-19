@@ -1,0 +1,90 @@
+{
+  "@@locale": "en",
+
+  "appName": "Timebox Planner",
+
+  "inbox": "Inbox",
+  "calendar": "Calendar",
+  "focus": "Focus",
+  "analytics": "Analytics",
+  "settings": "Settings",
+
+  "task": "Task",
+  "tasks": "Tasks",
+  "addTask": "Add Task",
+  "editTask": "Edit Task",
+  "deleteTask": "Delete Task",
+  "taskTitle": "Title",
+  "taskNote": "Note",
+  "estimatedDuration": "Estimated Duration",
+  "subtasks": "Subtasks",
+  "addSubtask": "Add Subtask",
+
+  "priority": "Priority",
+  "priorityHigh": "High",
+  "priorityMedium": "Medium",
+  "priorityLow": "Low",
+
+  "status": "Status",
+  "statusTodo": "To Do",
+  "statusInProgress": "In Progress",
+  "statusCompleted": "Completed",
+  "statusDelayed": "Delayed",
+  "statusSkipped": "Skipped",
+
+  "tag": "Tag",
+  "tags": "Tags",
+  "addTag": "Add Tag",
+
+  "timeBlock": "Time Block",
+  "createTimeBlock": "Create Time Block",
+  "moveTimeBlock": "Move Time Block",
+  "resizeTimeBlock": "Resize Time Block",
+  "conflictDetected": "Schedule conflict detected",
+
+  "focusMode": "Focus Mode",
+  "startFocus": "Start Focus",
+  "pauseFocus": "Pause",
+  "resumeFocus": "Resume",
+  "completeFocus": "Complete",
+  "skipFocus": "Skip",
+  "timeRemaining": "Time Remaining",
+
+  "today": "Today",
+  "tomorrow": "Tomorrow",
+  "thisWeek": "This Week",
+
+  "minutes": "minutes",
+  "hours": "hours",
+  "minutesShort": "{count}m",
+  "hoursShort": "{count}h",
+
+  "productivityScore": "Productivity Score",
+  "plannedVsActual": "Planned vs Actual",
+  "completionRate": "Completion Rate",
+  "rolloverTasks": "Rollover Tasks",
+
+  "darkMode": "Dark Mode",
+  "language": "Language",
+  "notifications": "Notifications",
+  "calendarSync": "Calendar Sync",
+  "profile": "Profile",
+  "logout": "Logout",
+
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "confirm": "Confirm",
+  "edit": "Edit",
+  "done": "Done",
+
+  "emptyInbox": "Inbox is empty",
+  "emptyInboxDescription": "Add a new task to get started",
+  "emptyCalendar": "No schedule for today",
+  "emptyCalendarDescription": "Drag tasks to create your schedule",
+
+  "error": "Error",
+  "errorGeneric": "Something went wrong",
+  "errorNetwork": "Please check your network connection",
+  "retry": "Retry"
+}

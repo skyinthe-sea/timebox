@@ -1,0 +1,21 @@
+/// 라우트 이름 상수
+///
+/// 타입 안전한 라우팅을 위한 상수 정의
+abstract class RouteNames {
+  // 메인 라우트
+  static const String home = '/';
+  static const String inbox = '/inbox';
+  static const String focus = '/focus';
+  static const String analytics = '/analytics';
+  static const String settings = '/settings';
+
+  // Task 관련
+  static const String taskDetail = '/task/:id';
+  static const String taskCreate = '/task/create';
+
+  // Settings 하위
+  static const String profile = '/settings/profile';
+  static const String notifications = '/settings/notifications';
+  static const String calendar = '/settings/calendar';
+  static const String appearance = '/settings/appearance';
+}

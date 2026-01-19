@@ -1,0 +1,90 @@
+{
+  "@@locale": "de",
+
+  "appName": "Timebox Planner",
+
+  "inbox": "Posteingang",
+  "calendar": "Kalender",
+  "focus": "Fokus",
+  "analytics": "Analysen",
+  "settings": "Einstellungen",
+
+  "task": "Aufgabe",
+  "tasks": "Aufgaben",
+  "addTask": "Aufgabe hinzufügen",
+  "editTask": "Aufgabe bearbeiten",
+  "deleteTask": "Aufgabe löschen",
+  "taskTitle": "Titel",
+  "taskNote": "Notiz",
+  "estimatedDuration": "Geschätzte Dauer",
+  "subtasks": "Unteraufgaben",
+  "addSubtask": "Unteraufgabe hinzufügen",
+
+  "priority": "Priorität",
+  "priorityHigh": "Hoch",
+  "priorityMedium": "Mittel",
+  "priorityLow": "Niedrig",
+
+  "status": "Status",
+  "statusTodo": "Zu erledigen",
+  "statusInProgress": "In Bearbeitung",
+  "statusCompleted": "Abgeschlossen",
+  "statusDelayed": "Verzögert",
+  "statusSkipped": "Übersprungen",
+
+  "tag": "Tag",
+  "tags": "Tags",
+  "addTag": "Tag hinzufügen",
+
+  "timeBlock": "Zeitblock",
+  "createTimeBlock": "Zeitblock erstellen",
+  "moveTimeBlock": "Zeitblock verschieben",
+  "resizeTimeBlock": "Zeitblockgröße ändern",
+  "conflictDetected": "Terminkonflikt erkannt",
+
+  "focusMode": "Fokusmodus",
+  "startFocus": "Fokus starten",
+  "pauseFocus": "Pause",
+  "resumeFocus": "Fortsetzen",
+  "completeFocus": "Abschließen",
+  "skipFocus": "Überspringen",
+  "timeRemaining": "Verbleibende Zeit",
+
+  "today": "Heute",
+  "tomorrow": "Morgen",
+  "thisWeek": "Diese Woche",
+
+  "minutes": "Minuten",
+  "hours": "Stunden",
+  "minutesShort": "{count}min",
+  "hoursShort": "{count}h",
+
+  "productivityScore": "Produktivitätswert",
+  "plannedVsActual": "Geplant vs Tatsächlich",
+  "completionRate": "Abschlussrate",
+  "rolloverTasks": "Übertragene Aufgaben",
+
+  "darkMode": "Dunkelmodus",
+  "language": "Sprache",
+  "notifications": "Benachrichtigungen",
+  "calendarSync": "Kalendersync",
+  "profile": "Profil",
+  "logout": "Abmelden",
+
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "delete": "Löschen",
+  "confirm": "Bestätigen",
+  "edit": "Bearbeiten",
+  "done": "Fertig",
+
+  "emptyInbox": "Posteingang ist leer",
+  "emptyInboxDescription": "Fügen Sie eine neue Aufgabe hinzu",
+  "emptyCalendar": "Kein Zeitplan für heute",
+  "emptyCalendarDescription": "Ziehen Sie Aufgaben, um Ihren Zeitplan zu erstellen",
+
+  "error": "Fehler",
+  "errorGeneric": "Etwas ist schiefgelaufen",
+  "errorNetwork": "Bitte überprüfen Sie Ihre Netzwerkverbindung",
+  "retry": "Erneut versuchen"
+}

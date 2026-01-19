@@ -1,0 +1,90 @@
+{
+  "@@locale": "ja",
+
+  "appName": "タイムボックスプランナー",
+
+  "inbox": "インボックス",
+  "calendar": "カレンダー",
+  "focus": "集中",
+  "analytics": "分析",
+  "settings": "設定",
+
+  "task": "タスク",
+  "tasks": "タスク一覧",
+  "addTask": "タスクを追加",
+  "editTask": "タスクを編集",
+  "deleteTask": "タスクを削除",
+  "taskTitle": "タイトル",
+  "taskNote": "メモ",
+  "estimatedDuration": "予想所要時間",
+  "subtasks": "サブタスク",
+  "addSubtask": "サブタスクを追加",
+
+  "priority": "優先度",
+  "priorityHigh": "高",
+  "priorityMedium": "中",
+  "priorityLow": "低",
+
+  "status": "ステータス",
+  "statusTodo": "未完了",
+  "statusInProgress": "進行中",
+  "statusCompleted": "完了",
+  "statusDelayed": "遅延",
+  "statusSkipped": "スキップ",
+
+  "tag": "タグ",
+  "tags": "タグ一覧",
+  "addTag": "タグを追加",
+
+  "timeBlock": "タイムブロック",
+  "createTimeBlock": "タイムブロックを作成",
+  "moveTimeBlock": "タイムブロックを移動",
+  "resizeTimeBlock": "タイムブロックのサイズを変更",
+  "conflictDetected": "スケジュールの競合が検出されました",
+
+  "focusMode": "集中モード",
+  "startFocus": "集中開始",
+  "pauseFocus": "一時停止",
+  "resumeFocus": "再開",
+  "completeFocus": "完了",
+  "skipFocus": "スキップ",
+  "timeRemaining": "残り時間",
+
+  "today": "今日",
+  "tomorrow": "明日",
+  "thisWeek": "今週",
+
+  "minutes": "分",
+  "hours": "時間",
+  "minutesShort": "{count}分",
+  "hoursShort": "{count}時間",
+
+  "productivityScore": "生産性スコア",
+  "plannedVsActual": "計画 vs 実績",
+  "completionRate": "完了率",
+  "rolloverTasks": "繰り越しタスク",
+
+  "darkMode": "ダークモード",
+  "language": "言語",
+  "notifications": "通知",
+  "calendarSync": "カレンダー同期",
+  "profile": "プロフィール",
+  "logout": "ログアウト",
+
+  "save": "保存",
+  "cancel": "キャンセル",
+  "delete": "削除",
+  "confirm": "確認",
+  "edit": "編集",
+  "done": "完了",
+
+  "emptyInbox": "インボックスは空です",
+  "emptyInboxDescription": "新しいタスクを追加してください",
+  "emptyCalendar": "今日の予定はありません",
+  "emptyCalendarDescription": "タスクをドラッグしてスケジュールを作成してください",
+
+  "error": "エラー",
+  "errorGeneric": "問題が発生しました",
+  "errorNetwork": "ネットワーク接続を確認してください",
+  "retry": "再試行"
+}

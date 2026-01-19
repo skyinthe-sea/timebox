@@ -1,0 +1,90 @@
+{
+  "@@locale": "zh",
+
+  "appName": "时间盒规划器",
+
+  "inbox": "收件箱",
+  "calendar": "日历",
+  "focus": "专注",
+  "analytics": "分析",
+  "settings": "设置",
+
+  "task": "任务",
+  "tasks": "任务列表",
+  "addTask": "添加任务",
+  "editTask": "编辑任务",
+  "deleteTask": "删除任务",
+  "taskTitle": "标题",
+  "taskNote": "备注",
+  "estimatedDuration": "预计时长",
+  "subtasks": "子任务",
+  "addSubtask": "添加子任务",
+
+  "priority": "优先级",
+  "priorityHigh": "高",
+  "priorityMedium": "中",
+  "priorityLow": "低",
+
+  "status": "状态",
+  "statusTodo": "待办",
+  "statusInProgress": "进行中",
+  "statusCompleted": "已完成",
+  "statusDelayed": "已延迟",
+  "statusSkipped": "已跳过",
+
+  "tag": "标签",
+  "tags": "标签列表",
+  "addTag": "添加标签",
+
+  "timeBlock": "时间块",
+  "createTimeBlock": "创建时间块",
+  "moveTimeBlock": "移动时间块",
+  "resizeTimeBlock": "调整时间块大小",
+  "conflictDetected": "检测到日程冲突",
+
+  "focusMode": "专注模式",
+  "startFocus": "开始专注",
+  "pauseFocus": "暂停",
+  "resumeFocus": "继续",
+  "completeFocus": "完成",
+  "skipFocus": "跳过",
+  "timeRemaining": "剩余时间",
+
+  "today": "今天",
+  "tomorrow": "明天",
+  "thisWeek": "本周",
+
+  "minutes": "分钟",
+  "hours": "小时",
+  "minutesShort": "{count}分",
+  "hoursShort": "{count}时",
+
+  "productivityScore": "生产力评分",
+  "plannedVsActual": "计划 vs 实际",
+  "completionRate": "完成率",
+  "rolloverTasks": "顺延任务",
+
+  "darkMode": "深色模式",
+  "language": "语言",
+  "notifications": "通知",
+  "calendarSync": "日历同步",
+  "profile": "个人资料",
+  "logout": "退出登录",
+
+  "save": "保存",
+  "cancel": "取消",
+  "delete": "删除",
+  "confirm": "确认",
+  "edit": "编辑",
+  "done": "完成",
+
+  "emptyInbox": "收件箱为空",
+  "emptyInboxDescription": "添加新任务开始使用",
+  "emptyCalendar": "今天没有日程",
+  "emptyCalendarDescription": "拖动任务创建您的日程",
+
+  "error": "错误",
+  "errorGeneric": "出了点问题",
+  "errorNetwork": "请检查网络连接",
+  "retry": "重试"
+}

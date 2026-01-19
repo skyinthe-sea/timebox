@@ -1,0 +1,90 @@
+{
+  "@@locale": "hi",
+
+  "appName": "टाइमबॉक्स प्लानर",
+
+  "inbox": "इनबॉक्स",
+  "calendar": "कैलेंडर",
+  "focus": "फोकस",
+  "analytics": "विश्लेषण",
+  "settings": "सेटिंग्स",
+
+  "task": "कार्य",
+  "tasks": "कार्य सूची",
+  "addTask": "कार्य जोड़ें",
+  "editTask": "कार्य संपादित करें",
+  "deleteTask": "कार्य हटाएं",
+  "taskTitle": "शीर्षक",
+  "taskNote": "नोट",
+  "estimatedDuration": "अनुमानित समय",
+  "subtasks": "उप-कार्य",
+  "addSubtask": "उप-कार्य जोड़ें",
+
+  "priority": "प्राथमिकता",
+  "priorityHigh": "उच्च",
+  "priorityMedium": "मध्यम",
+  "priorityLow": "निम्न",
+
+  "status": "स्थिति",
+  "statusTodo": "करना है",
+  "statusInProgress": "प्रगति में",
+  "statusCompleted": "पूर्ण",
+  "statusDelayed": "विलंबित",
+  "statusSkipped": "छोड़ा गया",
+
+  "tag": "टैग",
+  "tags": "टैग्स",
+  "addTag": "टैग जोड़ें",
+
+  "timeBlock": "टाइम ब्लॉक",
+  "createTimeBlock": "टाइम ब्लॉक बनाएं",
+  "moveTimeBlock": "टाइम ब्लॉक हिलाएं",
+  "resizeTimeBlock": "टाइम ब्लॉक का आकार बदलें",
+  "conflictDetected": "शेड्यूल में टकराव पाया गया",
+
+  "focusMode": "फोकस मोड",
+  "startFocus": "फोकस शुरू करें",
+  "pauseFocus": "रोकें",
+  "resumeFocus": "जारी रखें",
+  "completeFocus": "पूर्ण",
+  "skipFocus": "छोड़ें",
+  "timeRemaining": "शेष समय",
+
+  "today": "आज",
+  "tomorrow": "कल",
+  "thisWeek": "इस सप्ताह",
+
+  "minutes": "मिनट",
+  "hours": "घंटे",
+  "minutesShort": "{count}मि",
+  "hoursShort": "{count}घं",
+
+  "productivityScore": "उत्पादकता स्कोर",
+  "plannedVsActual": "योजना vs वास्तविक",
+  "completionRate": "पूर्णता दर",
+  "rolloverTasks": "स्थानांतरित कार्य",
+
+  "darkMode": "डार्क मोड",
+  "language": "भाषा",
+  "notifications": "सूचनाएं",
+  "calendarSync": "कैलेंडर सिंक",
+  "profile": "प्रोफ़ाइल",
+  "logout": "लॉग आउट",
+
+  "save": "सहेजें",
+  "cancel": "रद्द करें",
+  "delete": "हटाएं",
+  "confirm": "पुष्टि करें",
+  "edit": "संपादित करें",
+  "done": "हो गया",
+
+  "emptyInbox": "इनबॉक्स खाली है",
+  "emptyInboxDescription": "शुरू करने के लिए नया कार्य जोड़ें",
+  "emptyCalendar": "आज का कोई शेड्यूल नहीं",
+  "emptyCalendarDescription": "अपना शेड्यूल बनाने के लिए कार्यों को खींचें",
+
+  "error": "त्रुटि",
+  "errorGeneric": "कुछ गलत हो गया",
+  "errorNetwork": "कृपया अपना नेटवर्क कनेक्शन जांचें",
+  "retry": "पुनः प्रयास करें"
+}

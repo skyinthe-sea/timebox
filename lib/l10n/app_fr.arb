@@ -1,0 +1,90 @@
+{
+  "@@locale": "fr",
+
+  "appName": "Timebox Planner",
+
+  "inbox": "Boîte de réception",
+  "calendar": "Calendrier",
+  "focus": "Concentration",
+  "analytics": "Analyses",
+  "settings": "Paramètres",
+
+  "task": "Tâche",
+  "tasks": "Tâches",
+  "addTask": "Ajouter une tâche",
+  "editTask": "Modifier la tâche",
+  "deleteTask": "Supprimer la tâche",
+  "taskTitle": "Titre",
+  "taskNote": "Note",
+  "estimatedDuration": "Durée estimée",
+  "subtasks": "Sous-tâches",
+  "addSubtask": "Ajouter une sous-tâche",
+
+  "priority": "Priorité",
+  "priorityHigh": "Haute",
+  "priorityMedium": "Moyenne",
+  "priorityLow": "Basse",
+
+  "status": "Statut",
+  "statusTodo": "À faire",
+  "statusInProgress": "En cours",
+  "statusCompleted": "Terminé",
+  "statusDelayed": "Retardé",
+  "statusSkipped": "Ignoré",
+
+  "tag": "Étiquette",
+  "tags": "Étiquettes",
+  "addTag": "Ajouter une étiquette",
+
+  "timeBlock": "Bloc de temps",
+  "createTimeBlock": "Créer un bloc de temps",
+  "moveTimeBlock": "Déplacer le bloc de temps",
+  "resizeTimeBlock": "Redimensionner le bloc de temps",
+  "conflictDetected": "Conflit d'horaire détecté",
+
+  "focusMode": "Mode concentration",
+  "startFocus": "Démarrer la concentration",
+  "pauseFocus": "Pause",
+  "resumeFocus": "Reprendre",
+  "completeFocus": "Terminer",
+  "skipFocus": "Passer",
+  "timeRemaining": "Temps restant",
+
+  "today": "Aujourd'hui",
+  "tomorrow": "Demain",
+  "thisWeek": "Cette semaine",
+
+  "minutes": "minutes",
+  "hours": "heures",
+  "minutesShort": "{count}min",
+  "hoursShort": "{count}h",
+
+  "productivityScore": "Score de productivité",
+  "plannedVsActual": "Planifié vs Réel",
+  "completionRate": "Taux de complétion",
+  "rolloverTasks": "Tâches reportées",
+
+  "darkMode": "Mode sombre",
+  "language": "Langue",
+  "notifications": "Notifications",
+  "calendarSync": "Sync. calendrier",
+  "profile": "Profil",
+  "logout": "Déconnexion",
+
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "confirm": "Confirmer",
+  "edit": "Modifier",
+  "done": "Terminé",
+
+  "emptyInbox": "La boîte de réception est vide",
+  "emptyInboxDescription": "Ajoutez une nouvelle tâche pour commencer",
+  "emptyCalendar": "Aucun planning pour aujourd'hui",
+  "emptyCalendarDescription": "Glissez des tâches pour créer votre planning",
+
+  "error": "Erreur",
+  "errorGeneric": "Une erreur s'est produite",
+  "errorNetwork": "Vérifiez votre connexion réseau",
+  "retry": "Réessayer"
+}
