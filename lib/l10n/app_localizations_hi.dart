@@ -228,4 +228,169 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get retry => 'पुनः प्रयास करें';
+
+  @override
+  String get noActiveSession => 'कोई सक्रिय सत्र नहीं';
+
+  @override
+  String get startFocusDescription =>
+      'उत्पादकता बढ़ाने के लिए फोकस सत्र शुरू करें';
+
+  @override
+  String get quickStart => 'त्वरित प्रारंभ';
+
+  @override
+  String get paused => 'रोका गया';
+
+  @override
+  String get skip => 'छोड़ें';
+
+  @override
+  String get complete => 'पूर्ण';
+
+  @override
+  String get sessionCompleted => 'सत्र पूर्ण!';
+
+  @override
+  String get selectDuration => 'समय चुनें';
+
+  @override
+  String get filter => 'फ़िल्टर';
+
+  @override
+  String get all => 'सभी';
+
+  @override
+  String get statusDone => 'हो गया';
+
+  @override
+  String get emptyInboxTitle => 'इनबॉक्स खाली है';
+
+  @override
+  String get toDo => 'करना है';
+
+  @override
+  String get completed => 'पूर्ण';
+
+  @override
+  String get deleteTaskConfirm => 'इस कार्य को हटाएं?';
+
+  @override
+  String get taskTitleHint => 'आपको क्या करना है?';
+
+  @override
+  String get lessOptions => 'कम विकल्प';
+
+  @override
+  String get moreOptions => 'अधिक विकल्प';
+
+  @override
+  String get taskNoteHint => 'नोट जोड़ें...';
+
+  @override
+  String get title => 'शीर्षक';
+
+  @override
+  String get timeBlockTitleHint => 'ब्लॉक का नाम दर्ज करें';
+
+  @override
+  String get startTime => 'प्रारंभ समय';
+
+  @override
+  String get endTime => 'समाप्ति समय';
+
+  @override
+  String get add => 'जोड़ें';
+
+  @override
+  String get top3 => 'शीर्ष 3 प्राथमिकताएं';
+
+  @override
+  String get rank1 => 'पहला';
+
+  @override
+  String get rank2 => 'दूसरा';
+
+  @override
+  String get rank3 => 'तीसरा';
+
+  @override
+  String get brainDump => 'ब्रेन डंप';
+
+  @override
+  String get timeline => 'टाइमलाइन';
+
+  @override
+  String get dragToSchedule => 'शेड्यूल करने के लिए यहां खींचें';
+
+  @override
+  String get emptyTop3Slot => 'जोड़ने के लिए टैप या ड्रैग करें';
+
+  @override
+  String get dayStartTime => 'दिन की शुरुआत का समय';
+
+  @override
+  String get dayEndTime => 'दिन के अंत का समय';
+
+  @override
+  String get planner => 'प्लानर';
+
+  @override
+  String get appearance => 'दिखावट';
+
+  @override
+  String get theme => 'थीम';
+
+  @override
+  String get themeSystem => 'सिस्टम सेटिंग';
+
+  @override
+  String get themeLight => 'लाइट';
+
+  @override
+  String get themeDark => 'डार्क';
+
+  @override
+  String get notificationDescription => 'टाइम ब्लॉक सूचनाएं प्राप्त करें';
+
+  @override
+  String get notificationTiming => 'सूचना समय';
+
+  @override
+  String minutesBefore(int count) {
+    return '$count मिनट पहले';
+  }
+
+  @override
+  String get noCalendarConnected => 'कोई कैलेंडर कनेक्ट नहीं है';
+
+  @override
+  String get comingSoon => 'जल्द आ रहा है';
+
+  @override
+  String get timeSettings => 'समय सेटिंग्स';
+
+  @override
+  String get dayTimeRange => 'दिन का समय सीमा';
+
+  @override
+  String get defaultTimeBlockDuration => 'डिफ़ॉल्ट टाइम ब्लॉक अवधि';
+
+  @override
+  String get data => 'डेटा';
+
+  @override
+  String get exportData => 'डेटा निर्यात करें';
+
+  @override
+  String get exportDataDescription => 'CSV फ़ाइल में निर्यात करें';
+
+  @override
+  String get resetSettings => 'सेटिंग्स रीसेट करें';
+
+  @override
+  String get resetSettingsConfirm => 'सभी सेटिंग्स को डिफ़ॉल्ट पर रीसेट करें?';
+
+  @override
+  String get settingsReset => 'सेटिंग्स रीसेट हो गई हैं';
 }

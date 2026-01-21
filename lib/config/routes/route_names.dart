@@ -4,7 +4,7 @@
 abstract class RouteNames {
   // 메인 라우트
   static const String home = '/';
-  static const String inbox = '/inbox';
+  static const String calendar = '/calendar';
   static const String focus = '/focus';
   static const String analytics = '/analytics';
   static const String settings = '/settings';
@@ -16,6 +16,6 @@ abstract class RouteNames {
   // Settings 하위
   static const String profile = '/settings/profile';
   static const String notifications = '/settings/notifications';
-  static const String calendar = '/settings/calendar';
+  static const String calendarSettings = '/settings/calendar';
   static const String appearance = '/settings/appearance';
 }

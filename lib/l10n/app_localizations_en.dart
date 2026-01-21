@@ -227,4 +227,169 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Retry';
+
+  @override
+  String get noActiveSession => 'No active session';
+
+  @override
+  String get startFocusDescription =>
+      'Start a focus session to boost your productivity';
+
+  @override
+  String get quickStart => 'Quick Start';
+
+  @override
+  String get paused => 'Paused';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get complete => 'Complete';
+
+  @override
+  String get sessionCompleted => 'Session Completed!';
+
+  @override
+  String get selectDuration => 'Select Duration';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get statusDone => 'Done';
+
+  @override
+  String get emptyInboxTitle => 'Inbox is empty';
+
+  @override
+  String get toDo => 'To Do';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get deleteTaskConfirm => 'Delete this task?';
+
+  @override
+  String get taskTitleHint => 'What do you need to do?';
+
+  @override
+  String get lessOptions => 'Less options';
+
+  @override
+  String get moreOptions => 'More options';
+
+  @override
+  String get taskNoteHint => 'Add a note...';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get timeBlockTitleHint => 'Enter block name';
+
+  @override
+  String get startTime => 'Start Time';
+
+  @override
+  String get endTime => 'End Time';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get top3 => 'Top 3 Priorities';
+
+  @override
+  String get rank1 => '1st';
+
+  @override
+  String get rank2 => '2nd';
+
+  @override
+  String get rank3 => '3rd';
+
+  @override
+  String get brainDump => 'Brain Dump';
+
+  @override
+  String get timeline => 'Timeline';
+
+  @override
+  String get dragToSchedule => 'Drag tasks here to schedule';
+
+  @override
+  String get emptyTop3Slot => 'Tap or drag to add';
+
+  @override
+  String get dayStartTime => 'Day Start Time';
+
+  @override
+  String get dayEndTime => 'Day End Time';
+
+  @override
+  String get planner => 'Planner';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get notificationDescription => 'Receive time block notifications';
+
+  @override
+  String get notificationTiming => 'Notification Timing';
+
+  @override
+  String minutesBefore(int count) {
+    return '$count min before';
+  }
+
+  @override
+  String get noCalendarConnected => 'No calendar connected';
+
+  @override
+  String get comingSoon => 'Coming soon';
+
+  @override
+  String get timeSettings => 'Time Settings';
+
+  @override
+  String get dayTimeRange => 'Day Time Range';
+
+  @override
+  String get defaultTimeBlockDuration => 'Default Time Block Duration';
+
+  @override
+  String get data => 'Data';
+
+  @override
+  String get exportData => 'Export Data';
+
+  @override
+  String get exportDataDescription => 'Export to CSV file';
+
+  @override
+  String get resetSettings => 'Reset Settings';
+
+  @override
+  String get resetSettingsConfirm => 'Reset all settings to defaults?';
+
+  @override
+  String get settingsReset => 'Settings have been reset';
 }

@@ -227,4 +227,168 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get retry => '再試行';
+
+  @override
+  String get noActiveSession => 'アクティブなセッションがありません';
+
+  @override
+  String get startFocusDescription => '集中セッションを開始して生産性を高めましょう';
+
+  @override
+  String get quickStart => 'クイックスタート';
+
+  @override
+  String get paused => '一時停止中';
+
+  @override
+  String get skip => 'スキップ';
+
+  @override
+  String get complete => '完了';
+
+  @override
+  String get sessionCompleted => 'セッション完了！';
+
+  @override
+  String get selectDuration => '時間を選択';
+
+  @override
+  String get filter => 'フィルター';
+
+  @override
+  String get all => 'すべて';
+
+  @override
+  String get statusDone => '完了';
+
+  @override
+  String get emptyInboxTitle => 'インボックスは空です';
+
+  @override
+  String get toDo => '未完了';
+
+  @override
+  String get completed => '完了済み';
+
+  @override
+  String get deleteTaskConfirm => 'このタスクを削除しますか？';
+
+  @override
+  String get taskTitleHint => '何をしますか？';
+
+  @override
+  String get lessOptions => 'オプションを隠す';
+
+  @override
+  String get moreOptions => 'その他のオプション';
+
+  @override
+  String get taskNoteHint => 'メモを追加...';
+
+  @override
+  String get title => 'タイトル';
+
+  @override
+  String get timeBlockTitleHint => 'ブロック名を入力';
+
+  @override
+  String get startTime => '開始時間';
+
+  @override
+  String get endTime => '終了時間';
+
+  @override
+  String get add => '追加';
+
+  @override
+  String get top3 => '最重要タスク3つ';
+
+  @override
+  String get rank1 => '1位';
+
+  @override
+  String get rank2 => '2位';
+
+  @override
+  String get rank3 => '3位';
+
+  @override
+  String get brainDump => 'ブレインダンプ';
+
+  @override
+  String get timeline => 'タイムライン';
+
+  @override
+  String get dragToSchedule => 'ドラッグしてスケジュール';
+
+  @override
+  String get emptyTop3Slot => 'タップまたはドラッグして追加';
+
+  @override
+  String get dayStartTime => '1日の開始時間';
+
+  @override
+  String get dayEndTime => '1日の終了時間';
+
+  @override
+  String get planner => 'プランナー';
+
+  @override
+  String get appearance => '外観';
+
+  @override
+  String get theme => 'テーマ';
+
+  @override
+  String get themeSystem => 'システム設定';
+
+  @override
+  String get themeLight => 'ライト';
+
+  @override
+  String get themeDark => 'ダーク';
+
+  @override
+  String get notificationDescription => 'タイムブロックの通知を受け取る';
+
+  @override
+  String get notificationTiming => '通知タイミング';
+
+  @override
+  String minutesBefore(int count) {
+    return '$count分前';
+  }
+
+  @override
+  String get noCalendarConnected => '接続されたカレンダーはありません';
+
+  @override
+  String get comingSoon => '近日公開';
+
+  @override
+  String get timeSettings => '時間設定';
+
+  @override
+  String get dayTimeRange => '1日の時間範囲';
+
+  @override
+  String get defaultTimeBlockDuration => 'デフォルトのタイムブロック長';
+
+  @override
+  String get data => 'データ';
+
+  @override
+  String get exportData => 'データをエクスポート';
+
+  @override
+  String get exportDataDescription => 'CSVファイルにエクスポート';
+
+  @override
+  String get resetSettings => '設定をリセット';
+
+  @override
+  String get resetSettingsConfirm => 'すべての設定を初期状態に戻しますか？';
+
+  @override
+  String get settingsReset => '設定がリセットされました';
 }

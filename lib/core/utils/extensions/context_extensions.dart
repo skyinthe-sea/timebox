@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 /// BuildContext 확장
 ///
 /// 자주 사용하는 컨텍스트 접근자를 간편하게 사용
@@ -40,6 +42,6 @@ extension ContextExtensions on BuildContext {
   /// 키보드가 열려있는지 확인
   bool get isKeyboardOpen => keyboardHeight > 0;
 
-  // TODO: Localizations 확장 추가
-  // AppLocalizations get l10n => AppLocalizations.of(this)!;
+  /// 로컬라이제이션
+  AppLocalizations get l10n => AppLocalizations.of(this)!;
 }

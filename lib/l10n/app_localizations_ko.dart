@@ -227,4 +227,168 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get retry => '다시 시도';
+
+  @override
+  String get noActiveSession => '진행 중인 세션이 없습니다';
+
+  @override
+  String get startFocusDescription => '집중 세션을 시작하여 생산성을 높여보세요';
+
+  @override
+  String get quickStart => '빠른 시작';
+
+  @override
+  String get paused => '일시 정지됨';
+
+  @override
+  String get skip => '건너뛰기';
+
+  @override
+  String get complete => '완료';
+
+  @override
+  String get sessionCompleted => '세션 완료!';
+
+  @override
+  String get selectDuration => '시간 선택';
+
+  @override
+  String get filter => '필터';
+
+  @override
+  String get all => '전체';
+
+  @override
+  String get statusDone => '완료됨';
+
+  @override
+  String get emptyInboxTitle => '인박스가 비어있습니다';
+
+  @override
+  String get toDo => '할 일';
+
+  @override
+  String get completed => '완료됨';
+
+  @override
+  String get deleteTaskConfirm => '이 할 일을 삭제하시겠습니까?';
+
+  @override
+  String get taskTitleHint => '무엇을 해야 하나요?';
+
+  @override
+  String get lessOptions => '옵션 숨기기';
+
+  @override
+  String get moreOptions => '더 많은 옵션';
+
+  @override
+  String get taskNoteHint => '메모 추가...';
+
+  @override
+  String get title => '제목';
+
+  @override
+  String get timeBlockTitleHint => '블록 이름 입력';
+
+  @override
+  String get startTime => '시작 시간';
+
+  @override
+  String get endTime => '종료 시간';
+
+  @override
+  String get add => '추가';
+
+  @override
+  String get top3 => '가장 중요한 3가지';
+
+  @override
+  String get rank1 => '1순위';
+
+  @override
+  String get rank2 => '2순위';
+
+  @override
+  String get rank3 => '3순위';
+
+  @override
+  String get brainDump => '브레인 덤프';
+
+  @override
+  String get timeline => '타임라인';
+
+  @override
+  String get dragToSchedule => '끌어서 일정 추가';
+
+  @override
+  String get emptyTop3Slot => '탭하거나 드래그하여 추가';
+
+  @override
+  String get dayStartTime => '하루 시작 시간';
+
+  @override
+  String get dayEndTime => '하루 종료 시간';
+
+  @override
+  String get planner => '플래너';
+
+  @override
+  String get appearance => '외관';
+
+  @override
+  String get theme => '테마';
+
+  @override
+  String get themeSystem => '시스템 설정';
+
+  @override
+  String get themeLight => '라이트';
+
+  @override
+  String get themeDark => '다크';
+
+  @override
+  String get notificationDescription => '타임박스 알림 받기';
+
+  @override
+  String get notificationTiming => '알림 시간';
+
+  @override
+  String minutesBefore(int count) {
+    return '$count분 전';
+  }
+
+  @override
+  String get noCalendarConnected => '연결된 캘린더 없음';
+
+  @override
+  String get comingSoon => '준비 중입니다';
+
+  @override
+  String get timeSettings => '시간 설정';
+
+  @override
+  String get dayTimeRange => '하루 시간 범위';
+
+  @override
+  String get defaultTimeBlockDuration => '기본 타임박스 길이';
+
+  @override
+  String get data => '데이터';
+
+  @override
+  String get exportData => '데이터 내보내기';
+
+  @override
+  String get exportDataDescription => 'CSV 파일로 내보내기';
+
+  @override
+  String get resetSettings => '설정 초기화';
+
+  @override
+  String get resetSettingsConfirm => '모든 설정을 초기화하시겠습니까?';
+
+  @override
+  String get settingsReset => '설정이 초기화되었습니다';
 }

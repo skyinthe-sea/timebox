@@ -54,4 +54,11 @@ abstract class AppColors {
   static const Color statusCompleted = Color(0xFF10B981);
   static const Color statusDelayed = Color(0xFFF59E0B);
   static const Color statusSkipped = Color(0xFF6B7280);
+
+  //===========================================================================
+  // Top 3 순위 색상 (Planner)
+  //===========================================================================
+  static const Color rank1 = Color(0xFFEF4444); // 빨강 - 1순위
+  static const Color rank2 = Color(0xFFF59E0B); // 주황 - 2순위
+  static const Color rank3 = Color(0xFF3B82F6); // 파랑 - 3순위
 }

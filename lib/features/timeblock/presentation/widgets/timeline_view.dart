@@ -1,42 +1,22 @@
 import 'package:flutter/material.dart';
+
+import '../../../../config/themes/app_colors.dart';
+import '../../../../core/utils/date_time_utils.dart';
 import '../../domain/entities/time_block.dart';
+import 'time_block_card.dart';
 
 /// 타임라인 뷰 위젯
 ///
 /// 수직 시간축에 TimeBlock들을 표시하는 핵심 UI 컴포넌트
-///
-/// 기능:
-/// - 시간 눈금 표시 (1시간 단위)
-/// - 현재 시간 표시선
-/// - TimeBlock 카드 렌더링
-/// - 드롭 타겟 (DragTarget)
-/// - 스크롤 및 줌
 class TimelineView extends StatefulWidget {
-  /// 표시할 날짜
   final DateTime date;
-
-  /// TimeBlock 목록
   final List<TimeBlock> timeBlocks;
-
-  /// 시작 시간 (기본: 6시)
   final int startHour;
-
-  /// 종료 시간 (기본: 24시)
   final int endHour;
-
-  /// 1시간당 높이 (dp)
   final double hourHeight;
-
-  /// TimeBlock 탭 콜백
   final void Function(TimeBlock)? onTimeBlockTap;
-
-  /// Task 드롭 콜백
   final void Function(String taskId, DateTime dropTime)? onTaskDropped;
-
-  /// TimeBlock 이동 콜백
   final void Function(String id, DateTime newStartTime)? onTimeBlockMoved;
-
-  /// TimeBlock 리사이즈 콜백
   final void Function(String id, DateTime newStart, DateTime newEnd)?
       onTimeBlockResized;
 
@@ -64,7 +44,6 @@ class _TimelineViewState extends State<TimelineView> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    // 현재 시간으로 스크롤
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToCurrentTime();
     });
@@ -77,11 +56,13 @@ class _TimelineViewState extends State<TimelineView> {
   }
 
   void _scrollToCurrentTime() {
+    if (!DateTimeUtils.isToday(widget.date)) return;
+
     final now = DateTime.now();
     if (now.hour >= widget.startHour && now.hour < widget.endHour) {
-      final offset = (now.hour - widget.startHour) * widget.hourHeight;
+      final offset = (now.hour - widget.startHour) * widget.hourHeight - 100;
       _scrollController.animateTo(
-        offset,
+        offset.clamp(0.0, double.infinity),
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
@@ -92,17 +73,14 @@ class _TimelineViewState extends State<TimelineView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final totalHours = widget.endHour - widget.startHour;
+    final isToday = DateTimeUtils.isToday(widget.date);
 
-    // TODO: 실제 구현
-    // - 시간 눈금 (왼쪽)
-    // - 타임블록 영역 (오른쪽)
-    // - DragTarget으로 드롭 처리
-    // - 현재 시간 표시선
     return SingleChildScrollView(
       controller: _scrollController,
       child: SizedBox(
         height: totalHours * widget.hourHeight,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 시간 눈금
             SizedBox(
@@ -112,14 +90,21 @@ class _TimelineViewState extends State<TimelineView> {
                   totalHours,
                   (index) => SizedBox(
                     height: widget.hourHeight,
-                    child: Text(
-                      '${widget.startHour + index}:00',
-                      style: theme.textTheme.bodySmall,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 0, right: 8),
+                      child: Text(
+                        '${widget.startHour + index}:00',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
+
             // 타임블록 영역
             Expanded(
               child: Stack(
@@ -131,16 +116,107 @@ class _TimelineViewState extends State<TimelineView> {
                       top: index * widget.hourHeight,
                       left: 0,
                       right: 0,
-                      child: const Divider(height: 1),
+                      child: Divider(
+                        height: 1,
+                        thickness: 0.5,
+                        color: theme.colorScheme.outlineVariant,
+                      ),
                     ),
                   ),
-                  // TODO: TimeBlock 카드들
-                  // TODO: 현재 시간 표시선
+
+                  // 30분 구분선 (점선)
+                  ...List.generate(
+                    totalHours,
+                    (index) => Positioned(
+                      top: index * widget.hourHeight + widget.hourHeight / 2,
+                      left: 0,
+                      right: 0,
+                      child: Divider(
+                        height: 1,
+                        thickness: 0.5,
+                        color: theme.colorScheme.outlineVariant
+                            .withValues(alpha: 0.3),
+                      ),
+                    ),
+                  ),
+
+                  // TimeBlock 카드들
+                  ...widget.timeBlocks.map((tb) => _buildTimeBlockCard(tb)),
+
+                  // 현재 시간 표시선
+                  if (isToday) _buildCurrentTimeLine(theme),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTimeBlockCard(TimeBlock timeBlock) {
+    final startMinutesFromDayStart =
+        (timeBlock.startTime.hour - widget.startHour) * 60 +
+            timeBlock.startTime.minute;
+    final durationMinutes =
+        timeBlock.endTime.difference(timeBlock.startTime).inMinutes;
+
+    final top = startMinutesFromDayStart * widget.hourHeight / 60;
+    final height = durationMinutes * widget.hourHeight / 60;
+
+    return Positioned(
+      top: top,
+      left: 0,
+      right: 0,
+      child: TimeBlockCard(
+        timeBlock: timeBlock,
+        height: height.clamp(20, double.infinity),
+        onTap: () => widget.onTimeBlockTap?.call(timeBlock),
+        onResizeTop: (delta) {
+          final newStart = timeBlock.startTime
+              .add(Duration(minutes: (delta / widget.hourHeight * 60).round()));
+          widget.onTimeBlockResized
+              ?.call(timeBlock.id, newStart, timeBlock.endTime);
+        },
+        onResizeBottom: (delta) {
+          final newEnd = timeBlock.endTime
+              .add(Duration(minutes: (delta / widget.hourHeight * 60).round()));
+          widget.onTimeBlockResized
+              ?.call(timeBlock.id, timeBlock.startTime, newEnd);
+        },
+      ),
+    );
+  }
+
+  Widget _buildCurrentTimeLine(ThemeData theme) {
+    final now = DateTime.now();
+    final minutesFromDayStart =
+        (now.hour - widget.startHour) * 60 + now.minute;
+    final top = minutesFromDayStart * widget.hourHeight / 60;
+
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Positioned(
+      top: top,
+      left: 0,
+      right: 0,
+      child: Row(
+        children: [
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.errorDark : AppColors.errorLight,
+              shape: BoxShape.circle,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 2,
+              color: isDark ? AppColors.errorDark : AppColors.errorLight,
+            ),
+          ),
+        ],
       ),
     );
   }

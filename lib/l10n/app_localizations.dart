@@ -539,6 +539,330 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'다시 시도'**
   String get retry;
+
+  /// No description provided for @noActiveSession.
+  ///
+  /// In ko, this message translates to:
+  /// **'진행 중인 세션이 없습니다'**
+  String get noActiveSession;
+
+  /// No description provided for @startFocusDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 세션을 시작하여 생산성을 높여보세요'**
+  String get startFocusDescription;
+
+  /// No description provided for @quickStart.
+  ///
+  /// In ko, this message translates to:
+  /// **'빠른 시작'**
+  String get quickStart;
+
+  /// No description provided for @paused.
+  ///
+  /// In ko, this message translates to:
+  /// **'일시 정지됨'**
+  String get paused;
+
+  /// No description provided for @skip.
+  ///
+  /// In ko, this message translates to:
+  /// **'건너뛰기'**
+  String get skip;
+
+  /// No description provided for @complete.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료'**
+  String get complete;
+
+  /// No description provided for @sessionCompleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'세션 완료!'**
+  String get sessionCompleted;
+
+  /// No description provided for @selectDuration.
+  ///
+  /// In ko, this message translates to:
+  /// **'시간 선택'**
+  String get selectDuration;
+
+  /// No description provided for @filter.
+  ///
+  /// In ko, this message translates to:
+  /// **'필터'**
+  String get filter;
+
+  /// No description provided for @all.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체'**
+  String get all;
+
+  /// No description provided for @statusDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료됨'**
+  String get statusDone;
+
+  /// No description provided for @emptyInboxTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'인박스가 비어있습니다'**
+  String get emptyInboxTitle;
+
+  /// No description provided for @toDo.
+  ///
+  /// In ko, this message translates to:
+  /// **'할 일'**
+  String get toDo;
+
+  /// No description provided for @completed.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료됨'**
+  String get completed;
+
+  /// No description provided for @deleteTaskConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 할 일을 삭제하시겠습니까?'**
+  String get deleteTaskConfirm;
+
+  /// No description provided for @taskTitleHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'무엇을 해야 하나요?'**
+  String get taskTitleHint;
+
+  /// No description provided for @lessOptions.
+  ///
+  /// In ko, this message translates to:
+  /// **'옵션 숨기기'**
+  String get lessOptions;
+
+  /// No description provided for @moreOptions.
+  ///
+  /// In ko, this message translates to:
+  /// **'더 많은 옵션'**
+  String get moreOptions;
+
+  /// No description provided for @taskNoteHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'메모 추가...'**
+  String get taskNoteHint;
+
+  /// No description provided for @title.
+  ///
+  /// In ko, this message translates to:
+  /// **'제목'**
+  String get title;
+
+  /// No description provided for @timeBlockTitleHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'블록 이름 입력'**
+  String get timeBlockTitleHint;
+
+  /// No description provided for @startTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'시작 시간'**
+  String get startTime;
+
+  /// No description provided for @endTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'종료 시간'**
+  String get endTime;
+
+  /// No description provided for @add.
+  ///
+  /// In ko, this message translates to:
+  /// **'추가'**
+  String get add;
+
+  /// No description provided for @top3.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 중요한 3가지'**
+  String get top3;
+
+  /// No description provided for @rank1.
+  ///
+  /// In ko, this message translates to:
+  /// **'1순위'**
+  String get rank1;
+
+  /// No description provided for @rank2.
+  ///
+  /// In ko, this message translates to:
+  /// **'2순위'**
+  String get rank2;
+
+  /// No description provided for @rank3.
+  ///
+  /// In ko, this message translates to:
+  /// **'3순위'**
+  String get rank3;
+
+  /// No description provided for @brainDump.
+  ///
+  /// In ko, this message translates to:
+  /// **'브레인 덤프'**
+  String get brainDump;
+
+  /// No description provided for @timeline.
+  ///
+  /// In ko, this message translates to:
+  /// **'타임라인'**
+  String get timeline;
+
+  /// No description provided for @dragToSchedule.
+  ///
+  /// In ko, this message translates to:
+  /// **'끌어서 일정 추가'**
+  String get dragToSchedule;
+
+  /// No description provided for @emptyTop3Slot.
+  ///
+  /// In ko, this message translates to:
+  /// **'탭하거나 드래그하여 추가'**
+  String get emptyTop3Slot;
+
+  /// No description provided for @dayStartTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'하루 시작 시간'**
+  String get dayStartTime;
+
+  /// No description provided for @dayEndTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'하루 종료 시간'**
+  String get dayEndTime;
+
+  /// No description provided for @planner.
+  ///
+  /// In ko, this message translates to:
+  /// **'플래너'**
+  String get planner;
+
+  /// No description provided for @appearance.
+  ///
+  /// In ko, this message translates to:
+  /// **'외관'**
+  String get appearance;
+
+  /// No description provided for @theme.
+  ///
+  /// In ko, this message translates to:
+  /// **'테마'**
+  String get theme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In ko, this message translates to:
+  /// **'시스템 설정'**
+  String get themeSystem;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In ko, this message translates to:
+  /// **'라이트'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In ko, this message translates to:
+  /// **'다크'**
+  String get themeDark;
+
+  /// No description provided for @notificationDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'타임박스 알림 받기'**
+  String get notificationDescription;
+
+  /// No description provided for @notificationTiming.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 시간'**
+  String get notificationTiming;
+
+  /// No description provided for @minutesBefore.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}분 전'**
+  String minutesBefore(int count);
+
+  /// No description provided for @noCalendarConnected.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결된 캘린더 없음'**
+  String get noCalendarConnected;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In ko, this message translates to:
+  /// **'준비 중입니다'**
+  String get comingSoon;
+
+  /// No description provided for @timeSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'시간 설정'**
+  String get timeSettings;
+
+  /// No description provided for @dayTimeRange.
+  ///
+  /// In ko, this message translates to:
+  /// **'하루 시간 범위'**
+  String get dayTimeRange;
+
+  /// No description provided for @defaultTimeBlockDuration.
+  ///
+  /// In ko, this message translates to:
+  /// **'기본 타임박스 길이'**
+  String get defaultTimeBlockDuration;
+
+  /// No description provided for @data.
+  ///
+  /// In ko, this message translates to:
+  /// **'데이터'**
+  String get data;
+
+  /// No description provided for @exportData.
+  ///
+  /// In ko, this message translates to:
+  /// **'데이터 내보내기'**
+  String get exportData;
+
+  /// No description provided for @exportDataDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'CSV 파일로 내보내기'**
+  String get exportDataDescription;
+
+  /// No description provided for @resetSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정 초기화'**
+  String get resetSettings;
+
+  /// No description provided for @resetSettingsConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'모든 설정을 초기화하시겠습니까?'**
+  String get resetSettingsConfirm;
+
+  /// No description provided for @settingsReset.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정이 초기화되었습니다'**
+  String get settingsReset;
 }
 
 class _AppLocalizationsDelegate

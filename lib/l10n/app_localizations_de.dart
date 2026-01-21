@@ -228,4 +228,170 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get retry => 'Erneut versuchen';
+
+  @override
+  String get noActiveSession => 'Keine aktive Sitzung';
+
+  @override
+  String get startFocusDescription =>
+      'Starten Sie eine Fokussitzung, um Ihre Produktivität zu steigern';
+
+  @override
+  String get quickStart => 'Schnellstart';
+
+  @override
+  String get paused => 'Pausiert';
+
+  @override
+  String get skip => 'Überspringen';
+
+  @override
+  String get complete => 'Abschließen';
+
+  @override
+  String get sessionCompleted => 'Sitzung abgeschlossen!';
+
+  @override
+  String get selectDuration => 'Dauer auswählen';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get all => 'Alle';
+
+  @override
+  String get statusDone => 'Erledigt';
+
+  @override
+  String get emptyInboxTitle => 'Posteingang ist leer';
+
+  @override
+  String get toDo => 'Zu erledigen';
+
+  @override
+  String get completed => 'Abgeschlossen';
+
+  @override
+  String get deleteTaskConfirm => 'Diese Aufgabe löschen?';
+
+  @override
+  String get taskTitleHint => 'Was müssen Sie tun?';
+
+  @override
+  String get lessOptions => 'Weniger Optionen';
+
+  @override
+  String get moreOptions => 'Mehr Optionen';
+
+  @override
+  String get taskNoteHint => 'Notiz hinzufügen...';
+
+  @override
+  String get title => 'Titel';
+
+  @override
+  String get timeBlockTitleHint => 'Blocknamen eingeben';
+
+  @override
+  String get startTime => 'Startzeit';
+
+  @override
+  String get endTime => 'Endzeit';
+
+  @override
+  String get add => 'Hinzufügen';
+
+  @override
+  String get top3 => 'Top 3 Prioritäten';
+
+  @override
+  String get rank1 => '1.';
+
+  @override
+  String get rank2 => '2.';
+
+  @override
+  String get rank3 => '3.';
+
+  @override
+  String get brainDump => 'Gedankensammlung';
+
+  @override
+  String get timeline => 'Zeitstrahl';
+
+  @override
+  String get dragToSchedule => 'Hierher ziehen zum Planen';
+
+  @override
+  String get emptyTop3Slot => 'Tippen oder ziehen zum Hinzufügen';
+
+  @override
+  String get dayStartTime => 'Tagesbeginn';
+
+  @override
+  String get dayEndTime => 'Tagesende';
+
+  @override
+  String get planner => 'Planer';
+
+  @override
+  String get appearance => 'Erscheinungsbild';
+
+  @override
+  String get theme => 'Design';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Hell';
+
+  @override
+  String get themeDark => 'Dunkel';
+
+  @override
+  String get notificationDescription => 'Zeitblock-Benachrichtigungen erhalten';
+
+  @override
+  String get notificationTiming => 'Benachrichtigungszeit';
+
+  @override
+  String minutesBefore(int count) {
+    return '$count Min. vorher';
+  }
+
+  @override
+  String get noCalendarConnected => 'Kein Kalender verbunden';
+
+  @override
+  String get comingSoon => 'Demnächst verfügbar';
+
+  @override
+  String get timeSettings => 'Zeiteinstellungen';
+
+  @override
+  String get dayTimeRange => 'Tageszeitbereich';
+
+  @override
+  String get defaultTimeBlockDuration => 'Standard-Zeitblockdauer';
+
+  @override
+  String get data => 'Daten';
+
+  @override
+  String get exportData => 'Daten exportieren';
+
+  @override
+  String get exportDataDescription => 'Als CSV-Datei exportieren';
+
+  @override
+  String get resetSettings => 'Einstellungen zurücksetzen';
+
+  @override
+  String get resetSettingsConfirm =>
+      'Alle Einstellungen auf Standard zurücksetzen?';
+
+  @override
+  String get settingsReset => 'Einstellungen wurden zurückgesetzt';
 }

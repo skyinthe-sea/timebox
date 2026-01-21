@@ -227,4 +227,168 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get retry => '重试';
+
+  @override
+  String get noActiveSession => '没有进行中的会话';
+
+  @override
+  String get startFocusDescription => '开始专注会话以提高生产力';
+
+  @override
+  String get quickStart => '快速开始';
+
+  @override
+  String get paused => '已暂停';
+
+  @override
+  String get skip => '跳过';
+
+  @override
+  String get complete => '完成';
+
+  @override
+  String get sessionCompleted => '会话完成！';
+
+  @override
+  String get selectDuration => '选择时长';
+
+  @override
+  String get filter => '筛选';
+
+  @override
+  String get all => '全部';
+
+  @override
+  String get statusDone => '已完成';
+
+  @override
+  String get emptyInboxTitle => '收件箱为空';
+
+  @override
+  String get toDo => '待办';
+
+  @override
+  String get completed => '已完成';
+
+  @override
+  String get deleteTaskConfirm => '删除此任务？';
+
+  @override
+  String get taskTitleHint => '你需要做什么？';
+
+  @override
+  String get lessOptions => '收起选项';
+
+  @override
+  String get moreOptions => '更多选项';
+
+  @override
+  String get taskNoteHint => '添加备注...';
+
+  @override
+  String get title => '标题';
+
+  @override
+  String get timeBlockTitleHint => '输入时间块名称';
+
+  @override
+  String get startTime => '开始时间';
+
+  @override
+  String get endTime => '结束时间';
+
+  @override
+  String get add => '添加';
+
+  @override
+  String get top3 => '最重要的3件事';
+
+  @override
+  String get rank1 => '第1';
+
+  @override
+  String get rank2 => '第2';
+
+  @override
+  String get rank3 => '第3';
+
+  @override
+  String get brainDump => '头脑风暴';
+
+  @override
+  String get timeline => '时间轴';
+
+  @override
+  String get dragToSchedule => '拖拽到此处安排日程';
+
+  @override
+  String get emptyTop3Slot => '点击或拖拽添加';
+
+  @override
+  String get dayStartTime => '一天开始时间';
+
+  @override
+  String get dayEndTime => '一天结束时间';
+
+  @override
+  String get planner => '计划器';
+
+  @override
+  String get appearance => '外观';
+
+  @override
+  String get theme => '主题';
+
+  @override
+  String get themeSystem => '跟随系统';
+
+  @override
+  String get themeLight => '浅色';
+
+  @override
+  String get themeDark => '深色';
+
+  @override
+  String get notificationDescription => '接收时间块通知';
+
+  @override
+  String get notificationTiming => '通知时间';
+
+  @override
+  String minutesBefore(int count) {
+    return '$count分钟前';
+  }
+
+  @override
+  String get noCalendarConnected => '未连接日历';
+
+  @override
+  String get comingSoon => '即将推出';
+
+  @override
+  String get timeSettings => '时间设置';
+
+  @override
+  String get dayTimeRange => '每日时间范围';
+
+  @override
+  String get defaultTimeBlockDuration => '默认时间块时长';
+
+  @override
+  String get data => '数据';
+
+  @override
+  String get exportData => '导出数据';
+
+  @override
+  String get exportDataDescription => '导出为CSV文件';
+
+  @override
+  String get resetSettings => '重置设置';
+
+  @override
+  String get resetSettingsConfirm => '将所有设置恢复为默认值？';
+
+  @override
+  String get settingsReset => '设置已重置';
 }
