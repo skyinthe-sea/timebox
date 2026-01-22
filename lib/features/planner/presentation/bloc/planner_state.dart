@@ -88,6 +88,16 @@ class PlannerState extends Equatable {
         selectedDate.day == now.day;
   }
 
+  /// 오늘의 Task 완료율 (0.0 ~ 1.0)
+  double get completionRate {
+    if (tasks.isEmpty) return 0.0;
+    final completed = tasks.where((t) => t.status == TaskStatus.done).length;
+    return completed / tasks.length;
+  }
+
+  /// 이월된 Task 목록
+  List<Task> get rolloverTasks => tasks.where((t) => t.rolloverCount > 0).toList();
+
   PlannerState copyWith({
     PlannerStateStatus? status,
     DateTime? selectedDate,

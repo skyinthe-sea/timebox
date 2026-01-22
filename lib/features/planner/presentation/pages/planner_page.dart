@@ -5,14 +5,15 @@ import 'package:intl/intl.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../bloc/planner_bloc.dart';
 import '../widgets/brain_dump_view.dart';
-import '../widgets/timeline_drop_zone.dart';
 import '../widgets/top_three_section.dart';
 
 /// 플래너 페이지
 ///
 /// 메인 플래너 화면
 /// - 상단: Top 3 섹션
-/// - 하단: 브레인덤프 ↔ 타임라인 스와이프
+/// - 하단: 브레인덤프
+///
+/// 타임라인은 별도 CalendarPage로 분리됨
 class PlannerPage extends StatefulWidget {
   const PlannerPage({super.key});
 
@@ -21,12 +22,9 @@ class PlannerPage extends StatefulWidget {
 }
 
 class _PlannerPageState extends State<PlannerPage> {
-  late PageController _pageController;
-
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
 
     // 초기화
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -35,27 +33,10 @@ class _PlannerPageState extends State<PlannerPage> {
   }
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return BlocConsumer<PlannerBloc, PlannerState>(
-      listener: (context, state) {
-        // 페이지 인덱스 동기화
-        if (_pageController.hasClients &&
-            _pageController.page?.round() != state.pageIndex) {
-          _pageController.animateToPage(
-            state.pageIndex,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        }
-      },
+    return BlocBuilder<PlannerBloc, PlannerState>(
       builder: (context, state) {
         return SafeArea(
           child: Column(
@@ -71,45 +52,24 @@ class _PlannerPageState extends State<PlannerPage> {
                 onDatePick: () => _pickDate(context, state.selectedDate),
               ),
 
+              // 완료율 프로그레스 바
+              _CompletionRateBar(
+                completionRate: state.completionRate,
+                taskCount: state.tasks.length,
+              ),
+
               // Top 3 섹션
               const TopThreeSection(),
 
-              // PageView (브레인덤프 ↔ 타임라인)
-              Expanded(
-                child: Column(
-                  children: [
-                    // 페이지 콘텐츠
-                    Expanded(
-                      child: PageView(
-                        controller: _pageController,
-                        onPageChanged: (index) {
-                          context
-                              .read<PlannerBloc>()
-                              .add(PageIndexChanged(index));
-                        },
-                        children: [
-                          // 브레인덤프
-                          const BrainDumpView(),
+              // 브레인덤프 섹션 헤더
+              _SectionHeader(
+                icon: Icons.lightbulb_outline_rounded,
+                title: l10n?.brainDump ?? 'Brain Dump',
+              ),
 
-                          // 타임라인
-                          TimelineDropZone(
-                            date: state.selectedDate,
-                            timeBlocks: state.timeBlocks,
-                            startHour: 6, // TODO: Settings에서 가져오기
-                            endHour: 24, // TODO: Settings에서 가져오기
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // 페이지 인디케이터
-                    _PageIndicator(
-                      currentIndex: state.pageIndex,
-                      pageController: _pageController,
-                      l10n: l10n,
-                    ),
-                  ],
-                ),
+              // 브레인덤프
+              const Expanded(
+                child: BrainDumpView(),
               ),
             ],
           ),
@@ -226,90 +186,95 @@ class _DateHeader extends StatelessWidget {
   }
 }
 
-class _PageIndicator extends StatelessWidget {
-  final int currentIndex;
-  final PageController pageController;
-  final AppLocalizations? l10n;
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String title;
 
-  const _PageIndicator({
-    required this.currentIndex,
-    required this.pageController,
-    required this.l10n,
+  const _SectionHeader({
+    required this.icon,
+    required this.title,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildTab(
-            context,
-            index: 0,
-            icon: Icons.lightbulb_outline_rounded,
-            label: l10n?.brainDump ?? 'Brain Dump',
+          Icon(
+            icon,
+            size: 18,
+            color: theme.colorScheme.primary,
           ),
           const SizedBox(width: 8),
-          _buildTab(
-            context,
-            index: 1,
-            icon: Icons.access_time_rounded,
-            label: l10n?.timeline ?? 'Timeline',
+          Text(
+            title,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.primary,
+            ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildTab(
-    BuildContext context, {
-    required int index,
-    required IconData icon,
-    required String label,
-  }) {
+class _CompletionRateBar extends StatelessWidget {
+  final double completionRate;
+  final int taskCount;
+
+  const _CompletionRateBar({
+    required this.completionRate,
+    required this.taskCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isSelected = currentIndex == index;
+    final l10n = AppLocalizations.of(context);
+    final percentage = (completionRate * 100).toInt();
 
-    return GestureDetector(
-      onTap: () {
-        pageController.animateToPage(
-          index,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? theme.colorScheme.primary.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: isSelected
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.outline,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: isSelected
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.outline,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+    if (taskCount == 0) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                l10n?.completionRate ?? 'Completion Rate',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.outline,
+                ),
               ),
+              Text(
+                '$percentage%',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: completionRate,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
+              minHeight: 6,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

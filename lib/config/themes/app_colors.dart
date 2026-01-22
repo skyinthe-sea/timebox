@@ -61,4 +61,23 @@ abstract class AppColors {
   static const Color rank1 = Color(0xFFEF4444); // 빨강 - 1순위
   static const Color rank2 = Color(0xFFF59E0B); // 주황 - 2순위
   static const Color rank3 = Color(0xFF3B82F6); // 파랑 - 3순위
+
+  //===========================================================================
+  // Timeline Selection Colors (타임라인 선택 영역)
+  //===========================================================================
+  // Light Mode
+  static const Color selectionBackgroundLight = Color(0x336366F1); // Primary 20%
+  static const Color selectionBorderLight = Color(0xFF6366F1);
+
+  // Dark Mode
+  static const Color selectionBackgroundDark = Color(0x40818CF8); // Primary 25%
+  static const Color selectionBorderDark = Color(0xFF818CF8);
+
+  // Conflict/Overlap Colors (충돌 표시)
+  static const Color conflictBackgroundLight = Color(0x4DF59E0B); // Warning 30%
+  static const Color conflictBackgroundDark = Color(0x4DFBBF24); // Warning 30%
+
+  // Chip Selection Colors (칩 선택 상태)
+  static const Color chipSelectedLight = Color(0x1A6366F1); // Primary 10%
+  static const Color chipSelectedDark = Color(0x26818CF8); // Primary 15%
 }

@@ -48,6 +48,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<ResizeTimeBlockEvent>(_onResizeTimeBlock);
     on<DeleteTimeBlockEvent>(_onDeleteTimeBlock);
     on<UpdateTimeBlockStatusEvent>(_onUpdateTimeBlockStatus);
+    on<MergeTimeBlocksEvent>(_onMergeTimeBlocks);
+    on<ExtendTimeBlockEvent>(_onExtendTimeBlock);
   }
 
   Future<void> _onWatchTimeBlocksStarted(
@@ -185,6 +187,75 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   ) async {
     final result = await updateTimeBlockStatus(
       UpdateTimeBlockStatusParams(id: event.id, status: event.status),
+    );
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: CalendarStateStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => {},
+    );
+  }
+
+  Future<void> _onMergeTimeBlocks(
+    MergeTimeBlocksEvent event,
+    Emitter<CalendarState> emit,
+  ) async {
+    // 같은 taskId를 가진 인접 블록 찾기
+    final adjacentBlocks = state.timeBlocks.where((tb) {
+      if (tb.taskId != event.taskId) return false;
+      // 인접 여부 확인 (시간이 맞닿아 있는지)
+      return tb.endTime == event.startTime || tb.startTime == event.endTime;
+    }).toList();
+
+    if (adjacentBlocks.isEmpty) {
+      // 인접 블록이 없으면 새 블록 생성
+      add(CreateTimeBlockEvent(
+        taskId: event.taskId,
+        startTime: event.startTime,
+        endTime: event.endTime,
+      ));
+      return;
+    }
+
+    // 인접 블록과 병합
+    final blockToExtend = adjacentBlocks.first;
+    final newStartTime = blockToExtend.startTime.isBefore(event.startTime)
+        ? blockToExtend.startTime
+        : event.startTime;
+    final newEndTime = blockToExtend.endTime.isAfter(event.endTime)
+        ? blockToExtend.endTime
+        : event.endTime;
+
+    // 기존 블록 확장
+    final result = await resizeTimeBlock(
+      ResizeTimeBlockParams(
+        id: blockToExtend.id,
+        newStartTime: newStartTime,
+        newEndTime: newEndTime,
+      ),
+    );
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: CalendarStateStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => {},
+    );
+  }
+
+  Future<void> _onExtendTimeBlock(
+    ExtendTimeBlockEvent event,
+    Emitter<CalendarState> emit,
+  ) async {
+    final result = await resizeTimeBlock(
+      ResizeTimeBlockParams(
+        id: event.id,
+        newStartTime: event.newStartTime,
+        newEndTime: event.newEndTime,
+      ),
     );
 
     result.fold(

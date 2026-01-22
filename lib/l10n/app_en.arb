@@ -125,7 +125,15 @@
   "emptyTop3Slot": "Tap or drag to add",
   "dayStartTime": "Day Start Time",
   "dayEndTime": "Day End Time",
-  "planner": "Planner",
+  "planner": "Timebox",
+  "copyToTomorrow": "Copy to tomorrow",
+  "copiedToTomorrow": "Copied to tomorrow",
+  "rolloverBadge": "Rollover {count}x",
+  "@rolloverBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "appearance": "Appearance",
   "theme": "Theme",
@@ -150,5 +158,23 @@
   "exportDataDescription": "Export to CSV file",
   "resetSettings": "Reset Settings",
   "resetSettingsConfirm": "Reset all settings to defaults?",
-  "settingsReset": "Settings have been reset"
+  "settingsReset": "Settings have been reset",
+
+  "longPressToSelect": "Long press to select time range",
+  "selectTask": "Select a task",
+  "noUnscheduledTasks": "No unscheduled tasks",
+  "addNewTask": "Add new task",
+  "addNewTaskHint": "Enter task title...",
+  "timeRangeLabel": "{start} - {end}",
+  "@timeRangeLabel": {
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "assignToTimeBlock": "Assign to time block",
+  "mergeBlocks": "Merge blocks",
+  "overlapWarning": "Warning: Time blocks overlap",
+  "taskAssigned": "Task assigned",
+  "tapToCancel": "Tap outside to cancel"
 }

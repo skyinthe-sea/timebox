@@ -226,4 +226,78 @@ class TaskRepositoryImpl implements TaskRepository {
       }
     });
   }
+
+  @override
+  Future<Either<Failure, List<Task>>> getTasksByDate(DateTime date) async {
+    try {
+      final models = await localDataSource.getTasksByDate(date);
+      final tasks = models.map((m) => m.toEntity()).toList();
+      return Right(tasks);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Stream<Either<Failure, List<Task>>> watchTasksByDate(DateTime date) {
+    return localDataSource.watchTasksByDate(date).map((models) {
+      try {
+        final tasks = models.map((m) => m.toEntity()).toList();
+        return Right<Failure, List<Task>>(tasks);
+      } catch (e) {
+        return Left<Failure, List<Task>>(UnknownFailure(message: e.toString()));
+      }
+    });
+  }
+
+  @override
+  Future<Either<Failure, Task>> copyTaskToDate(
+      String taskId, DateTime date) async {
+    try {
+      final model = await localDataSource.getTaskById(taskId);
+      if (model == null) {
+        return Left(CacheFailure(message: 'Task not found'));
+      }
+
+      // 새 ID로 Task 복제, rolloverCount는 0으로 초기화
+      final newModel = model.copyWith(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        targetDate: date,
+        rolloverCount: 0,
+        status: 'todo',
+        completedAt: null,
+      );
+      final savedModel = await localDataSource.saveTask(newModel);
+      return Right(savedModel.toEntity());
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Task>> rolloverTask(
+      String taskId, DateTime toDate) async {
+    try {
+      final model = await localDataSource.getTaskById(taskId);
+      if (model == null) {
+        return Left(CacheFailure(message: 'Task not found'));
+      }
+
+      // targetDate 업데이트 및 rolloverCount 증가
+      final updatedModel = model.copyWith(
+        targetDate: toDate,
+        rolloverCount: model.rolloverCount + 1,
+      );
+      final savedModel = await localDataSource.saveTask(updatedModel);
+      return Right(savedModel.toEntity());
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
 }

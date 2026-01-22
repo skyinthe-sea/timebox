@@ -4,10 +4,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/usecases/usecase.dart';
 import '../../../task/domain/entities/task.dart';
+import '../../../task/domain/usecases/copy_task_to_date.dart';
 import '../../../task/domain/usecases/create_task.dart';
-import '../../../task/domain/usecases/watch_tasks.dart';
+import '../../../task/domain/usecases/rollover_task.dart';
+import '../../../task/domain/usecases/watch_tasks_by_date.dart';
 import '../../../timeblock/domain/entities/time_block.dart';
 import '../../../timeblock/domain/usecases/create_time_block.dart';
 import '../../../timeblock/domain/usecases/get_time_blocks_for_day.dart';
@@ -26,13 +27,15 @@ part 'planner_state.dart';
 /// - 브레인덤프 Task 목록
 /// - 타임라인 TimeBlock 목록
 class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
-  final WatchTasks watchTasks;
+  final WatchTasksByDate watchTasksByDate;
   final WatchDailyPriority watchDailyPriority;
   final WatchTimeBlocksForDay watchTimeBlocksForDay;
   final SetTaskRank setTaskRank;
   final RemoveTaskFromRank removeTaskFromRank;
   final CreateTask createTask;
   final CreateTimeBlock createTimeBlock;
+  final CopyTaskToDate copyTaskToDate;
+  final RolloverTask rolloverTask;
 
   StreamSubscription? _tasksSubscription;
   StreamSubscription? _dailyPrioritySubscription;
@@ -41,13 +44,15 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
   final _uuid = const Uuid();
 
   PlannerBloc({
-    required this.watchTasks,
+    required this.watchTasksByDate,
     required this.watchDailyPriority,
     required this.watchTimeBlocksForDay,
     required this.setTaskRank,
     required this.removeTaskFromRank,
     required this.createTask,
     required this.createTimeBlock,
+    required this.copyTaskToDate,
+    required this.rolloverTask,
   }) : super(PlannerState()) {
     on<InitializePlanner>(_onInitializePlanner);
     on<PlannerDateChanged>(_onDateChanged);
@@ -60,6 +65,8 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     on<PageIndexChanged>(_onPageIndexChanged);
     on<CreateTimeBlockFromTask>(_onCreateTimeBlockFromTask);
     on<QuickCreateTask>(_onQuickCreateTask);
+    on<CopyTaskToTomorrow>(_onCopyTaskToTomorrow);
+    on<RolloverTaskEvent>(_onRolloverTask);
   }
 
   Future<void> _onInitializePlanner(
@@ -71,9 +78,9 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
       selectedDate: event.date,
     ));
 
-    // Tasks 구독
+    // 날짜별 Tasks 구독
     await _tasksSubscription?.cancel();
-    _tasksSubscription = watchTasks(NoParams()).listen(
+    _tasksSubscription = watchTasksByDate(event.date).listen(
       (result) {
         result.fold(
           (failure) => add(const PlannerTasksUpdated([])),
@@ -249,9 +256,48 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
       priority: event.priority,
       status: TaskStatus.todo,
       createdAt: DateTime.now(),
+      targetDate: state.selectedDate,
     );
 
     final result = await createTask(task);
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: PlannerStateStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => {},
+    );
+  }
+
+  Future<void> _onCopyTaskToTomorrow(
+    CopyTaskToTomorrow event,
+    Emitter<PlannerState> emit,
+  ) async {
+    final tomorrow = state.selectedDate.add(const Duration(days: 1));
+    final result = await copyTaskToDate(CopyTaskToDateParams(
+      taskId: event.taskId,
+      targetDate: tomorrow,
+    ));
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: PlannerStateStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => {},
+    );
+  }
+
+  Future<void> _onRolloverTask(
+    RolloverTaskEvent event,
+    Emitter<PlannerState> emit,
+  ) async {
+    final tomorrow = state.selectedDate.add(const Duration(days: 1));
+    final result = await rolloverTask(RolloverTaskParams(
+      taskId: event.taskId,
+      toDate: tomorrow,
+    ));
+
     result.fold(
       (failure) => emit(state.copyWith(
         status: PlannerStateStatus.failure,

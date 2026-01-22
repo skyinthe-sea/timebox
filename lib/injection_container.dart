@@ -4,11 +4,14 @@ import 'package:get_it/get_it.dart';
 import 'features/task/data/datasources/task_local_datasource.dart';
 import 'features/task/data/repositories/task_repository_impl.dart';
 import 'features/task/domain/repositories/task_repository.dart';
+import 'features/task/domain/usecases/copy_task_to_date.dart';
 import 'features/task/domain/usecases/create_task.dart';
 import 'features/task/domain/usecases/delete_task.dart';
 import 'features/task/domain/usecases/get_tasks.dart';
+import 'features/task/domain/usecases/rollover_task.dart';
 import 'features/task/domain/usecases/update_task.dart';
 import 'features/task/domain/usecases/watch_tasks.dart';
+import 'features/task/domain/usecases/watch_tasks_by_date.dart';
 import 'features/task/presentation/bloc/task_bloc.dart';
 
 // TimeBlock Feature
@@ -64,6 +67,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateTaskStatus(sl()));
   sl.registerLazySingleton(() => DeleteTask(sl()));
   sl.registerLazySingleton(() => WatchTasks(sl()));
+  sl.registerLazySingleton(() => WatchTasksByDate(sl()));
+  sl.registerLazySingleton(() => CopyTaskToDate(sl()));
+  sl.registerLazySingleton(() => RolloverTask(sl()));
 
   // BLoC
   sl.registerFactory(
@@ -134,13 +140,15 @@ Future<void> init() async {
   // BLoC
   sl.registerFactory(
     () => PlannerBloc(
-      watchTasks: sl(),
+      watchTasksByDate: sl(),
       watchDailyPriority: sl(),
       watchTimeBlocksForDay: sl(),
       setTaskRank: sl(),
       removeTaskFromRank: sl(),
       createTask: sl(),
       createTimeBlock: sl(),
+      copyTaskToDate: sl(),
+      rolloverTask: sl(),
     ),
   );
 

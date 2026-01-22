@@ -41,6 +41,12 @@ class Task {
   /// 완료 시간 (선택)
   final DateTime? completedAt;
 
+  /// 태스크 대상 날짜
+  final DateTime targetDate;
+
+  /// 이월 횟수 (0 = 신규)
+  final int rolloverCount;
+
   const Task({
     required this.id,
     required this.title,
@@ -52,6 +58,8 @@ class Task {
     this.subtasks = const [],
     required this.createdAt,
     this.completedAt,
+    required this.targetDate,
+    this.rolloverCount = 0,
   });
 
   /// 완료 여부
@@ -64,7 +72,41 @@ class Task {
     return completed / subtasks.length;
   }
 
-  // TODO: copyWith, props (Equatable), toJson/fromJson 구현
+  /// 이월 여부
+  bool get isRollover => rolloverCount > 0;
+
+  /// copyWith
+  Task copyWith({
+    String? id,
+    String? title,
+    String? note,
+    Duration? estimatedDuration,
+    List<Tag>? tags,
+    TaskPriority? priority,
+    TaskStatus? status,
+    List<Subtask>? subtasks,
+    DateTime? createdAt,
+    DateTime? completedAt,
+    DateTime? targetDate,
+    int? rolloverCount,
+    bool clearNote = false,
+    bool clearCompletedAt = false,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      note: clearNote ? null : (note ?? this.note),
+      estimatedDuration: estimatedDuration ?? this.estimatedDuration,
+      tags: tags ?? this.tags,
+      priority: priority ?? this.priority,
+      status: status ?? this.status,
+      subtasks: subtasks ?? this.subtasks,
+      createdAt: createdAt ?? this.createdAt,
+      completedAt: clearCompletedAt ? null : (completedAt ?? this.completedAt),
+      targetDate: targetDate ?? this.targetDate,
+      rolloverCount: rolloverCount ?? this.rolloverCount,
+    );
+  }
 }
 
 /// 할 일 우선순위

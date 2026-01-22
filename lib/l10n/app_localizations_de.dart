@@ -333,7 +333,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dayEndTime => 'Tagesende';
 
   @override
-  String get planner => 'Planer';
+  String get planner => 'Timebox';
+
+  @override
+  String get copyToTomorrow => 'Auch morgen tun';
+
+  @override
+  String get copiedToTomorrow => 'Für morgen kopiert';
+
+  @override
+  String rolloverBadge(int count) {
+    return 'Übertrag ${count}x';
+  }
 
   @override
   String get appearance => 'Erscheinungsbild';
@@ -394,4 +405,39 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsReset => 'Einstellungen wurden zurückgesetzt';
+
+  @override
+  String get longPressToSelect => 'Lange drücken um Zeitbereich auszuwählen';
+
+  @override
+  String get selectTask => 'Aufgabe auswählen';
+
+  @override
+  String get noUnscheduledTasks => 'Keine ungeplanten Aufgaben';
+
+  @override
+  String get addNewTask => 'Neue Aufgabe hinzufügen';
+
+  @override
+  String get addNewTaskHint => 'Aufgabentitel eingeben...';
+
+  @override
+  String timeRangeLabel(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get assignToTimeBlock => 'Zeitblock zuweisen';
+
+  @override
+  String get mergeBlocks => 'Blöcke zusammenführen';
+
+  @override
+  String get overlapWarning => 'Warnung: Zeitblöcke überlappen sich';
+
+  @override
+  String get taskAssigned => 'Aufgabe zugewiesen';
+
+  @override
+  String get tapToCancel => 'Außerhalb tippen zum Abbrechen';
 }

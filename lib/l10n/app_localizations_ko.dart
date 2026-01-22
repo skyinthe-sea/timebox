@@ -331,7 +331,18 @@ class AppLocalizationsKo extends AppLocalizations {
   String get dayEndTime => '하루 종료 시간';
 
   @override
-  String get planner => '플래너';
+  String get planner => '타임박스';
+
+  @override
+  String get copyToTomorrow => '내일도 하기';
+
+  @override
+  String get copiedToTomorrow => '내일로 복사되었습니다';
+
+  @override
+  String rolloverBadge(int count) {
+    return '이월 $count회';
+  }
 
   @override
   String get appearance => '외관';
@@ -391,4 +402,39 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsReset => '설정이 초기화되었습니다';
+
+  @override
+  String get longPressToSelect => '길게 눌러서 시간 범위 선택';
+
+  @override
+  String get selectTask => '할 일 선택';
+
+  @override
+  String get noUnscheduledTasks => '미배정 할 일이 없습니다';
+
+  @override
+  String get addNewTask => '새 할 일 추가';
+
+  @override
+  String get addNewTaskHint => '할 일 제목 입력...';
+
+  @override
+  String timeRangeLabel(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get assignToTimeBlock => '타임블록에 할당';
+
+  @override
+  String get mergeBlocks => '블록 병합';
+
+  @override
+  String get overlapWarning => '경고: 타임블록이 겹칩니다';
+
+  @override
+  String get taskAssigned => '할 일이 할당되었습니다';
+
+  @override
+  String get tapToCancel => '바깥을 탭하여 취소';
 }

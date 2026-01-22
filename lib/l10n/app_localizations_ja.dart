@@ -331,7 +331,18 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dayEndTime => '1日の終了時間';
 
   @override
-  String get planner => 'プランナー';
+  String get planner => 'タイムボックス';
+
+  @override
+  String get copyToTomorrow => '明日も行う';
+
+  @override
+  String get copiedToTomorrow => '明日にコピーしました';
+
+  @override
+  String rolloverBadge(int count) {
+    return '繰越 $count回';
+  }
 
   @override
   String get appearance => '外観';
@@ -391,4 +402,39 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsReset => '設定がリセットされました';
+
+  @override
+  String get longPressToSelect => '長押しして時間範囲を選択';
+
+  @override
+  String get selectTask => 'タスクを選択';
+
+  @override
+  String get noUnscheduledTasks => '未スケジュールのタスクはありません';
+
+  @override
+  String get addNewTask => '新しいタスクを追加';
+
+  @override
+  String get addNewTaskHint => 'タスクのタイトルを入力...';
+
+  @override
+  String timeRangeLabel(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get assignToTimeBlock => 'タイムブロックに割り当て';
+
+  @override
+  String get mergeBlocks => 'ブロックを結合';
+
+  @override
+  String get overlapWarning => '警告: タイムブロックが重複しています';
+
+  @override
+  String get taskAssigned => 'タスクが割り当てられました';
+
+  @override
+  String get tapToCancel => '外側をタップしてキャンセル';
 }

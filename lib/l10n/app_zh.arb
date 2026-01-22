@@ -125,7 +125,15 @@
   "emptyTop3Slot": "点击或拖拽添加",
   "dayStartTime": "一天开始时间",
   "dayEndTime": "一天结束时间",
-  "planner": "计划器",
+  "planner": "时间盒",
+  "copyToTomorrow": "明天也做",
+  "copiedToTomorrow": "已复制到明天",
+  "rolloverBadge": "顺延 {count}次",
+  "@rolloverBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "appearance": "外观",
   "theme": "主题",
@@ -150,5 +158,23 @@
   "exportDataDescription": "导出为CSV文件",
   "resetSettings": "重置设置",
   "resetSettingsConfirm": "将所有设置恢复为默认值？",
-  "settingsReset": "设置已重置"
+  "settingsReset": "设置已重置",
+
+  "longPressToSelect": "长按选择时间范围",
+  "selectTask": "选择任务",
+  "noUnscheduledTasks": "没有未安排的任务",
+  "addNewTask": "添加新任务",
+  "addNewTaskHint": "输入任务标题...",
+  "timeRangeLabel": "{start} - {end}",
+  "@timeRangeLabel": {
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "assignToTimeBlock": "分配到时间块",
+  "mergeBlocks": "合并时间块",
+  "overlapWarning": "警告：时间块重叠",
+  "taskAssigned": "任务已分配",
+  "tapToCancel": "点击外部取消"
 }

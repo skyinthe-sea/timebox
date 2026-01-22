@@ -331,7 +331,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dayEndTime => '一天结束时间';
 
   @override
-  String get planner => '计划器';
+  String get planner => '时间盒';
+
+  @override
+  String get copyToTomorrow => '明天也做';
+
+  @override
+  String get copiedToTomorrow => '已复制到明天';
+
+  @override
+  String rolloverBadge(int count) {
+    return '顺延 $count次';
+  }
 
   @override
   String get appearance => '外观';
@@ -391,4 +402,39 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsReset => '设置已重置';
+
+  @override
+  String get longPressToSelect => '长按选择时间范围';
+
+  @override
+  String get selectTask => '选择任务';
+
+  @override
+  String get noUnscheduledTasks => '没有未安排的任务';
+
+  @override
+  String get addNewTask => '添加新任务';
+
+  @override
+  String get addNewTaskHint => '输入任务标题...';
+
+  @override
+  String timeRangeLabel(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get assignToTimeBlock => '分配到时间块';
+
+  @override
+  String get mergeBlocks => '合并时间块';
+
+  @override
+  String get overlapWarning => '警告：时间块重叠';
+
+  @override
+  String get taskAssigned => '任务已分配';
+
+  @override
+  String get tapToCancel => '点击外部取消';
 }

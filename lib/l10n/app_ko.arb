@@ -139,7 +139,15 @@
   "emptyTop3Slot": "탭하거나 드래그하여 추가",
   "dayStartTime": "하루 시작 시간",
   "dayEndTime": "하루 종료 시간",
-  "planner": "플래너",
+  "planner": "타임박스",
+  "copyToTomorrow": "내일도 하기",
+  "copiedToTomorrow": "내일로 복사되었습니다",
+  "rolloverBadge": "이월 {count}회",
+  "@rolloverBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "appearance": "외관",
   "theme": "테마",
@@ -164,5 +172,23 @@
   "exportDataDescription": "CSV 파일로 내보내기",
   "resetSettings": "설정 초기화",
   "resetSettingsConfirm": "모든 설정을 초기화하시겠습니까?",
-  "settingsReset": "설정이 초기화되었습니다"
+  "settingsReset": "설정이 초기화되었습니다",
+
+  "longPressToSelect": "길게 눌러서 시간 범위 선택",
+  "selectTask": "할 일 선택",
+  "noUnscheduledTasks": "미배정 할 일이 없습니다",
+  "addNewTask": "새 할 일 추가",
+  "addNewTaskHint": "할 일 제목 입력...",
+  "timeRangeLabel": "{start} - {end}",
+  "@timeRangeLabel": {
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "assignToTimeBlock": "타임블록에 할당",
+  "mergeBlocks": "블록 병합",
+  "overlapWarning": "경고: 타임블록이 겹칩니다",
+  "taskAssigned": "할 일이 할당되었습니다",
+  "tapToCancel": "바깥을 탭하여 취소"
 }

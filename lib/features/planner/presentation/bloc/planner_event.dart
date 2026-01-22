@@ -88,3 +88,17 @@ class QuickCreateTask extends PlannerEvent {
     this.priority = TaskPriority.medium,
   });
 }
+
+/// Task를 내일로 복제 (내일도 하기)
+class CopyTaskToTomorrow extends PlannerEvent {
+  final String taskId;
+
+  const CopyTaskToTomorrow(this.taskId);
+}
+
+/// Task 이월 (다음 날로)
+class RolloverTaskEvent extends PlannerEvent {
+  final String taskId;
+
+  const RolloverTaskEvent(this.taskId);
+}

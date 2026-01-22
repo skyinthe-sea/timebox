@@ -4,12 +4,20 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../planner/presentation/bloc/planner_bloc.dart';
+import '../../../task/domain/entities/task.dart';
 import '../bloc/calendar_bloc.dart';
-import '../widgets/timeline_view.dart';
+import '../cubit/timeline_selection_cubit.dart';
+import '../cubit/timeline_selection_state.dart';
+import '../widgets/brain_dump_popup.dart';
+import '../widgets/two_column_timeline_grid.dart';
 
-/// 캘린더 페이지
+/// 캘린더 페이지 (타임라인)
 ///
-/// 타임박싱의 메인 화면 - 시간축에 블록을 배치하는 UI
+/// 타임박싱의 메인 화면
+/// - 2열 타임라인 그리드
+/// - 롱프레스-드래그 시간 범위 선택
+/// - 브레인덤프 팝업으로 태스크 할당
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
 
@@ -29,111 +37,136 @@ class _CalendarPageState extends State<CalendarPage> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: BlocBuilder<CalendarBloc, CalendarState>(
-          buildWhen: (prev, curr) => prev.selectedDate != curr.selectedDate,
-          builder: (context, state) {
-            return GestureDetector(
-              onTap: () => _showDatePicker(context, state.selectedDate),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(_formatDate(state.selectedDate, l10n)),
-                  const Icon(Icons.arrow_drop_down),
-                ],
-              ),
-            );
-          },
-        ),
-        actions: [
-          // 오늘로 이동
-          BlocBuilder<CalendarBloc, CalendarState>(
-            buildWhen: (prev, curr) => prev.isToday != curr.isToday,
+    return BlocProvider(
+      create: (_) => TimelineSelectionCubit(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: BlocBuilder<CalendarBloc, CalendarState>(
+            buildWhen: (prev, curr) => prev.selectedDate != curr.selectedDate,
             builder: (context, state) {
-              if (state.isToday) return const SizedBox.shrink();
-              return IconButton(
-                icon: const Icon(Icons.today),
-                tooltip: l10n?.today ?? 'Today',
-                onPressed: () {
-                  context.read<CalendarBloc>().add(const GoToToday());
-                },
+              return GestureDetector(
+                onTap: () => _showDatePicker(context, state.selectedDate),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(_formatDate(state.selectedDate, l10n)),
+                    const Icon(Icons.arrow_drop_down),
+                  ],
+                ),
               );
             },
           ),
-        ],
-      ),
-      body: BlocBuilder<CalendarBloc, CalendarState>(
-        builder: (context, state) {
-          if (state.status == CalendarStateStatus.loading) {
-            return const LoadingIndicator();
-          }
-
-          if (state.status == CalendarStateStatus.failure) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 48,
-                    color: theme.colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    state.errorMessage ?? 'An error occurred',
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: () {
-                      context
-                          .read<CalendarBloc>()
-                          .add(WatchTimeBlocksStarted(state.selectedDate));
-                    },
-                    child: Text(l10n?.retry ?? 'Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return Column(
-            children: [
-              // 날짜 네비게이션
-              _buildDateNavigation(context, state),
-
-              // 타임라인
-              Expanded(
-                child: TimelineView(
-                  date: state.selectedDate,
-                  timeBlocks: state.timeBlocks,
-                  onTimeBlockTap: (tb) {
-                    // TODO: 포커스 모드로 이동
+          actions: [
+            // 오늘로 이동
+            BlocBuilder<CalendarBloc, CalendarState>(
+              buildWhen: (prev, curr) => prev.isToday != curr.isToday,
+              builder: (context, state) {
+                if (state.isToday) return const SizedBox.shrink();
+                return IconButton(
+                  icon: const Icon(Icons.today),
+                  tooltip: l10n?.today ?? 'Today',
+                  onPressed: () {
+                    context.read<CalendarBloc>().add(const GoToToday());
                   },
-                  onTimeBlockMoved: (id, newStart) {
-                    context.read<CalendarBloc>().add(
-                          MoveTimeBlockEvent(id: id, newStartTime: newStart),
-                        );
-                  },
-                  onTimeBlockResized: (id, newStart, newEnd) {
-                    context.read<CalendarBloc>().add(
-                          ResizeTimeBlockEvent(
-                            id: id,
-                            newStartTime: newStart,
-                            newEndTime: newEnd,
-                          ),
-                        );
-                  },
+                );
+              },
+            ),
+          ],
+        ),
+        body: BlocBuilder<CalendarBloc, CalendarState>(
+          builder: (context, calendarState) {
+            if (calendarState.status == CalendarStateStatus.loading) {
+              return const LoadingIndicator();
+            }
+
+            if (calendarState.status == CalendarStateStatus.failure) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: theme.colorScheme.error,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      calendarState.errorMessage ?? 'An error occurred',
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: () {
+                        context.read<CalendarBloc>().add(
+                              WatchTimeBlocksStarted(calendarState.selectedDate),
+                            );
+                      },
+                      child: Text(l10n?.retry ?? 'Retry'),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTimeBlockDialog(context),
-        child: const Icon(Icons.add),
+              );
+            }
+
+            return Column(
+              children: [
+                // 날짜 네비게이션
+                _buildDateNavigation(context, calendarState),
+
+                // 타임라인 그리드
+                Expanded(
+                  child: Stack(
+                    children: [
+                      // 2열 타임라인 그리드
+                      TwoColumnTimelineGrid(
+                        date: calendarState.selectedDate,
+                        timeBlocks: calendarState.timeBlocks,
+                        startHour: 0,
+                        endHour: 24,
+                        onTimeBlockTap: (tb) {
+                          // TODO: 포커스 모드로 이동
+                        },
+                        onTimeBlockMoved: (id, newStart) {
+                          context.read<CalendarBloc>().add(
+                                MoveTimeBlockEvent(
+                                  id: id,
+                                  newStartTime: newStart,
+                                ),
+                              );
+                        },
+                        onTimeBlockResized: (id, newStart, newEnd) {
+                          context.read<CalendarBloc>().add(
+                                ResizeTimeBlockEvent(
+                                  id: id,
+                                  newStartTime: newStart,
+                                  newEndTime: newEnd,
+                                ),
+                              );
+                        },
+                      ),
+
+                      // 브레인덤프 팝업
+                      BlocBuilder<TimelineSelectionCubit,
+                          TimelineSelectionState>(
+                        builder: (context, selectionState) {
+                          if (!selectionState.isPopupVisible) {
+                            return const SizedBox.shrink();
+                          }
+
+                          return _buildBrainDumpPopup(
+                            context,
+                            selectionState,
+                            calendarState,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -186,8 +219,115 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
+  Widget _buildBrainDumpPopup(
+    BuildContext context,
+    TimelineSelectionState selectionState,
+    CalendarState calendarState,
+  ) {
+    // PlannerBloc에서 미배정 태스크 가져오기
+    List<Task> unscheduledTasks = [];
+    try {
+      final plannerState = context.read<PlannerBloc>().state;
+      unscheduledTasks = plannerState.unscheduledTasks;
+    } catch (_) {
+      // PlannerBloc이 없는 경우 빈 목록
+    }
+
+    return BrainDumpPopup(
+      unscheduledTasks: unscheduledTasks,
+      onTaskSelected: (task, startTime, endTime) {
+        _assignTaskToTimeBlock(
+          context,
+          task: task,
+          startTime: startTime,
+          endTime: endTime,
+        );
+      },
+      onNewTaskCreated: (title, startTime, endTime) {
+        _createNewTaskAndTimeBlock(
+          context,
+          title: title,
+          startTime: startTime,
+          endTime: endTime,
+        );
+      },
+      onCancel: () {
+        context.read<TimelineSelectionCubit>().cancelSelection();
+      },
+    );
+  }
+
+  void _assignTaskToTimeBlock(
+    BuildContext context, {
+    required Task task,
+    required DateTime startTime,
+    required DateTime endTime,
+  }) {
+    // TimeBlock 생성
+    context.read<CalendarBloc>().add(
+          CreateTimeBlockEvent(
+            taskId: task.id,
+            title: task.title,
+            startTime: startTime,
+            endTime: endTime,
+          ),
+        );
+
+    // 선택 상태 초기화
+    context.read<TimelineSelectionCubit>().completeAssignment();
+
+    // 성공 메시지
+    _showSuccessSnackBar(context);
+  }
+
+  void _createNewTaskAndTimeBlock(
+    BuildContext context, {
+    required String title,
+    required DateTime startTime,
+    required DateTime endTime,
+  }) {
+    // 새 태스크 생성 (PlannerBloc 통해)
+    try {
+      final duration = endTime.difference(startTime);
+      context.read<PlannerBloc>().add(QuickCreateTask(
+            title: title,
+            estimatedDuration: duration,
+          ));
+    } catch (_) {
+      // PlannerBloc이 없는 경우 무시
+    }
+
+    // TimeBlock 생성 (title만 사용, taskId 없이)
+    context.read<CalendarBloc>().add(
+          CreateTimeBlockEvent(
+            title: title,
+            startTime: startTime,
+            endTime: endTime,
+          ),
+        );
+
+    // 선택 상태 초기화
+    context.read<TimelineSelectionCubit>().completeAssignment();
+
+    // 성공 메시지
+    _showSuccessSnackBar(context);
+  }
+
+  void _showSuccessSnackBar(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n?.taskAssigned ?? 'Task assigned'),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
   Future<void> _showDatePicker(
-      BuildContext context, DateTime currentDate) async {
+    BuildContext context,
+    DateTime currentDate,
+  ) async {
     final selectedDate = await showDatePicker(
       context: context,
       initialDate: currentDate,
@@ -197,44 +337,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
     if (selectedDate != null && context.mounted) {
       context.read<CalendarBloc>().add(DateChanged(selectedDate));
-    }
-  }
-
-  Future<void> _showAddTimeBlockDialog(BuildContext context) async {
-    final state = context.read<CalendarBloc>().state;
-    final now = DateTime.now();
-
-    // 기본 시작 시간: 현재 시간의 다음 30분 단위
-    var startTime = DateTime(
-      state.selectedDate.year,
-      state.selectedDate.month,
-      state.selectedDate.day,
-      now.hour,
-      now.minute < 30 ? 30 : 0,
-    );
-    if (now.minute >= 30) {
-      startTime = startTime.add(const Duration(hours: 1));
-    }
-    final endTime = startTime.add(const Duration(minutes: 30));
-
-    if (!context.mounted) return;
-
-    final result = await showDialog<Map<String, dynamic>>(
-      context: context,
-      builder: (dialogContext) => _AddTimeBlockDialog(
-        initialStartTime: startTime,
-        initialEndTime: endTime,
-      ),
-    );
-
-    if (result != null && context.mounted) {
-      context.read<CalendarBloc>().add(
-            CreateTimeBlockEvent(
-              title: result['title'] as String?,
-              startTime: result['startTime'] as DateTime,
-              endTime: result['endTime'] as DateTime,
-            ),
-          );
     }
   }
 
@@ -254,131 +356,5 @@ class _CalendarPageState extends State<CalendarPage> {
     if (difference == -1) return 'Yesterday';
 
     return DateFormat.EEEE().format(date);
-  }
-}
-
-class _AddTimeBlockDialog extends StatefulWidget {
-  final DateTime initialStartTime;
-  final DateTime initialEndTime;
-
-  const _AddTimeBlockDialog({
-    required this.initialStartTime,
-    required this.initialEndTime,
-  });
-
-  @override
-  State<_AddTimeBlockDialog> createState() => _AddTimeBlockDialogState();
-}
-
-class _AddTimeBlockDialogState extends State<_AddTimeBlockDialog> {
-  final _titleController = TextEditingController();
-  late DateTime _startTime;
-  late DateTime _endTime;
-
-  @override
-  void initState() {
-    super.initState();
-    _startTime = widget.initialStartTime;
-    _endTime = widget.initialEndTime;
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return AlertDialog(
-      title: Text(l10n?.createTimeBlock ?? 'Add Time Block'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: _titleController,
-            decoration: InputDecoration(
-              labelText: l10n?.title ?? 'Title',
-              hintText: l10n?.timeBlockTitleHint ?? 'What will you work on?',
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: ListTile(
-                  title: Text(l10n?.startTime ?? 'Start'),
-                  subtitle: Text(_formatTime(_startTime)),
-                  onTap: () => _selectTime(true),
-                ),
-              ),
-              Expanded(
-                child: ListTile(
-                  title: Text(l10n?.endTime ?? 'End'),
-                  subtitle: Text(_formatTime(_endTime)),
-                  onTap: () => _selectTime(false),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n?.cancel ?? 'Cancel'),
-        ),
-        FilledButton(
-          onPressed: () {
-            Navigator.of(context).pop({
-              'title': _titleController.text.isNotEmpty
-                  ? _titleController.text
-                  : null,
-              'startTime': _startTime,
-              'endTime': _endTime,
-            });
-          },
-          child: Text(l10n?.add ?? 'Add'),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _selectTime(bool isStart) async {
-    final currentTime = isStart ? _startTime : _endTime;
-    final selectedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(currentTime),
-    );
-
-    if (selectedTime != null) {
-      setState(() {
-        final newDateTime = DateTime(
-          currentTime.year,
-          currentTime.month,
-          currentTime.day,
-          selectedTime.hour,
-          selectedTime.minute,
-        );
-
-        if (isStart) {
-          _startTime = newDateTime;
-          if (_startTime.isAfter(_endTime)) {
-            _endTime = _startTime.add(const Duration(minutes: 30));
-          }
-        } else {
-          _endTime = newDateTime;
-          if (_endTime.isBefore(_startTime)) {
-            _startTime = _endTime.subtract(const Duration(minutes: 30));
-          }
-        }
-      });
-    }
-  }
-
-  String _formatTime(DateTime time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 }

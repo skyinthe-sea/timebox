@@ -30,6 +30,9 @@ mixin _$TaskModel {
   List<SubtaskModel> get subtasks => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime? get completedAt => throw _privateConstructorUsedError;
+  DateTime? get targetDate =>
+      throw _privateConstructorUsedError; // nullable for backward compatibility
+  int get rolloverCount => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -52,7 +55,9 @@ abstract class $TaskModelCopyWith<$Res> {
       String status,
       List<SubtaskModel> subtasks,
       DateTime createdAt,
-      DateTime? completedAt});
+      DateTime? completedAt,
+      DateTime? targetDate,
+      int rolloverCount});
 }
 
 /// @nodoc
@@ -78,6 +83,8 @@ class _$TaskModelCopyWithImpl<$Res, $Val extends TaskModel>
     Object? subtasks = null,
     Object? createdAt = null,
     Object? completedAt = freezed,
+    Object? targetDate = freezed,
+    Object? rolloverCount = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -120,6 +127,14 @@ class _$TaskModelCopyWithImpl<$Res, $Val extends TaskModel>
           ? _value.completedAt
           : completedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      targetDate: freezed == targetDate
+          ? _value.targetDate
+          : targetDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      rolloverCount: null == rolloverCount
+          ? _value.rolloverCount
+          : rolloverCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -142,7 +157,9 @@ abstract class _$$TaskModelImplCopyWith<$Res>
       String status,
       List<SubtaskModel> subtasks,
       DateTime createdAt,
-      DateTime? completedAt});
+      DateTime? completedAt,
+      DateTime? targetDate,
+      int rolloverCount});
 }
 
 /// @nodoc
@@ -166,6 +183,8 @@ class __$$TaskModelImplCopyWithImpl<$Res>
     Object? subtasks = null,
     Object? createdAt = null,
     Object? completedAt = freezed,
+    Object? targetDate = freezed,
+    Object? rolloverCount = null,
   }) {
     return _then(_$TaskModelImpl(
       id: null == id
@@ -208,6 +227,14 @@ class __$$TaskModelImplCopyWithImpl<$Res>
           ? _value.completedAt
           : completedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      targetDate: freezed == targetDate
+          ? _value.targetDate
+          : targetDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      rolloverCount: null == rolloverCount
+          ? _value.rolloverCount
+          : rolloverCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -225,7 +252,9 @@ class _$TaskModelImpl extends _TaskModel {
       this.status = 'todo',
       final List<SubtaskModel> subtasks = const [],
       required this.createdAt,
-      this.completedAt})
+      this.completedAt,
+      this.targetDate,
+      this.rolloverCount = 0})
       : _tags = tags,
         _subtasks = subtasks,
         super._();
@@ -269,10 +298,16 @@ class _$TaskModelImpl extends _TaskModel {
   final DateTime createdAt;
   @override
   final DateTime? completedAt;
+  @override
+  final DateTime? targetDate;
+// nullable for backward compatibility
+  @override
+  @JsonKey()
+  final int rolloverCount;
 
   @override
   String toString() {
-    return 'TaskModel(id: $id, title: $title, note: $note, estimatedDurationMinutes: $estimatedDurationMinutes, tags: $tags, priority: $priority, status: $status, subtasks: $subtasks, createdAt: $createdAt, completedAt: $completedAt)';
+    return 'TaskModel(id: $id, title: $title, note: $note, estimatedDurationMinutes: $estimatedDurationMinutes, tags: $tags, priority: $priority, status: $status, subtasks: $subtasks, createdAt: $createdAt, completedAt: $completedAt, targetDate: $targetDate, rolloverCount: $rolloverCount)';
   }
 
   @override
@@ -294,7 +329,11 @@ class _$TaskModelImpl extends _TaskModel {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.completedAt, completedAt) ||
-                other.completedAt == completedAt));
+                other.completedAt == completedAt) &&
+            (identical(other.targetDate, targetDate) ||
+                other.targetDate == targetDate) &&
+            (identical(other.rolloverCount, rolloverCount) ||
+                other.rolloverCount == rolloverCount));
   }
 
   @JsonKey(ignore: true)
@@ -310,7 +349,9 @@ class _$TaskModelImpl extends _TaskModel {
       status,
       const DeepCollectionEquality().hash(_subtasks),
       createdAt,
-      completedAt);
+      completedAt,
+      targetDate,
+      rolloverCount);
 
   @JsonKey(ignore: true)
   @override
@@ -337,7 +378,9 @@ abstract class _TaskModel extends TaskModel {
       final String status,
       final List<SubtaskModel> subtasks,
       required final DateTime createdAt,
-      final DateTime? completedAt}) = _$TaskModelImpl;
+      final DateTime? completedAt,
+      final DateTime? targetDate,
+      final int rolloverCount}) = _$TaskModelImpl;
   const _TaskModel._() : super._();
 
   factory _TaskModel.fromJson(Map<String, dynamic> json) =
@@ -363,6 +406,10 @@ abstract class _TaskModel extends TaskModel {
   DateTime get createdAt;
   @override
   DateTime? get completedAt;
+  @override
+  DateTime? get targetDate;
+  @override // nullable for backward compatibility
+  int get rolloverCount;
   @override
   @JsonKey(ignore: true)
   _$$TaskModelImplCopyWith<_$TaskModelImpl> get copyWith =>

@@ -27,6 +27,10 @@ _$TaskModelImpl _$$TaskModelImplFromJson(Map<String, dynamic> json) =>
       completedAt: json['completedAt'] == null
           ? null
           : DateTime.parse(json['completedAt'] as String),
+      targetDate: json['targetDate'] == null
+          ? null
+          : DateTime.parse(json['targetDate'] as String),
+      rolloverCount: (json['rolloverCount'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$TaskModelImplToJson(_$TaskModelImpl instance) =>
@@ -41,4 +45,6 @@ Map<String, dynamic> _$$TaskModelImplToJson(_$TaskModelImpl instance) =>
       'subtasks': instance.subtasks,
       'createdAt': instance.createdAt.toIso8601String(),
       'completedAt': instance.completedAt?.toIso8601String(),
+      'targetDate': instance.targetDate?.toIso8601String(),
+      'rolloverCount': instance.rolloverCount,
     };

@@ -747,8 +747,26 @@ abstract class AppLocalizations {
   /// No description provided for @planner.
   ///
   /// In ko, this message translates to:
-  /// **'플래너'**
+  /// **'타임박스'**
   String get planner;
+
+  /// No description provided for @copyToTomorrow.
+  ///
+  /// In ko, this message translates to:
+  /// **'내일도 하기'**
+  String get copyToTomorrow;
+
+  /// No description provided for @copiedToTomorrow.
+  ///
+  /// In ko, this message translates to:
+  /// **'내일로 복사되었습니다'**
+  String get copiedToTomorrow;
+
+  /// No description provided for @rolloverBadge.
+  ///
+  /// In ko, this message translates to:
+  /// **'이월 {count}회'**
+  String rolloverBadge(int count);
 
   /// No description provided for @appearance.
   ///
@@ -863,6 +881,72 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'설정이 초기화되었습니다'**
   String get settingsReset;
+
+  /// No description provided for @longPressToSelect.
+  ///
+  /// In ko, this message translates to:
+  /// **'길게 눌러서 시간 범위 선택'**
+  String get longPressToSelect;
+
+  /// No description provided for @selectTask.
+  ///
+  /// In ko, this message translates to:
+  /// **'할 일 선택'**
+  String get selectTask;
+
+  /// No description provided for @noUnscheduledTasks.
+  ///
+  /// In ko, this message translates to:
+  /// **'미배정 할 일이 없습니다'**
+  String get noUnscheduledTasks;
+
+  /// No description provided for @addNewTask.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 할 일 추가'**
+  String get addNewTask;
+
+  /// No description provided for @addNewTaskHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'할 일 제목 입력...'**
+  String get addNewTaskHint;
+
+  /// No description provided for @timeRangeLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'{start} - {end}'**
+  String timeRangeLabel(String start, String end);
+
+  /// No description provided for @assignToTimeBlock.
+  ///
+  /// In ko, this message translates to:
+  /// **'타임블록에 할당'**
+  String get assignToTimeBlock;
+
+  /// No description provided for @mergeBlocks.
+  ///
+  /// In ko, this message translates to:
+  /// **'블록 병합'**
+  String get mergeBlocks;
+
+  /// No description provided for @overlapWarning.
+  ///
+  /// In ko, this message translates to:
+  /// **'경고: 타임블록이 겹칩니다'**
+  String get overlapWarning;
+
+  /// No description provided for @taskAssigned.
+  ///
+  /// In ko, this message translates to:
+  /// **'할 일이 할당되었습니다'**
+  String get taskAssigned;
+
+  /// No description provided for @tapToCancel.
+  ///
+  /// In ko, this message translates to:
+  /// **'바깥을 탭하여 취소'**
+  String get tapToCancel;
 }
 
 class _AppLocalizationsDelegate

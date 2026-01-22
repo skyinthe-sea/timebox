@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/themes/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../task/domain/entities/task.dart';
+import '../bloc/planner_bloc.dart';
 
 /// 드래그 가능한 Task 카드
 ///
@@ -81,6 +84,7 @@ class _TaskCardContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -103,79 +107,130 @@ class _TaskCardContent extends StatelessWidget {
               ]
             : null,
       ),
-      child: Row(
+      child: Stack(
         children: [
-          // 순위 표시 (Top 3인 경우)
-          if (rank != null) ...[
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: rankColor,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  '$rank',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              // 순위 표시 (Top 3인 경우)
+              if (rank != null) ...[
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: rankColor,
+                    shape: BoxShape.circle,
                   ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-          ],
-
-          // Task 정보
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // 제목
-                Text(
-                  task.title,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-
-                // 메타 정보
-                Row(
-                  children: [
-                    // 예상 시간
-                    Icon(
-                      Icons.schedule,
-                      size: 14,
-                      color: theme.colorScheme.outline,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      _formatDuration(task.estimatedDuration),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.outline,
+                  child: Center(
+                    child: Text(
+                      '$rank',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+              ],
 
-                    const SizedBox(width: 12),
+              // Task 정보
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 제목
+                    Text(
+                      task.title,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
 
-                    // 우선순위
-                    _PriorityIndicator(priority: task.priority),
+                    // 메타 정보
+                    Row(
+                      children: [
+                        // 예상 시간
+                        Icon(
+                          Icons.schedule,
+                          size: 14,
+                          color: theme.colorScheme.outline,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          _formatDuration(task.estimatedDuration),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        // 우선순위
+                        _PriorityIndicator(priority: task.priority),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+
+              // 내일도 하기 버튼
+              if (!isDragging)
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward, size: 18),
+                  tooltip: l10n?.copyToTomorrow ?? 'Copy to tomorrow',
+                  onPressed: () {
+                    context.read<PlannerBloc>().add(
+                      CopyTaskToTomorrow(task.id),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n?.copiedToTomorrow ?? 'Copied to tomorrow'),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                ),
+
+              // 드래그 핸들
+              Icon(
+                Icons.drag_indicator,
+                color: theme.colorScheme.outline.withValues(alpha: 0.5),
+              ),
+            ],
           ),
 
-          // 드래그 핸들
-          Icon(
-            Icons.drag_indicator,
-            color: theme.colorScheme.outline.withValues(alpha: 0.5),
-          ),
+          // 이월 뱃지
+          if (task.rolloverCount > 0)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.error,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  l10n?.rolloverBadge(task.rolloverCount) ??
+                      'Rollover ${task.rolloverCount}x',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onError,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

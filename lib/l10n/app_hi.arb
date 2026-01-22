@@ -125,7 +125,15 @@
   "emptyTop3Slot": "जोड़ने के लिए टैप या ड्रैग करें",
   "dayStartTime": "दिन की शुरुआत का समय",
   "dayEndTime": "दिन के अंत का समय",
-  "planner": "प्लानर",
+  "planner": "टाइमबॉक्स",
+  "copyToTomorrow": "कल भी करें",
+  "copiedToTomorrow": "कल के लिए कॉपी किया गया",
+  "rolloverBadge": "स्थानांतरित {count}x",
+  "@rolloverBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "appearance": "दिखावट",
   "theme": "थीम",
@@ -150,5 +158,23 @@
   "exportDataDescription": "CSV फ़ाइल में निर्यात करें",
   "resetSettings": "सेटिंग्स रीसेट करें",
   "resetSettingsConfirm": "सभी सेटिंग्स को डिफ़ॉल्ट पर रीसेट करें?",
-  "settingsReset": "सेटिंग्स रीसेट हो गई हैं"
+  "settingsReset": "सेटिंग्स रीसेट हो गई हैं",
+
+  "longPressToSelect": "समय सीमा चुनने के लिए दबाए रखें",
+  "selectTask": "कार्य चुनें",
+  "noUnscheduledTasks": "कोई अनिर्धारित कार्य नहीं",
+  "addNewTask": "नया कार्य जोड़ें",
+  "addNewTaskHint": "कार्य शीर्षक दर्ज करें...",
+  "timeRangeLabel": "{start} - {end}",
+  "@timeRangeLabel": {
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "assignToTimeBlock": "टाइम ब्लॉक में असाइन करें",
+  "mergeBlocks": "ब्लॉक मर्ज करें",
+  "overlapWarning": "चेतावनी: टाइम ब्लॉक ओवरलैप हो रहे हैं",
+  "taskAssigned": "कार्य असाइन किया गया",
+  "tapToCancel": "रद्द करने के लिए बाहर टैप करें"
 }

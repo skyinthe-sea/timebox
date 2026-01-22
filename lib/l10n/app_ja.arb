@@ -125,7 +125,15 @@
   "emptyTop3Slot": "タップまたはドラッグして追加",
   "dayStartTime": "1日の開始時間",
   "dayEndTime": "1日の終了時間",
-  "planner": "プランナー",
+  "planner": "タイムボックス",
+  "copyToTomorrow": "明日も行う",
+  "copiedToTomorrow": "明日にコピーしました",
+  "rolloverBadge": "繰越 {count}回",
+  "@rolloverBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "appearance": "外観",
   "theme": "テーマ",
@@ -150,5 +158,23 @@
   "exportDataDescription": "CSVファイルにエクスポート",
   "resetSettings": "設定をリセット",
   "resetSettingsConfirm": "すべての設定を初期状態に戻しますか？",
-  "settingsReset": "設定がリセットされました"
+  "settingsReset": "設定がリセットされました",
+
+  "longPressToSelect": "長押しして時間範囲を選択",
+  "selectTask": "タスクを選択",
+  "noUnscheduledTasks": "未スケジュールのタスクはありません",
+  "addNewTask": "新しいタスクを追加",
+  "addNewTaskHint": "タスクのタイトルを入力...",
+  "timeRangeLabel": "{start} - {end}",
+  "@timeRangeLabel": {
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "assignToTimeBlock": "タイムブロックに割り当て",
+  "mergeBlocks": "ブロックを結合",
+  "overlapWarning": "警告: タイムブロックが重複しています",
+  "taskAssigned": "タスクが割り当てられました",
+  "tapToCancel": "外側をタップしてキャンセル"
 }

@@ -333,7 +333,18 @@ class AppLocalizationsHi extends AppLocalizations {
   String get dayEndTime => 'दिन के अंत का समय';
 
   @override
-  String get planner => 'प्लानर';
+  String get planner => 'टाइमबॉक्स';
+
+  @override
+  String get copyToTomorrow => 'कल भी करें';
+
+  @override
+  String get copiedToTomorrow => 'कल के लिए कॉपी किया गया';
+
+  @override
+  String rolloverBadge(int count) {
+    return 'स्थानांतरित ${count}x';
+  }
 
   @override
   String get appearance => 'दिखावट';
@@ -393,4 +404,39 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsReset => 'सेटिंग्स रीसेट हो गई हैं';
+
+  @override
+  String get longPressToSelect => 'समय सीमा चुनने के लिए दबाए रखें';
+
+  @override
+  String get selectTask => 'कार्य चुनें';
+
+  @override
+  String get noUnscheduledTasks => 'कोई अनिर्धारित कार्य नहीं';
+
+  @override
+  String get addNewTask => 'नया कार्य जोड़ें';
+
+  @override
+  String get addNewTaskHint => 'कार्य शीर्षक दर्ज करें...';
+
+  @override
+  String timeRangeLabel(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get assignToTimeBlock => 'टाइम ब्लॉक में असाइन करें';
+
+  @override
+  String get mergeBlocks => 'ब्लॉक मर्ज करें';
+
+  @override
+  String get overlapWarning => 'चेतावनी: टाइम ब्लॉक ओवरलैप हो रहे हैं';
+
+  @override
+  String get taskAssigned => 'कार्य असाइन किया गया';
+
+  @override
+  String get tapToCancel => 'रद्द करने के लिए बाहर टैप करें';
 }

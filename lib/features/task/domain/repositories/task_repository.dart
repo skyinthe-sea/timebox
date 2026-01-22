@@ -46,4 +46,16 @@ abstract class TaskRepository {
 
   /// Task 스트림 (실시간 업데이트)
   Stream<Either<Failure, List<Task>>> watchTasks();
+
+  /// 날짜별 Task 조회
+  Future<Either<Failure, List<Task>>> getTasksByDate(DateTime date);
+
+  /// 날짜별 Task 스트림 (실시간 업데이트)
+  Stream<Either<Failure, List<Task>>> watchTasksByDate(DateTime date);
+
+  /// Task를 다른 날짜로 복제 (내일도 하기)
+  Future<Either<Failure, Task>> copyTaskToDate(String taskId, DateTime date);
+
+  /// Task 이월 처리 (rolloverCount 증가)
+  Future<Either<Failure, Task>> rolloverTask(String taskId, DateTime toDate);
 }

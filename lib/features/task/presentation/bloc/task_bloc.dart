@@ -97,6 +97,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       status: TaskStatus.todo,
       subtasks: const [],
       createdAt: DateTime.now(),
+      targetDate: DateTime.now(),
     );
 
     final result = await createTask(task);

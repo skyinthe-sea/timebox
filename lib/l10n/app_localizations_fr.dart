@@ -334,7 +334,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dayEndTime => 'Heure de fin de journée';
 
   @override
-  String get planner => 'Planificateur';
+  String get planner => 'Timebox';
+
+  @override
+  String get copyToTomorrow => 'Faire aussi demain';
+
+  @override
+  String get copiedToTomorrow => 'Copié pour demain';
+
+  @override
+  String rolloverBadge(int count) {
+    return 'Report ${count}x';
+  }
 
   @override
   String get appearance => 'Apparence';
@@ -396,4 +407,40 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsReset => 'Les paramètres ont été réinitialisés';
+
+  @override
+  String get longPressToSelect =>
+      'Appuyez longuement pour sélectionner une plage horaire';
+
+  @override
+  String get selectTask => 'Sélectionner une tâche';
+
+  @override
+  String get noUnscheduledTasks => 'Aucune tâche non planifiée';
+
+  @override
+  String get addNewTask => 'Ajouter une nouvelle tâche';
+
+  @override
+  String get addNewTaskHint => 'Entrer le titre de la tâche...';
+
+  @override
+  String timeRangeLabel(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get assignToTimeBlock => 'Assigner au bloc de temps';
+
+  @override
+  String get mergeBlocks => 'Fusionner les blocs';
+
+  @override
+  String get overlapWarning => 'Attention : Les blocs de temps se chevauchent';
+
+  @override
+  String get taskAssigned => 'Tâche assignée';
+
+  @override
+  String get tapToCancel => 'Appuyez à l\'extérieur pour annuler';
 }

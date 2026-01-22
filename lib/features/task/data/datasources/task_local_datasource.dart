@@ -22,6 +22,12 @@ abstract class TaskLocalDataSource {
 
   /// Task 스트림 (실시간 업데이트)
   Stream<List<TaskModel>> watchTasks();
+
+  /// 날짜별 Task 조회
+  Future<List<TaskModel>> getTasksByDate(DateTime date);
+
+  /// 날짜별 Task 스트림 (실시간 업데이트)
+  Stream<List<TaskModel>> watchTasksByDate(DateTime date);
 }
 
 /// Task 로컬 데이터 소스 구현 (Hive)
@@ -101,5 +107,60 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
     };
 
     return controller.stream;
+  }
+
+  @override
+  Future<List<TaskModel>> getTasksByDate(DateTime date) async {
+    try {
+      final tasks = <TaskModel>[];
+      for (final key in _box.keys) {
+        final data = _box.get(key);
+        if (data != null) {
+          final task = TaskModel.fromJson(Map<String, dynamic>.from(data));
+          // 날짜가 같은지 확인 (년, 월, 일 비교)
+          // targetDate가 null인 경우 createdAt 사용 (기존 데이터 호환성)
+          final taskDate = task.targetDate ?? task.createdAt;
+          if (_isSameDate(taskDate, date)) {
+            tasks.add(task);
+          }
+        }
+      }
+      // 생성일 기준 내림차순 정렬
+      tasks.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return tasks;
+    } catch (e) {
+      throw CacheException(message: 'Failed to get tasks by date: $e');
+    }
+  }
+
+  @override
+  Stream<List<TaskModel>> watchTasksByDate(DateTime date) {
+    final controller = StreamController<List<TaskModel>>();
+
+    // 초기 데이터 전송
+    getTasksByDate(date).then((tasks) {
+      if (!controller.isClosed) {
+        controller.add(tasks);
+      }
+    });
+
+    // 변경 감지
+    final subscription = _box.watch().listen((_) async {
+      if (!controller.isClosed) {
+        final tasks = await getTasksByDate(date);
+        controller.add(tasks);
+      }
+    });
+
+    controller.onCancel = () {
+      subscription.cancel();
+    };
+
+    return controller.stream;
+  }
+
+  /// 두 DateTime이 같은 날짜인지 확인
+  bool _isSameDate(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }

@@ -332,7 +332,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dayEndTime => 'Day End Time';
 
   @override
-  String get planner => 'Planner';
+  String get planner => 'Timebox';
+
+  @override
+  String get copyToTomorrow => 'Copy to tomorrow';
+
+  @override
+  String get copiedToTomorrow => 'Copied to tomorrow';
+
+  @override
+  String rolloverBadge(int count) {
+    return 'Rollover ${count}x';
+  }
 
   @override
   String get appearance => 'Appearance';
@@ -392,4 +403,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsReset => 'Settings have been reset';
+
+  @override
+  String get longPressToSelect => 'Long press to select time range';
+
+  @override
+  String get selectTask => 'Select a task';
+
+  @override
+  String get noUnscheduledTasks => 'No unscheduled tasks';
+
+  @override
+  String get addNewTask => 'Add new task';
+
+  @override
+  String get addNewTaskHint => 'Enter task title...';
+
+  @override
+  String timeRangeLabel(String start, String end) {
+    return '$start - $end';
+  }
+
+  @override
+  String get assignToTimeBlock => 'Assign to time block';
+
+  @override
+  String get mergeBlocks => 'Merge blocks';
+
+  @override
+  String get overlapWarning => 'Warning: Time blocks overlap';
+
+  @override
+  String get taskAssigned => 'Task assigned';
+
+  @override
+  String get tapToCancel => 'Tap outside to cancel';
 }

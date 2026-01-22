@@ -85,3 +85,30 @@ class UpdateTimeBlockStatusEvent extends CalendarEvent {
 
   const UpdateTimeBlockStatusEvent({required this.id, required this.status});
 }
+
+/// 인접 TimeBlock 병합
+/// 같은 Task를 가진 인접한 블록들을 하나로 합침
+class MergeTimeBlocksEvent extends CalendarEvent {
+  final String taskId;
+  final DateTime startTime;
+  final DateTime endTime;
+
+  const MergeTimeBlocksEvent({
+    required this.taskId,
+    required this.startTime,
+    required this.endTime,
+  });
+}
+
+/// TimeBlock 확장 (기존 블록에 시간 추가)
+class ExtendTimeBlockEvent extends CalendarEvent {
+  final String id;
+  final DateTime newStartTime;
+  final DateTime newEndTime;
+
+  const ExtendTimeBlockEvent({
+    required this.id,
+    required this.newStartTime,
+    required this.newEndTime,
+  });
+}

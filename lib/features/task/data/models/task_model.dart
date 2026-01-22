@@ -25,6 +25,8 @@ class TaskModel with _$TaskModel {
     @Default([]) List<SubtaskModel> subtasks,
     required DateTime createdAt,
     DateTime? completedAt,
+    DateTime? targetDate, // nullable for backward compatibility
+    @Default(0) int rolloverCount,
   }) = _TaskModel;
 
   factory TaskModel.fromJson(Map<String, dynamic> json) =>
@@ -43,6 +45,8 @@ class TaskModel with _$TaskModel {
       subtasks: subtasks.map((s) => s.toEntity()).toList(),
       createdAt: createdAt,
       completedAt: completedAt,
+      targetDate: targetDate ?? createdAt, // fallback to createdAt for existing tasks
+      rolloverCount: rolloverCount,
     );
   }
 
@@ -59,6 +63,8 @@ class TaskModel with _$TaskModel {
       subtasks: task.subtasks.map((s) => SubtaskModel.fromEntity(s)).toList(),
       createdAt: task.createdAt,
       completedAt: task.completedAt,
+      targetDate: task.targetDate,
+      rolloverCount: task.rolloverCount,
     );
   }
 

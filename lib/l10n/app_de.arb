@@ -125,7 +125,15 @@
   "emptyTop3Slot": "Tippen oder ziehen zum Hinzufügen",
   "dayStartTime": "Tagesbeginn",
   "dayEndTime": "Tagesende",
-  "planner": "Planer",
+  "planner": "Timebox",
+  "copyToTomorrow": "Auch morgen tun",
+  "copiedToTomorrow": "Für morgen kopiert",
+  "rolloverBadge": "Übertrag {count}x",
+  "@rolloverBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "appearance": "Erscheinungsbild",
   "theme": "Design",
@@ -150,5 +158,23 @@
   "exportDataDescription": "Als CSV-Datei exportieren",
   "resetSettings": "Einstellungen zurücksetzen",
   "resetSettingsConfirm": "Alle Einstellungen auf Standard zurücksetzen?",
-  "settingsReset": "Einstellungen wurden zurückgesetzt"
+  "settingsReset": "Einstellungen wurden zurückgesetzt",
+
+  "longPressToSelect": "Lange drücken um Zeitbereich auszuwählen",
+  "selectTask": "Aufgabe auswählen",
+  "noUnscheduledTasks": "Keine ungeplanten Aufgaben",
+  "addNewTask": "Neue Aufgabe hinzufügen",
+  "addNewTaskHint": "Aufgabentitel eingeben...",
+  "timeRangeLabel": "{start} - {end}",
+  "@timeRangeLabel": {
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "assignToTimeBlock": "Zeitblock zuweisen",
+  "mergeBlocks": "Blöcke zusammenführen",
+  "overlapWarning": "Warnung: Zeitblöcke überlappen sich",
+  "taskAssigned": "Aufgabe zugewiesen",
+  "tapToCancel": "Außerhalb tippen zum Abbrechen"
 }

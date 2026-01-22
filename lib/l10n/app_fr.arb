@@ -125,7 +125,15 @@
   "emptyTop3Slot": "Appuyez ou glissez pour ajouter",
   "dayStartTime": "Heure de début de journée",
   "dayEndTime": "Heure de fin de journée",
-  "planner": "Planificateur",
+  "planner": "Timebox",
+  "copyToTomorrow": "Faire aussi demain",
+  "copiedToTomorrow": "Copié pour demain",
+  "rolloverBadge": "Report {count}x",
+  "@rolloverBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "appearance": "Apparence",
   "theme": "Thème",
@@ -150,5 +158,23 @@
   "exportDataDescription": "Exporter en fichier CSV",
   "resetSettings": "Réinitialiser les paramètres",
   "resetSettingsConfirm": "Réinitialiser tous les paramètres par défaut ?",
-  "settingsReset": "Les paramètres ont été réinitialisés"
+  "settingsReset": "Les paramètres ont été réinitialisés",
+
+  "longPressToSelect": "Appuyez longuement pour sélectionner une plage horaire",
+  "selectTask": "Sélectionner une tâche",
+  "noUnscheduledTasks": "Aucune tâche non planifiée",
+  "addNewTask": "Ajouter une nouvelle tâche",
+  "addNewTaskHint": "Entrer le titre de la tâche...",
+  "timeRangeLabel": "{start} - {end}",
+  "@timeRangeLabel": {
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "assignToTimeBlock": "Assigner au bloc de temps",
+  "mergeBlocks": "Fusionner les blocs",
+  "overlapWarning": "Attention : Les blocs de temps se chevauchent",
+  "taskAssigned": "Tâche assignée",
+  "tapToCancel": "Appuyez à l'extérieur pour annuler"
 }
