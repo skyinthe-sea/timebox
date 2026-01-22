@@ -148,6 +148,11 @@ class _CalendarPageState extends State<CalendarPage> {
                       // 브레인덤프 팝업
                       BlocBuilder<TimelineSelectionCubit,
                           TimelineSelectionState>(
+                        // isAnimating 변경 시에는 rebuild하지 않음 (깜빡임 방지)
+                        buildWhen: (prev, curr) =>
+                            prev.mode != curr.mode ||
+                            prev.normalizedStartSlot != curr.normalizedStartSlot ||
+                            prev.normalizedEndSlot != curr.normalizedEndSlot,
                         builder: (context, selectionState) {
                           if (!selectionState.isPopupVisible) {
                             return const SizedBox.shrink();
@@ -234,7 +239,9 @@ class _CalendarPageState extends State<CalendarPage> {
     }
 
     return BrainDumpPopup(
+      key: ValueKey('popup_${selectionState.normalizedStartSlot}_${selectionState.normalizedEndSlot}'),
       unscheduledTasks: unscheduledTasks,
+      selectionState: selectionState,
       onTaskSelected: (task, startTime, endTime) {
         _assignTaskToTimeBlock(
           context,
