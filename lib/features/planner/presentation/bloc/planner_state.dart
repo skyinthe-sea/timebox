@@ -11,6 +11,7 @@ class PlannerState extends Equatable {
   final List<TimeBlock> timeBlocks;
   final int pageIndex; // 0: 브레인덤프, 1: 타임라인
   final String? errorMessage;
+  final String? lastCreatedTaskId; // 애니메이션용: 마지막 생성된 Task ID
 
   PlannerState({
     this.status = PlannerStateStatus.initial,
@@ -20,6 +21,7 @@ class PlannerState extends Equatable {
     this.timeBlocks = const [],
     this.pageIndex = 0,
     this.errorMessage,
+    this.lastCreatedTaskId,
   }) : selectedDate = selectedDate ?? DateTime.now();
 
   /// 브레인덤프에 표시할 Task 목록 (미완료 + 타임블록 미배정)
@@ -106,8 +108,10 @@ class PlannerState extends Equatable {
     List<TimeBlock>? timeBlocks,
     int? pageIndex,
     String? errorMessage,
+    String? lastCreatedTaskId,
     bool clearError = false,
     bool clearDailyPriority = false,
+    bool clearLastCreatedTaskId = false,
   }) {
     return PlannerState(
       status: status ?? this.status,
@@ -118,6 +122,9 @@ class PlannerState extends Equatable {
       timeBlocks: timeBlocks ?? this.timeBlocks,
       pageIndex: pageIndex ?? this.pageIndex,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      lastCreatedTaskId: clearLastCreatedTaskId
+          ? null
+          : (lastCreatedTaskId ?? this.lastCreatedTaskId),
     );
   }
 
@@ -130,5 +137,6 @@ class PlannerState extends Equatable {
         timeBlocks,
         pageIndex,
         errorMessage,
+        lastCreatedTaskId,
       ];
 }

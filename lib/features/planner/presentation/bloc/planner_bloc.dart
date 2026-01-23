@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../../task/domain/entities/task.dart';
 import '../../../task/domain/usecases/copy_task_to_date.dart';
 import '../../../task/domain/usecases/create_task.dart';
+import '../../../task/domain/usecases/delete_task.dart';
 import '../../../task/domain/usecases/rollover_task.dart';
 import '../../../task/domain/usecases/watch_tasks_by_date.dart';
 import '../../../timeblock/domain/entities/time_block.dart';
@@ -33,6 +34,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
   final SetTaskRank setTaskRank;
   final RemoveTaskFromRank removeTaskFromRank;
   final CreateTask createTask;
+  final DeleteTask deleteTask;
   final CreateTimeBlock createTimeBlock;
   final CopyTaskToDate copyTaskToDate;
   final RolloverTask rolloverTask;
@@ -50,6 +52,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     required this.setTaskRank,
     required this.removeTaskFromRank,
     required this.createTask,
+    required this.deleteTask,
     required this.createTimeBlock,
     required this.copyTaskToDate,
     required this.rolloverTask,
@@ -67,6 +70,8 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     on<QuickCreateTask>(_onQuickCreateTask);
     on<CopyTaskToTomorrow>(_onCopyTaskToTomorrow);
     on<RolloverTaskEvent>(_onRolloverTask);
+    on<DeleteBrainDumpTask>(_onDeleteBrainDumpTask);
+    on<ClearLastCreatedTask>(_onClearLastCreatedTask);
   }
 
   Future<void> _onInitializePlanner(
@@ -249,8 +254,9 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     QuickCreateTask event,
     Emitter<PlannerState> emit,
   ) async {
+    final taskId = _uuid.v4();
     final task = Task(
-      id: _uuid.v4(),
+      id: taskId,
       title: event.title,
       estimatedDuration: event.estimatedDuration,
       priority: event.priority,
@@ -265,7 +271,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
         status: PlannerStateStatus.failure,
         errorMessage: failure.message,
       )),
-      (_) => {},
+      (_) => emit(state.copyWith(lastCreatedTaskId: taskId)),
     );
   }
 
@@ -305,6 +311,27 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
       )),
       (_) => {},
     );
+  }
+
+  Future<void> _onDeleteBrainDumpTask(
+    DeleteBrainDumpTask event,
+    Emitter<PlannerState> emit,
+  ) async {
+    final result = await deleteTask(event.taskId);
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: PlannerStateStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => {}, // watchTasksByDate가 자동으로 업데이트
+    );
+  }
+
+  void _onClearLastCreatedTask(
+    ClearLastCreatedTask event,
+    Emitter<PlannerState> emit,
+  ) {
+    emit(state.copyWith(clearLastCreatedTaskId: true));
   }
 
   @override

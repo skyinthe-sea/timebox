@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../config/routes/route_names.dart';
 import '../../l10n/app_localizations.dart';
+import 'ad_banner.dart';
 
 /// 메인 셸 위젯
 ///
@@ -22,7 +23,17 @@ class MainShell extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      body: child,
+      body: Column(
+        children: [
+          // 광고 배너 (최상단)
+          const SafeArea(
+            bottom: false,
+            child: AdBanner(),
+          ),
+          // 메인 콘텐츠
+          Expanded(child: child),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _calculateSelectedIndex(context),
         onDestinationSelected: (index) => _onItemTapped(context, index),

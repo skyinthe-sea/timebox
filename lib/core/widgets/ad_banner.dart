@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../constants/ad_config.dart';
 
 /// 광고 배너 위젯
 ///
@@ -7,7 +10,7 @@ import 'package:flutter/material.dart';
 /// 기능:
 /// - 광고 로드 상태 관리
 /// - 로드 실패 시 공간 축소
-/// - 테스트 모드 지원
+/// - 테스트/프로덕션 모드 자동 전환
 class AdBanner extends StatefulWidget {
   const AdBanner({super.key});
 
@@ -16,9 +19,7 @@ class AdBanner extends StatefulWidget {
 }
 
 class _AdBannerState extends State<AdBanner> {
-  // TODO: BannerAd 인스턴스 추가
-  // BannerAd? _bannerAd;
-  // ignore: prefer_final_fields - will be modified when AdMob is implemented
+  BannerAd? _bannerAd;
   bool _isLoaded = false;
 
   @override
@@ -28,47 +29,46 @@ class _AdBannerState extends State<AdBanner> {
   }
 
   void _loadAd() {
-    // TODO: AdMob 배너 광고 로드 구현
-    // _bannerAd = BannerAd(
-    //   adUnitId: Platform.isAndroid
-    //       ? 'ca-app-pub-xxxxx/xxxxx'
-    //       : 'ca-app-pub-xxxxx/xxxxx',
-    //   size: AdSize.banner,
-    //   request: const AdRequest(),
-    //   listener: BannerAdListener(
-    //     onAdLoaded: (ad) => setState(() => _isLoaded = true),
-    //     onAdFailedToLoad: (ad, error) {
-    //       ad.dispose();
-    //       setState(() => _isLoaded = false);
-    //     },
-    //   ),
-    // )..load();
+    _bannerAd = BannerAd(
+      adUnitId: AdConfig.bannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          if (mounted) {
+            setState(() => _isLoaded = true);
+          }
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('AdBanner failed to load: ${error.message}');
+          ad.dispose();
+          if (mounted) {
+            setState(() => _isLoaded = false);
+          }
+        },
+        onAdOpened: (ad) => debugPrint('AdBanner opened'),
+        onAdClosed: (ad) => debugPrint('AdBanner closed'),
+      ),
+    )..load();
   }
 
   @override
   void dispose() {
-    // TODO: _bannerAd?.dispose();
+    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isLoaded) {
+    if (!_isLoaded || _bannerAd == null) {
       return const SizedBox.shrink();
     }
 
-    // TODO: AdWidget 반환
-    // return SizedBox(
-    //   height: _bannerAd!.size.height.toDouble(),
-    //   child: AdWidget(ad: _bannerAd!),
-    // );
-
     return Container(
-      height: 50,
-      color: Colors.grey[200],
-      child: const Center(
-        child: Text('Ad Placeholder'),
-      ),
+      width: _bannerAd!.size.width.toDouble(),
+      height: _bannerAd!.size.height.toDouble(),
+      alignment: Alignment.center,
+      child: AdWidget(ad: _bannerAd!),
     );
   }
 }

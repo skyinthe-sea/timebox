@@ -146,6 +146,7 @@ Future<void> init() async {
       setTaskRank: sl(),
       removeTaskFromRank: sl(),
       createTask: sl(),
+      deleteTask: sl(),
       createTimeBlock: sl(),
       copyTaskToDate: sl(),
       rolloverTask: sl(),

@@ -46,8 +46,8 @@ dependencies:
   # Notifications (추후 활성화)
   # flutter_local_notifications: ^18.0.1
 
-  # Ads (추후 활성화)
-  # google_mobile_ads: ^5.2.0
+  # Ads
+  google_mobile_ads: ^5.2.0
 
   # Calendar (추후 활성화)
   # googleapis: ^13.2.0

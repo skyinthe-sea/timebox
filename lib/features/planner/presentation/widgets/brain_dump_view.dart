@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../bloc/planner_bloc.dart';
+import 'animated_task_entry.dart';
 import 'draggable_task_card.dart';
 
 /// 브레인 덤프 뷰 위젯
@@ -19,7 +20,6 @@ class BrainDumpView extends StatefulWidget {
 class _BrainDumpViewState extends State<BrainDumpView> {
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
-  Duration _selectedDuration = const Duration(minutes: 30);
 
   @override
   void dispose() {
@@ -88,43 +88,6 @@ class _BrainDumpViewState extends State<BrainDumpView> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  // 시간 선택 칩들
-                  Wrap(
-                    spacing: 8,
-                    children: [
-                      _DurationChip(
-                        duration: const Duration(minutes: 15),
-                        isSelected: _selectedDuration.inMinutes == 15,
-                        onTap: () => setState(
-                            () => _selectedDuration = const Duration(minutes: 15)),
-                      ),
-                      _DurationChip(
-                        duration: const Duration(minutes: 30),
-                        isSelected: _selectedDuration.inMinutes == 30,
-                        onTap: () => setState(
-                            () => _selectedDuration = const Duration(minutes: 30)),
-                      ),
-                      _DurationChip(
-                        duration: const Duration(minutes: 60),
-                        isSelected: _selectedDuration.inMinutes == 60,
-                        onTap: () => setState(
-                            () => _selectedDuration = const Duration(minutes: 60)),
-                      ),
-                      _DurationChip(
-                        duration: const Duration(minutes: 90),
-                        isSelected: _selectedDuration.inMinutes == 90,
-                        onTap: () => setState(
-                            () => _selectedDuration = const Duration(minutes: 90)),
-                      ),
-                      _DurationChip(
-                        duration: const Duration(hours: 2),
-                        isSelected: _selectedDuration.inMinutes == 120,
-                        onTap: () => setState(
-                            () => _selectedDuration = const Duration(hours: 2)),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -138,14 +101,30 @@ class _BrainDumpViewState extends State<BrainDumpView> {
                       itemCount: tasks.length,
                       itemBuilder: (context, index) {
                         final task = tasks[index];
+                        final isNewlyCreated =
+                            state.lastCreatedTaskId == task.id;
+
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
                             vertical: 4,
                           ),
-                          child: DraggableTaskCard(
-                            task: task,
-                            rank: state.getTaskRank(task.id),
+                          child: AnimatedTaskEntry(
+                            animate: isNewlyCreated,
+                            onAnimationComplete: () {
+                              context
+                                  .read<PlannerBloc>()
+                                  .add(const ClearLastCreatedTask());
+                            },
+                            child: DraggableTaskCard(
+                              task: task,
+                              rank: state.getTaskRank(task.id),
+                              onDelete: () {
+                                context
+                                    .read<PlannerBloc>()
+                                    .add(DeleteBrainDumpTask(task.id));
+                              },
+                            ),
                           ),
                         );
                       },
@@ -163,55 +142,11 @@ class _BrainDumpViewState extends State<BrainDumpView> {
 
     context.read<PlannerBloc>().add(QuickCreateTask(
           title: title,
-          estimatedDuration: _selectedDuration,
+          // 기본값 사용: estimatedDuration = 30분, priority = medium
         ));
 
     _textController.clear();
     _focusNode.unfocus();
-  }
-}
-
-class _DurationChip extends StatelessWidget {
-  final Duration duration;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _DurationChip({
-    required this.duration,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return FilterChip(
-      label: Text(_formatDuration(duration)),
-      selected: isSelected,
-      onSelected: (_) => onTap(),
-      selectedColor: theme.colorScheme.primary.withValues(alpha: 0.2),
-      checkmarkColor: theme.colorScheme.primary,
-      labelStyle: TextStyle(
-        color: isSelected ? theme.colorScheme.primary : null,
-        fontWeight: isSelected ? FontWeight.w600 : null,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      visualDensity: VisualDensity.compact,
-    );
-  }
-
-  String _formatDuration(Duration duration) {
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes % 60;
-
-    if (hours > 0 && minutes > 0) {
-      return '${hours}h ${minutes}m';
-    } else if (hours > 0) {
-      return '${hours}h';
-    } else {
-      return '${minutes}m';
-    }
   }
 }
 

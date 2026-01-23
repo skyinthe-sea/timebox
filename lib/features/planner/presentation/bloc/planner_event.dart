@@ -102,3 +102,15 @@ class RolloverTaskEvent extends PlannerEvent {
 
   const RolloverTaskEvent(this.taskId);
 }
+
+/// Task 삭제 (브레인 덤프)
+class DeleteBrainDumpTask extends PlannerEvent {
+  final String taskId;
+
+  const DeleteBrainDumpTask(this.taskId);
+}
+
+/// 마지막 생성 Task ID 클리어 (애니메이션 완료 후)
+class ClearLastCreatedTask extends PlannerEvent {
+  const ClearLastCreatedTask();
+}
