@@ -176,5 +176,19 @@
   "mergeBlocks": "合并时间块",
   "overlapWarning": "警告：时间块重叠",
   "taskAssigned": "任务已分配",
-  "tapToCancel": "点击外部取消"
+  "tapToCancel": "点击外部取消",
+
+  "statistics": "统计",
+  "todayHighlights": "今日亮点",
+  "completedTasksCount": "完成任务",
+  "focusTimeMinutes": "专注时间",
+  "timeSavedMinutes": "节省时间",
+  "top3Achievement": "Top 3 达成",
+  "trend": "趋势",
+  "tagAnalysis": "标签分析",
+  "insights": "洞察",
+  "daily": "每日",
+  "weekly": "每周",
+  "monthly": "每月",
+  "focusModeTooltip": "专注模式"
 }

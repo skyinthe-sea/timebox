@@ -176,5 +176,19 @@
   "mergeBlocks": "Fusionner les blocs",
   "overlapWarning": "Attention : Les blocs de temps se chevauchent",
   "taskAssigned": "Tâche assignée",
-  "tapToCancel": "Appuyez à l'extérieur pour annuler"
+  "tapToCancel": "Appuyez à l'extérieur pour annuler",
+
+  "statistics": "Statistiques",
+  "todayHighlights": "Points forts du jour",
+  "completedTasksCount": "Tâches terminées",
+  "focusTimeMinutes": "Temps de concentration",
+  "timeSavedMinutes": "Temps économisé",
+  "top3Achievement": "Top 3 atteint",
+  "trend": "Tendance",
+  "tagAnalysis": "Analyse par étiquette",
+  "insights": "Analyses",
+  "daily": "Quotidien",
+  "weekly": "Hebdomadaire",
+  "monthly": "Mensuel",
+  "focusModeTooltip": "Mode concentration"
 }

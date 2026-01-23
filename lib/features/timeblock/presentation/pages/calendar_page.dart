@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../config/routes/route_names.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../planner/presentation/bloc/planner_bloc.dart';
@@ -40,6 +42,11 @@ class _CalendarPageState extends State<CalendarPage> {
     return BlocProvider(
       create: (_) => TimelineSelectionCubit(),
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => context.push(RouteNames.focus),
+          tooltip: '집중 모드',
+          child: const Icon(Icons.timer),
+        ),
         appBar: AppBar(
           title: BlocBuilder<CalendarBloc, CalendarState>(
             buildWhen: (prev, curr) => prev.selectedDate != curr.selectedDate,

@@ -443,4 +443,43 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tapToCancel => 'Appuyez à l\'extérieur pour annuler';
+
+  @override
+  String get statistics => 'Statistiques';
+
+  @override
+  String get todayHighlights => 'Points forts du jour';
+
+  @override
+  String get completedTasksCount => 'Tâches terminées';
+
+  @override
+  String get focusTimeMinutes => 'Temps de concentration';
+
+  @override
+  String get timeSavedMinutes => 'Temps économisé';
+
+  @override
+  String get top3Achievement => 'Top 3 atteint';
+
+  @override
+  String get trend => 'Tendance';
+
+  @override
+  String get tagAnalysis => 'Analyse par étiquette';
+
+  @override
+  String get insights => 'Analyses';
+
+  @override
+  String get daily => 'Quotidien';
+
+  @override
+  String get weekly => 'Hebdomadaire';
+
+  @override
+  String get monthly => 'Mensuel';
+
+  @override
+  String get focusModeTooltip => 'Mode concentration';
 }

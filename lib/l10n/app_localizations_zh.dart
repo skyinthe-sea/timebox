@@ -437,4 +437,43 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tapToCancel => '点击外部取消';
+
+  @override
+  String get statistics => '统计';
+
+  @override
+  String get todayHighlights => '今日亮点';
+
+  @override
+  String get completedTasksCount => '完成任务';
+
+  @override
+  String get focusTimeMinutes => '专注时间';
+
+  @override
+  String get timeSavedMinutes => '节省时间';
+
+  @override
+  String get top3Achievement => 'Top 3 达成';
+
+  @override
+  String get trend => '趋势';
+
+  @override
+  String get tagAnalysis => '标签分析';
+
+  @override
+  String get insights => '洞察';
+
+  @override
+  String get daily => '每日';
+
+  @override
+  String get weekly => '每周';
+
+  @override
+  String get monthly => '每月';
+
+  @override
+  String get focusModeTooltip => '专注模式';
 }

@@ -36,7 +36,14 @@ import 'features/planner/domain/usecases/watch_daily_priority.dart';
 import 'features/planner/presentation/bloc/planner_bloc.dart';
 
 // Focus Feature
+import 'features/focus/data/datasources/focus_session_local_datasource.dart';
 import 'features/focus/presentation/bloc/focus_bloc.dart';
+
+// Analytics Feature
+import 'features/analytics/data/datasources/analytics_local_datasource.dart';
+import 'features/analytics/data/repositories/analytics_repository_impl.dart';
+import 'features/analytics/domain/repositories/analytics_repository.dart';
+import 'features/analytics/presentation/bloc/statistics_bloc.dart';
 
 // Settings Feature
 import 'features/settings/presentation/cubit/settings_cubit.dart';
@@ -156,8 +163,37 @@ Future<void> init() async {
   //===========================================================================
   // Features - Focus
   //===========================================================================
+  // Data Sources
+  sl.registerLazySingleton<FocusSessionLocalDataSource>(
+    () => FocusSessionLocalDataSourceImpl(),
+  );
+
   // BLoC
   sl.registerFactory(() => FocusBloc());
+
+  //===========================================================================
+  // Features - Analytics
+  //===========================================================================
+  // Data Sources
+  sl.registerLazySingleton<AnalyticsLocalDataSource>(
+    () => AnalyticsLocalDataSourceImpl(),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<AnalyticsRepository>(
+    () => AnalyticsRepositoryImpl(
+      analyticsDataSource: sl(),
+      taskDataSource: sl(),
+      timeBlockDataSource: sl(),
+      focusSessionDataSource: sl(),
+      dailyPriorityDataSource: sl(),
+    ),
+  );
+
+  // BLoC
+  sl.registerFactory(
+    () => StatisticsBloc(analyticsRepository: sl()),
+  );
 
   //===========================================================================
   // Features - Settings

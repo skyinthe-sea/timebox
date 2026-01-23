@@ -190,5 +190,19 @@
   "mergeBlocks": "블록 병합",
   "overlapWarning": "경고: 타임블록이 겹칩니다",
   "taskAssigned": "할 일이 할당되었습니다",
-  "tapToCancel": "바깥을 탭하여 취소"
+  "tapToCancel": "바깥을 탭하여 취소",
+
+  "statistics": "통계",
+  "todayHighlights": "오늘의 하이라이트",
+  "completedTasksCount": "완료한 Task",
+  "focusTimeMinutes": "집중 시간",
+  "timeSavedMinutes": "절약한 시간",
+  "top3Achievement": "Top 3 달성",
+  "trend": "트렌드",
+  "tagAnalysis": "태그별 분석",
+  "insights": "인사이트",
+  "daily": "일간",
+  "weekly": "주간",
+  "monthly": "월간",
+  "focusModeTooltip": "집중 모드"
 }

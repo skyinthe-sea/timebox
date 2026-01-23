@@ -439,4 +439,43 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tapToCancel => 'रद्द करने के लिए बाहर टैप करें';
+
+  @override
+  String get statistics => 'सांख्यिकी';
+
+  @override
+  String get todayHighlights => 'आज की मुख्य बातें';
+
+  @override
+  String get completedTasksCount => 'पूर्ण कार्य';
+
+  @override
+  String get focusTimeMinutes => 'फोकस समय';
+
+  @override
+  String get timeSavedMinutes => 'बचाया गया समय';
+
+  @override
+  String get top3Achievement => 'Top 3 उपलब्धि';
+
+  @override
+  String get trend => 'रुझान';
+
+  @override
+  String get tagAnalysis => 'टैग विश्लेषण';
+
+  @override
+  String get insights => 'अंतर्दृष्टि';
+
+  @override
+  String get daily => 'दैनिक';
+
+  @override
+  String get weekly => 'साप्ताहिक';
+
+  @override
+  String get monthly => 'मासिक';
+
+  @override
+  String get focusModeTooltip => 'फोकस मोड';
 }

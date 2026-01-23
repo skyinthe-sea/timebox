@@ -947,6 +947,84 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'바깥을 탭하여 취소'**
   String get tapToCancel;
+
+  /// No description provided for @statistics.
+  ///
+  /// In ko, this message translates to:
+  /// **'통계'**
+  String get statistics;
+
+  /// No description provided for @todayHighlights.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘의 하이라이트'**
+  String get todayHighlights;
+
+  /// No description provided for @completedTasksCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료한 Task'**
+  String get completedTasksCount;
+
+  /// No description provided for @focusTimeMinutes.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 시간'**
+  String get focusTimeMinutes;
+
+  /// No description provided for @timeSavedMinutes.
+  ///
+  /// In ko, this message translates to:
+  /// **'절약한 시간'**
+  String get timeSavedMinutes;
+
+  /// No description provided for @top3Achievement.
+  ///
+  /// In ko, this message translates to:
+  /// **'Top 3 달성'**
+  String get top3Achievement;
+
+  /// No description provided for @trend.
+  ///
+  /// In ko, this message translates to:
+  /// **'트렌드'**
+  String get trend;
+
+  /// No description provided for @tagAnalysis.
+  ///
+  /// In ko, this message translates to:
+  /// **'태그별 분석'**
+  String get tagAnalysis;
+
+  /// No description provided for @insights.
+  ///
+  /// In ko, this message translates to:
+  /// **'인사이트'**
+  String get insights;
+
+  /// No description provided for @daily.
+  ///
+  /// In ko, this message translates to:
+  /// **'일간'**
+  String get daily;
+
+  /// No description provided for @weekly.
+  ///
+  /// In ko, this message translates to:
+  /// **'주간'**
+  String get weekly;
+
+  /// No description provided for @monthly.
+  ///
+  /// In ko, this message translates to:
+  /// **'월간'**
+  String get monthly;
+
+  /// No description provided for @focusModeTooltip.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 모드'**
+  String get focusModeTooltip;
 }
 
 class _AppLocalizationsDelegate

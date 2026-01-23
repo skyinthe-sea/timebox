@@ -6,7 +6,7 @@ abstract class RouteNames {
   static const String home = '/';
   static const String calendar = '/calendar';
   static const String focus = '/focus';
-  static const String analytics = '/analytics';
+  static const String statistics = '/statistics';
   static const String settings = '/settings';
 
   // Task 관련

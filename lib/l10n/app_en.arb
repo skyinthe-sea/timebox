@@ -176,5 +176,19 @@
   "mergeBlocks": "Merge blocks",
   "overlapWarning": "Warning: Time blocks overlap",
   "taskAssigned": "Task assigned",
-  "tapToCancel": "Tap outside to cancel"
+  "tapToCancel": "Tap outside to cancel",
+
+  "statistics": "Statistics",
+  "todayHighlights": "Today's Highlights",
+  "completedTasksCount": "Completed Tasks",
+  "focusTimeMinutes": "Focus Time",
+  "timeSavedMinutes": "Time Saved",
+  "top3Achievement": "Top 3 Achievement",
+  "trend": "Trend",
+  "tagAnalysis": "Tag Analysis",
+  "insights": "Insights",
+  "daily": "Daily",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "focusModeTooltip": "Focus Mode"
 }

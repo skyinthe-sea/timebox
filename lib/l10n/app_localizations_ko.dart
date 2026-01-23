@@ -437,4 +437,43 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tapToCancel => '바깥을 탭하여 취소';
+
+  @override
+  String get statistics => '통계';
+
+  @override
+  String get todayHighlights => '오늘의 하이라이트';
+
+  @override
+  String get completedTasksCount => '완료한 Task';
+
+  @override
+  String get focusTimeMinutes => '집중 시간';
+
+  @override
+  String get timeSavedMinutes => '절약한 시간';
+
+  @override
+  String get top3Achievement => 'Top 3 달성';
+
+  @override
+  String get trend => '트렌드';
+
+  @override
+  String get tagAnalysis => '태그별 분석';
+
+  @override
+  String get insights => '인사이트';
+
+  @override
+  String get daily => '일간';
+
+  @override
+  String get weekly => '주간';
+
+  @override
+  String get monthly => '월간';
+
+  @override
+  String get focusModeTooltip => '집중 모드';
 }

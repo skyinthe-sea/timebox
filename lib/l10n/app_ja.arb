@@ -176,5 +176,19 @@
   "mergeBlocks": "ブロックを結合",
   "overlapWarning": "警告: タイムブロックが重複しています",
   "taskAssigned": "タスクが割り当てられました",
-  "tapToCancel": "外側をタップしてキャンセル"
+  "tapToCancel": "外側をタップしてキャンセル",
+
+  "statistics": "統計",
+  "todayHighlights": "今日のハイライト",
+  "completedTasksCount": "完了タスク",
+  "focusTimeMinutes": "集中時間",
+  "timeSavedMinutes": "節約した時間",
+  "top3Achievement": "Top 3達成",
+  "trend": "トレンド",
+  "tagAnalysis": "タグ別分析",
+  "insights": "インサイト",
+  "daily": "日次",
+  "weekly": "週次",
+  "monthly": "月次",
+  "focusModeTooltip": "集中モード"
 }

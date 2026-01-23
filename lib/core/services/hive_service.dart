@@ -12,6 +12,10 @@ class HiveService {
   static const String tagsBox = 'tags';
   static const String dailyPrioritiesBox = 'daily_priorities';
 
+  // Analytics Box
+  static const String dailyStatsSummaryBox = 'daily_stats_summary';
+  static const String hourlyProductivityBox = 'hourly_productivity';
+
   /// Hive 초기화
   ///
   /// 앱 시작 시 호출되어야 함
@@ -33,6 +37,8 @@ class HiveService {
       Hive.openBox<Map>(settingsBox),
       Hive.openBox<Map>(tagsBox),
       Hive.openBox<Map>(dailyPrioritiesBox),
+      Hive.openBox<Map>(dailyStatsSummaryBox),
+      Hive.openBox<Map>(hourlyProductivityBox),
     ]);
   }
 
@@ -43,6 +49,10 @@ class HiveService {
   static Box<Map> getSettingsBox() => Hive.box<Map>(settingsBox);
   static Box<Map> getTagsBox() => Hive.box<Map>(tagsBox);
   static Box<Map> getDailyPrioritiesBox() => Hive.box<Map>(dailyPrioritiesBox);
+  static Box<Map> getDailyStatsSummaryBox() =>
+      Hive.box<Map>(dailyStatsSummaryBox);
+  static Box<Map> getHourlyProductivityBox() =>
+      Hive.box<Map>(hourlyProductivityBox);
 
   /// 모든 Box 닫기
   static Future<void> closeBoxes() async {
@@ -58,6 +68,8 @@ class HiveService {
       getSettingsBox().clear(),
       getTagsBox().clear(),
       getDailyPrioritiesBox().clear(),
+      getDailyStatsSummaryBox().clear(),
+      getHourlyProductivityBox().clear(),
     ]);
   }
 }

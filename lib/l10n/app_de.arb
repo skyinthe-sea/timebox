@@ -176,5 +176,19 @@
   "mergeBlocks": "Blöcke zusammenführen",
   "overlapWarning": "Warnung: Zeitblöcke überlappen sich",
   "taskAssigned": "Aufgabe zugewiesen",
-  "tapToCancel": "Außerhalb tippen zum Abbrechen"
+  "tapToCancel": "Außerhalb tippen zum Abbrechen",
+
+  "statistics": "Statistiken",
+  "todayHighlights": "Highlights des Tages",
+  "completedTasksCount": "Abgeschlossene Aufgaben",
+  "focusTimeMinutes": "Fokuszeit",
+  "timeSavedMinutes": "Eingesparte Zeit",
+  "top3Achievement": "Top 3 Erreichung",
+  "trend": "Trend",
+  "tagAnalysis": "Tag-Analyse",
+  "insights": "Einblicke",
+  "daily": "Täglich",
+  "weekly": "Wöchentlich",
+  "monthly": "Monatlich",
+  "focusModeTooltip": "Fokusmodus"
 }

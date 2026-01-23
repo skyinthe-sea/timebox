@@ -437,4 +437,43 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tapToCancel => '外側をタップしてキャンセル';
+
+  @override
+  String get statistics => '統計';
+
+  @override
+  String get todayHighlights => '今日のハイライト';
+
+  @override
+  String get completedTasksCount => '完了タスク';
+
+  @override
+  String get focusTimeMinutes => '集中時間';
+
+  @override
+  String get timeSavedMinutes => '節約した時間';
+
+  @override
+  String get top3Achievement => 'Top 3達成';
+
+  @override
+  String get trend => 'トレンド';
+
+  @override
+  String get tagAnalysis => 'タグ別分析';
+
+  @override
+  String get insights => 'インサイト';
+
+  @override
+  String get daily => '日次';
+
+  @override
+  String get weekly => '週次';
+
+  @override
+  String get monthly => '月次';
+
+  @override
+  String get focusModeTooltip => '集中モード';
 }

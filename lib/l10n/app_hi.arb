@@ -176,5 +176,19 @@
   "mergeBlocks": "ब्लॉक मर्ज करें",
   "overlapWarning": "चेतावनी: टाइम ब्लॉक ओवरलैप हो रहे हैं",
   "taskAssigned": "कार्य असाइन किया गया",
-  "tapToCancel": "रद्द करने के लिए बाहर टैप करें"
+  "tapToCancel": "रद्द करने के लिए बाहर टैप करें",
+
+  "statistics": "सांख्यिकी",
+  "todayHighlights": "आज की मुख्य बातें",
+  "completedTasksCount": "पूर्ण कार्य",
+  "focusTimeMinutes": "फोकस समय",
+  "timeSavedMinutes": "बचाया गया समय",
+  "top3Achievement": "Top 3 उपलब्धि",
+  "trend": "रुझान",
+  "tagAnalysis": "टैग विश्लेषण",
+  "insights": "अंतर्दृष्टि",
+  "daily": "दैनिक",
+  "weekly": "साप्ताहिक",
+  "monthly": "मासिक",
+  "focusModeTooltip": "फोकस मोड"
 }

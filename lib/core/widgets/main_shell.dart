@@ -49,9 +49,9 @@ class MainShell extends StatelessWidget {
             label: l10n?.calendar ?? 'Calendar',
           ),
           NavigationDestination(
-            icon: const Icon(Icons.timer_outlined),
-            selectedIcon: const Icon(Icons.timer),
-            label: l10n?.focus ?? 'Focus',
+            icon: const Icon(Icons.bar_chart_outlined),
+            selectedIcon: const Icon(Icons.bar_chart),
+            label: l10n?.statistics ?? 'Statistics',
           ),
           NavigationDestination(
             icon: const Icon(Icons.settings_outlined),
@@ -70,7 +70,7 @@ class MainShell extends StatelessWidget {
 
     if (location == RouteNames.home) return 0;
     if (location == RouteNames.calendar) return 1;
-    if (location == RouteNames.focus) return 2;
+    if (location == RouteNames.statistics) return 2;
     if (location == RouteNames.settings) return 3;
 
     return 0;
@@ -85,7 +85,7 @@ class MainShell extends StatelessWidget {
         context.go(RouteNames.calendar);
         break;
       case 2:
-        context.go(RouteNames.focus);
+        context.go(RouteNames.statistics);
         break;
       case 3:
         context.go(RouteNames.settings);
