@@ -482,4 +482,63 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get focusModeTooltip => 'Mode concentration';
+
+  @override
+  String get startAlarm => 'Alarme de début';
+
+  @override
+  String get endAlarm => 'Alarme de fin';
+
+  @override
+  String get notifyBeforeStart => 'Notifier avant le début';
+
+  @override
+  String get notifyBeforeEnd => 'Notifier avant la fin';
+
+  @override
+  String get selectMultipleTimings => 'Sélection multiple possible';
+
+  @override
+  String get dailyReminder => 'Rappel quotidien';
+
+  @override
+  String get dailyReminderDesc =>
+      'Notification les jours sans utilisation de l\'app';
+
+  @override
+  String get dailyReminderTime => 'Heure du rappel';
+
+  @override
+  String get notificationPermissionRequired =>
+      'Permission de notification requise';
+
+  @override
+  String get notificationPermissionDesc =>
+      'Veuillez autoriser les notifications pour les alertes de bloc de temps';
+
+  @override
+  String get openSettings => 'Ouvrir les paramètres';
+
+  @override
+  String get permissionGranted => 'Permission accordée';
+
+  @override
+  String get permissionDenied => 'Permission refusée';
+
+  @override
+  String get requestPermission => 'Demander la permission';
+
+  @override
+  String hourBefore(int count) {
+    return '${count}h avant';
+  }
+
+  @override
+  String get alarmSettings => 'Paramètres d\'alarme';
+
+  @override
+  String get alarmTimingNote => 'Sélection multiple possible';
+
+  @override
+  String get noonTime => 'Midi (12:00)';
 }

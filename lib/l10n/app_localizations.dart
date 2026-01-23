@@ -1025,6 +1025,114 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'집중 모드'**
   String get focusModeTooltip;
+
+  /// No description provided for @startAlarm.
+  ///
+  /// In ko, this message translates to:
+  /// **'시작 알림'**
+  String get startAlarm;
+
+  /// No description provided for @endAlarm.
+  ///
+  /// In ko, this message translates to:
+  /// **'종료 알림'**
+  String get endAlarm;
+
+  /// No description provided for @notifyBeforeStart.
+  ///
+  /// In ko, this message translates to:
+  /// **'시작 전 알림'**
+  String get notifyBeforeStart;
+
+  /// No description provided for @notifyBeforeEnd.
+  ///
+  /// In ko, this message translates to:
+  /// **'종료 전 알림'**
+  String get notifyBeforeEnd;
+
+  /// No description provided for @selectMultipleTimings.
+  ///
+  /// In ko, this message translates to:
+  /// **'여러 시간을 선택할 수 있습니다'**
+  String get selectMultipleTimings;
+
+  /// No description provided for @dailyReminder.
+  ///
+  /// In ko, this message translates to:
+  /// **'일일 리마인더'**
+  String get dailyReminder;
+
+  /// No description provided for @dailyReminderDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱을 열지 않은 날 알림 받기'**
+  String get dailyReminderDesc;
+
+  /// No description provided for @dailyReminderTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'리마인더 시간'**
+  String get dailyReminderTime;
+
+  /// No description provided for @notificationPermissionRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 권한이 필요합니다'**
+  String get notificationPermissionRequired;
+
+  /// No description provided for @notificationPermissionDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'타임블록 알림을 받으려면 알림 권한을 허용해주세요'**
+  String get notificationPermissionDesc;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정 열기'**
+  String get openSettings;
+
+  /// No description provided for @permissionGranted.
+  ///
+  /// In ko, this message translates to:
+  /// **'권한 허용됨'**
+  String get permissionGranted;
+
+  /// No description provided for @permissionDenied.
+  ///
+  /// In ko, this message translates to:
+  /// **'권한 거부됨'**
+  String get permissionDenied;
+
+  /// No description provided for @requestPermission.
+  ///
+  /// In ko, this message translates to:
+  /// **'권한 요청'**
+  String get requestPermission;
+
+  /// No description provided for @hourBefore.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}시간 전'**
+  String hourBefore(int count);
+
+  /// No description provided for @alarmSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'알림 설정'**
+  String get alarmSettings;
+
+  /// No description provided for @alarmTimingNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'다중 선택 가능'**
+  String get alarmTimingNote;
+
+  /// No description provided for @noonTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'정오 (12:00)'**
+  String get noonTime;
 }
 
 class _AppLocalizationsDelegate

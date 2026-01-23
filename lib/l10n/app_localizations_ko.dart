@@ -476,4 +476,60 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get focusModeTooltip => '집중 모드';
+
+  @override
+  String get startAlarm => '시작 알림';
+
+  @override
+  String get endAlarm => '종료 알림';
+
+  @override
+  String get notifyBeforeStart => '시작 전 알림';
+
+  @override
+  String get notifyBeforeEnd => '종료 전 알림';
+
+  @override
+  String get selectMultipleTimings => '여러 시간을 선택할 수 있습니다';
+
+  @override
+  String get dailyReminder => '일일 리마인더';
+
+  @override
+  String get dailyReminderDesc => '앱을 열지 않은 날 알림 받기';
+
+  @override
+  String get dailyReminderTime => '리마인더 시간';
+
+  @override
+  String get notificationPermissionRequired => '알림 권한이 필요합니다';
+
+  @override
+  String get notificationPermissionDesc => '타임블록 알림을 받으려면 알림 권한을 허용해주세요';
+
+  @override
+  String get openSettings => '설정 열기';
+
+  @override
+  String get permissionGranted => '권한 허용됨';
+
+  @override
+  String get permissionDenied => '권한 거부됨';
+
+  @override
+  String get requestPermission => '권한 요청';
+
+  @override
+  String hourBefore(int count) {
+    return '$count시간 전';
+  }
+
+  @override
+  String get alarmSettings => '알림 설정';
+
+  @override
+  String get alarmTimingNote => '다중 선택 가능';
+
+  @override
+  String get noonTime => '정오 (12:00)';
 }

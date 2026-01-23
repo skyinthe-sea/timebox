@@ -40,8 +40,15 @@ class SettingsPage extends StatelessWidget {
 
               // 알림 섹션
               _buildSectionHeader(theme, l10n.notifications),
-              _buildNotificationTile(context, state, l10n),
-              _buildNotificationTimingTile(context, state, l10n),
+              _buildNotificationMasterTile(context, state, l10n),
+              if (!state.hasNotificationPermission && state.notificationsEnabled)
+                _buildPermissionWarningTile(context, l10n),
+              if (state.notificationsEnabled) ...[
+                _buildStartAlarmSection(context, state, l10n, theme),
+                _buildEndAlarmSection(context, state, l10n, theme),
+                const SizedBox(height: 8),
+                _buildDailyReminderSection(context, state, l10n, theme),
+              ],
 
               const Divider(),
 
@@ -221,7 +228,7 @@ class SettingsPage extends StatelessWidget {
     }
   }
 
-  Widget _buildNotificationTile(
+  Widget _buildNotificationMasterTile(
     BuildContext context,
     SettingsState state,
     AppLocalizations l10n,
@@ -231,53 +238,206 @@ class SettingsPage extends StatelessWidget {
       title: Text(l10n.notifications),
       subtitle: Text(l10n.notificationDescription),
       value: state.notificationsEnabled,
-      onChanged: (value) {
-        context.read<SettingsCubit>().setNotificationsEnabled(value);
+      onChanged: (value) async {
+        final cubit = context.read<SettingsCubit>();
+        if (value && !state.hasNotificationPermission) {
+          final granted = await cubit.requestNotificationPermissions();
+          if (!granted) return;
+        }
+        cubit.setNotificationsEnabled(value);
       },
     );
   }
 
-  Widget _buildNotificationTimingTile(
+  Widget _buildPermissionWarningTile(
     BuildContext context,
-    SettingsState state,
     AppLocalizations l10n,
   ) {
-    return ListTile(
-      leading: const Icon(Icons.timer_outlined),
-      title: Text(l10n.notificationTiming),
-      subtitle: Text(l10n.minutesBefore(state.notificationBeforeMinutes)),
-      trailing: const Icon(Icons.chevron_right),
-      enabled: state.notificationsEnabled,
-      onTap: state.notificationsEnabled
-          ? () => _showNotificationTimingDialog(context, state, l10n)
-          : null,
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: Theme.of(context).colorScheme.errorContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Icon(
+              Icons.warning_amber_rounded,
+              color: Theme.of(context).colorScheme.onErrorContainer,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                l10n.notificationPermissionRequired,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                context.read<SettingsCubit>().requestNotificationPermissions();
+              },
+              child: Text(l10n.requestPermission),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  void _showNotificationTimingDialog(
+  Widget _buildStartAlarmSection(
     BuildContext context,
     SettingsState state,
     AppLocalizations l10n,
+    ThemeData theme,
   ) {
-    final timingOptions = [1, 3, 5, 10, 15, 30];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.play_circle_outline),
+          title: Text(l10n.startAlarm),
+          subtitle: Text(l10n.notifyBeforeStart),
+          value: state.startAlarmEnabled,
+          onChanged: (value) {
+            context.read<SettingsCubit>().setStartAlarmEnabled(value);
+          },
+        ),
+        if (state.startAlarmEnabled)
+          Padding(
+            padding: const EdgeInsets.only(left: 72, right: 16, bottom: 8),
+            child: _buildTimingChips(
+              context,
+              state.minutesBeforeStart,
+              (selected) {
+                context.read<SettingsCubit>().setMinutesBeforeStart(selected);
+              },
+              l10n,
+            ),
+          ),
+      ],
+    );
+  }
 
-    showDialog(
+  Widget _buildEndAlarmSection(
+    BuildContext context,
+    SettingsState state,
+    AppLocalizations l10n,
+    ThemeData theme,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.stop_circle_outlined),
+          title: Text(l10n.endAlarm),
+          subtitle: Text(l10n.notifyBeforeEnd),
+          value: state.endAlarmEnabled,
+          onChanged: (value) {
+            context.read<SettingsCubit>().setEndAlarmEnabled(value);
+          },
+        ),
+        if (state.endAlarmEnabled)
+          Padding(
+            padding: const EdgeInsets.only(left: 72, right: 16, bottom: 8),
+            child: _buildTimingChips(
+              context,
+              state.minutesBeforeEnd,
+              (selected) {
+                context.read<SettingsCubit>().setMinutesBeforeEnd(selected);
+              },
+              l10n,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildTimingChips(
+    BuildContext context,
+    List<int> selected,
+    ValueChanged<List<int>> onChanged,
+    AppLocalizations l10n,
+  ) {
+    const options = [5, 10, 15, 30, 60];
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: options.map((minutes) {
+        final isSelected = selected.contains(minutes);
+        final label = minutes >= 60
+            ? l10n.hourBefore(minutes ~/ 60)
+            : l10n.minutesBefore(minutes);
+
+        return FilterChip(
+          label: Text(label),
+          selected: isSelected,
+          onSelected: (newValue) {
+            final newList = List<int>.from(selected);
+            if (newValue) {
+              newList.add(minutes);
+            } else {
+              if (newList.length > 1) {
+                newList.remove(minutes);
+              }
+            }
+            onChanged(newList..sort());
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildDailyReminderSection(
+    BuildContext context,
+    SettingsState state,
+    AppLocalizations l10n,
+    ThemeData theme,
+  ) {
+    final timeString =
+        '${state.dailyReminderHour.toString().padLeft(2, '0')}:${state.dailyReminderMinute.toString().padLeft(2, '0')}';
+
+    return Column(
+      children: [
+        SwitchListTile(
+          secondary: const Icon(Icons.calendar_today_outlined),
+          title: Text(l10n.dailyReminder),
+          subtitle: Text(l10n.dailyReminderDesc),
+          value: state.dailyReminderEnabled,
+          onChanged: (value) {
+            context.read<SettingsCubit>().setDailyReminderEnabled(value);
+          },
+        ),
+        if (state.dailyReminderEnabled)
+          ListTile(
+            leading: const SizedBox(width: 24),
+            title: Text(l10n.dailyReminderTime),
+            subtitle: Text(timeString),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => _showDailyReminderTimeDialog(context, state, l10n),
+          ),
+      ],
+    );
+  }
+
+  void _showDailyReminderTimeDialog(
+    BuildContext context,
+    SettingsState state,
+    AppLocalizations l10n,
+  ) async {
+    final cubit = context.read<SettingsCubit>();
+    final time = await showTimePicker(
       context: context,
-      builder: (dialogContext) => SimpleDialog(
-        title: Text(l10n.notificationTiming),
-        children: timingOptions.map((minutes) {
-          return RadioListTile<int>(
-            title: Text(l10n.minutesBefore(minutes)),
-            value: minutes,
-            groupValue: state.notificationBeforeMinutes,
-            onChanged: (value) {
-              context.read<SettingsCubit>().setNotificationBeforeMinutes(value!);
-              Navigator.pop(dialogContext);
-            },
-          );
-        }).toList(),
+      initialTime: TimeOfDay(
+        hour: state.dailyReminderHour,
+        minute: state.dailyReminderMinute,
       ),
     );
+
+    if (time != null) {
+      cubit.setDailyReminderTime(time.hour, time.minute);
+    }
   }
 
   Widget _buildCalendarSyncTile(BuildContext context, AppLocalizations l10n) {

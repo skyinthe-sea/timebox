@@ -204,5 +204,29 @@
   "daily": "일간",
   "weekly": "주간",
   "monthly": "월간",
-  "focusModeTooltip": "집중 모드"
+  "focusModeTooltip": "집중 모드",
+
+  "startAlarm": "시작 알림",
+  "endAlarm": "종료 알림",
+  "notifyBeforeStart": "시작 전 알림",
+  "notifyBeforeEnd": "종료 전 알림",
+  "selectMultipleTimings": "여러 시간을 선택할 수 있습니다",
+  "dailyReminder": "일일 리마인더",
+  "dailyReminderDesc": "앱을 열지 않은 날 알림 받기",
+  "dailyReminderTime": "리마인더 시간",
+  "notificationPermissionRequired": "알림 권한이 필요합니다",
+  "notificationPermissionDesc": "타임블록 알림을 받으려면 알림 권한을 허용해주세요",
+  "openSettings": "설정 열기",
+  "permissionGranted": "권한 허용됨",
+  "permissionDenied": "권한 거부됨",
+  "requestPermission": "권한 요청",
+  "hourBefore": "{count}시간 전",
+  "@hourBefore": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "alarmSettings": "알림 설정",
+  "alarmTimingNote": "다중 선택 가능",
+  "noonTime": "정오 (12:00)"
 }

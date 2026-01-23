@@ -476,4 +476,60 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get focusModeTooltip => '集中モード';
+
+  @override
+  String get startAlarm => '開始アラーム';
+
+  @override
+  String get endAlarm => '終了アラーム';
+
+  @override
+  String get notifyBeforeStart => '開始前に通知';
+
+  @override
+  String get notifyBeforeEnd => '終了前に通知';
+
+  @override
+  String get selectMultipleTimings => '複数選択可能';
+
+  @override
+  String get dailyReminder => '毎日のリマインダー';
+
+  @override
+  String get dailyReminderDesc => 'アプリを開いていない日に通知';
+
+  @override
+  String get dailyReminderTime => 'リマインダー時間';
+
+  @override
+  String get notificationPermissionRequired => '通知権限が必要です';
+
+  @override
+  String get notificationPermissionDesc => 'タイムブロック通知を受け取るには通知権限を許可してください';
+
+  @override
+  String get openSettings => '設定を開く';
+
+  @override
+  String get permissionGranted => '権限許可済み';
+
+  @override
+  String get permissionDenied => '権限拒否';
+
+  @override
+  String get requestPermission => '権限をリクエスト';
+
+  @override
+  String hourBefore(int count) {
+    return '$count時間前';
+  }
+
+  @override
+  String get alarmSettings => 'アラーム設定';
+
+  @override
+  String get alarmTimingNote => '複数選択可能';
+
+  @override
+  String get noonTime => '正午 (12:00)';
 }

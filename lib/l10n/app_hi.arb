@@ -190,5 +190,29 @@
   "daily": "दैनिक",
   "weekly": "साप्ताहिक",
   "monthly": "मासिक",
-  "focusModeTooltip": "फोकस मोड"
+  "focusModeTooltip": "फोकस मोड",
+
+  "startAlarm": "प्रारंभ अलार्म",
+  "endAlarm": "समाप्ति अलार्म",
+  "notifyBeforeStart": "शुरू होने से पहले सूचित करें",
+  "notifyBeforeEnd": "समाप्त होने से पहले सूचित करें",
+  "selectMultipleTimings": "एक से अधिक समय चुन सकते हैं",
+  "dailyReminder": "दैनिक रिमाइंडर",
+  "dailyReminderDesc": "जिन दिनों ऐप नहीं खोला उन दिनों सूचना",
+  "dailyReminderTime": "रिमाइंडर समय",
+  "notificationPermissionRequired": "सूचना अनुमति आवश्यक",
+  "notificationPermissionDesc": "टाइम ब्लॉक अलर्ट के लिए सूचना अनुमति दें",
+  "openSettings": "सेटिंग्स खोलें",
+  "permissionGranted": "अनुमति दी गई",
+  "permissionDenied": "अनुमति अस्वीकार",
+  "requestPermission": "अनुमति का अनुरोध करें",
+  "hourBefore": "{count} घंटे पहले",
+  "@hourBefore": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "alarmSettings": "अलार्म सेटिंग्स",
+  "alarmTimingNote": "एकाधिक चयन संभव",
+  "noonTime": "दोपहर (12:00)"
 }

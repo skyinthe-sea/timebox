@@ -15,20 +15,37 @@ const supportedLocales = [
 class SettingsState extends Equatable {
   final ThemeMode themeMode;
   final Locale locale;
-  final bool notificationsEnabled;
-  final int notificationBeforeMinutes;
   final int defaultTimeBlockMinutes;
   final int dayStartHour;
   final int dayEndHour;
 
+  // 알림 설정 (확장)
+  final bool notificationsEnabled;
+  final bool startAlarmEnabled;
+  final bool endAlarmEnabled;
+  final List<int> minutesBeforeStart;
+  final List<int> minutesBeforeEnd;
+  final bool dailyReminderEnabled;
+  final int dailyReminderHour;
+  final int dailyReminderMinute;
+  final bool hasNotificationPermission;
+
   const SettingsState({
     this.themeMode = ThemeMode.system,
     this.locale = const Locale('ko'),
-    this.notificationsEnabled = true,
-    this.notificationBeforeMinutes = 5,
     this.defaultTimeBlockMinutes = 30,
     this.dayStartHour = 6,
     this.dayEndHour = 24,
+    // 알림 설정 기본값
+    this.notificationsEnabled = true,
+    this.startAlarmEnabled = true,
+    this.endAlarmEnabled = true,
+    this.minutesBeforeStart = const [10],
+    this.minutesBeforeEnd = const [10],
+    this.dailyReminderEnabled = true,
+    this.dailyReminderHour = 12,
+    this.dailyReminderMinute = 0,
+    this.hasNotificationPermission = false,
   });
 
   /// 테마 모드 표시 텍스트
@@ -68,22 +85,36 @@ class SettingsState extends Equatable {
   SettingsState copyWith({
     ThemeMode? themeMode,
     Locale? locale,
-    bool? notificationsEnabled,
-    int? notificationBeforeMinutes,
     int? defaultTimeBlockMinutes,
     int? dayStartHour,
     int? dayEndHour,
+    bool? notificationsEnabled,
+    bool? startAlarmEnabled,
+    bool? endAlarmEnabled,
+    List<int>? minutesBeforeStart,
+    List<int>? minutesBeforeEnd,
+    bool? dailyReminderEnabled,
+    int? dailyReminderHour,
+    int? dailyReminderMinute,
+    bool? hasNotificationPermission,
   }) {
     return SettingsState(
       themeMode: themeMode ?? this.themeMode,
       locale: locale ?? this.locale,
-      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
-      notificationBeforeMinutes:
-          notificationBeforeMinutes ?? this.notificationBeforeMinutes,
       defaultTimeBlockMinutes:
           defaultTimeBlockMinutes ?? this.defaultTimeBlockMinutes,
       dayStartHour: dayStartHour ?? this.dayStartHour,
       dayEndHour: dayEndHour ?? this.dayEndHour,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      startAlarmEnabled: startAlarmEnabled ?? this.startAlarmEnabled,
+      endAlarmEnabled: endAlarmEnabled ?? this.endAlarmEnabled,
+      minutesBeforeStart: minutesBeforeStart ?? this.minutesBeforeStart,
+      minutesBeforeEnd: minutesBeforeEnd ?? this.minutesBeforeEnd,
+      dailyReminderEnabled: dailyReminderEnabled ?? this.dailyReminderEnabled,
+      dailyReminderHour: dailyReminderHour ?? this.dailyReminderHour,
+      dailyReminderMinute: dailyReminderMinute ?? this.dailyReminderMinute,
+      hasNotificationPermission:
+          hasNotificationPermission ?? this.hasNotificationPermission,
     );
   }
 
@@ -91,10 +122,17 @@ class SettingsState extends Equatable {
   List<Object?> get props => [
         themeMode,
         locale,
-        notificationsEnabled,
-        notificationBeforeMinutes,
         defaultTimeBlockMinutes,
         dayStartHour,
         dayEndHour,
+        notificationsEnabled,
+        startAlarmEnabled,
+        endAlarmEnabled,
+        minutesBeforeStart,
+        minutesBeforeEnd,
+        dailyReminderEnabled,
+        dailyReminderHour,
+        dailyReminderMinute,
+        hasNotificationPermission,
       ];
 }

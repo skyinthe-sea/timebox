@@ -190,5 +190,29 @@
   "daily": "Täglich",
   "weekly": "Wöchentlich",
   "monthly": "Monatlich",
-  "focusModeTooltip": "Fokusmodus"
+  "focusModeTooltip": "Fokusmodus",
+
+  "startAlarm": "Start-Alarm",
+  "endAlarm": "End-Alarm",
+  "notifyBeforeStart": "Vor dem Start benachrichtigen",
+  "notifyBeforeEnd": "Vor dem Ende benachrichtigen",
+  "selectMultipleTimings": "Mehrere Zeiten auswählbar",
+  "dailyReminder": "Tägliche Erinnerung",
+  "dailyReminderDesc": "Benachrichtigung an Tagen ohne App-Nutzung",
+  "dailyReminderTime": "Erinnerungszeit",
+  "notificationPermissionRequired": "Benachrichtigungsberechtigung erforderlich",
+  "notificationPermissionDesc": "Bitte erlauben Sie Benachrichtigungen für Zeitblock-Alarme",
+  "openSettings": "Einstellungen öffnen",
+  "permissionGranted": "Berechtigung erteilt",
+  "permissionDenied": "Berechtigung verweigert",
+  "requestPermission": "Berechtigung anfordern",
+  "hourBefore": "{count}h vorher",
+  "@hourBefore": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "alarmSettings": "Alarm-Einstellungen",
+  "alarmTimingNote": "Mehrfachauswahl möglich",
+  "noonTime": "Mittag (12:00)"
 }

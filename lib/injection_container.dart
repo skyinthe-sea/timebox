@@ -1,4 +1,13 @@
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// Core Services
+import 'core/services/notification_service.dart';
+
+// Notification Feature
+import 'features/notification/data/datasources/notification_local_datasource.dart';
+import 'features/notification/data/repositories/notification_repository_impl.dart';
+import 'features/notification/domain/repositories/notification_repository.dart';
 
 // Task Feature
 import 'features/task/data/datasources/task_local_datasource.dart';
@@ -53,6 +62,33 @@ final sl = GetIt.instance;
 
 /// 의존성 주입 초기화
 Future<void> init() async {
+  //===========================================================================
+  // Core - External Dependencies
+  //===========================================================================
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
+
+  //===========================================================================
+  // Core - Services
+  //===========================================================================
+  sl.registerLazySingleton(() => NotificationService());
+
+  //===========================================================================
+  // Features - Notification
+  //===========================================================================
+  // Data Sources
+  sl.registerLazySingleton<NotificationLocalDataSource>(
+    () => NotificationLocalDataSource(sl()),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(
+      notificationService: sl(),
+      localDataSource: sl(),
+    ),
+  );
+
   //===========================================================================
   // Features - Task
   //===========================================================================
@@ -122,6 +158,7 @@ Future<void> init() async {
       deleteTimeBlock: sl(),
       moveTimeBlock: sl(),
       resizeTimeBlock: sl(),
+      notificationRepository: sl(),
     ),
   );
 
@@ -199,5 +236,7 @@ Future<void> init() async {
   // Features - Settings
   //===========================================================================
   // Cubit
-  sl.registerLazySingleton(() => SettingsCubit());
+  sl.registerLazySingleton(
+    () => SettingsCubit(notificationRepository: sl()),
+  );
 }

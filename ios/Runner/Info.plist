@@ -45,6 +45,12 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Background Modes for Notifications -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<!-- AdMob App ID -->
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-6902355178006305~8935278478</string>

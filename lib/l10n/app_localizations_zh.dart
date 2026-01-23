@@ -476,4 +476,60 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get focusModeTooltip => '专注模式';
+
+  @override
+  String get startAlarm => '开始提醒';
+
+  @override
+  String get endAlarm => '结束提醒';
+
+  @override
+  String get notifyBeforeStart => '开始前通知';
+
+  @override
+  String get notifyBeforeEnd => '结束前通知';
+
+  @override
+  String get selectMultipleTimings => '可以选择多个时间';
+
+  @override
+  String get dailyReminder => '每日提醒';
+
+  @override
+  String get dailyReminderDesc => '未打开应用的日子接收通知';
+
+  @override
+  String get dailyReminderTime => '提醒时间';
+
+  @override
+  String get notificationPermissionRequired => '需要通知权限';
+
+  @override
+  String get notificationPermissionDesc => '请允许通知权限以接收时间块提醒';
+
+  @override
+  String get openSettings => '打开设置';
+
+  @override
+  String get permissionGranted => '已授权';
+
+  @override
+  String get permissionDenied => '已拒绝';
+
+  @override
+  String get requestPermission => '请求权限';
+
+  @override
+  String hourBefore(int count) {
+    return '$count小时前';
+  }
+
+  @override
+  String get alarmSettings => '提醒设置';
+
+  @override
+  String get alarmTimingNote => '可多选';
+
+  @override
+  String get noonTime => '中午 (12:00)';
 }

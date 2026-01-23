@@ -190,5 +190,29 @@
   "daily": "日次",
   "weekly": "週次",
   "monthly": "月次",
-  "focusModeTooltip": "集中モード"
+  "focusModeTooltip": "集中モード",
+
+  "startAlarm": "開始アラーム",
+  "endAlarm": "終了アラーム",
+  "notifyBeforeStart": "開始前に通知",
+  "notifyBeforeEnd": "終了前に通知",
+  "selectMultipleTimings": "複数選択可能",
+  "dailyReminder": "毎日のリマインダー",
+  "dailyReminderDesc": "アプリを開いていない日に通知",
+  "dailyReminderTime": "リマインダー時間",
+  "notificationPermissionRequired": "通知権限が必要です",
+  "notificationPermissionDesc": "タイムブロック通知を受け取るには通知権限を許可してください",
+  "openSettings": "設定を開く",
+  "permissionGranted": "権限許可済み",
+  "permissionDenied": "権限拒否",
+  "requestPermission": "権限をリクエスト",
+  "hourBefore": "{count}時間前",
+  "@hourBefore": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "alarmSettings": "アラーム設定",
+  "alarmTimingNote": "複数選択可能",
+  "noonTime": "正午 (12:00)"
 }

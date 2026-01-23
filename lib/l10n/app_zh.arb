@@ -190,5 +190,29 @@
   "daily": "每日",
   "weekly": "每周",
   "monthly": "每月",
-  "focusModeTooltip": "专注模式"
+  "focusModeTooltip": "专注模式",
+
+  "startAlarm": "开始提醒",
+  "endAlarm": "结束提醒",
+  "notifyBeforeStart": "开始前通知",
+  "notifyBeforeEnd": "结束前通知",
+  "selectMultipleTimings": "可以选择多个时间",
+  "dailyReminder": "每日提醒",
+  "dailyReminderDesc": "未打开应用的日子接收通知",
+  "dailyReminderTime": "提醒时间",
+  "notificationPermissionRequired": "需要通知权限",
+  "notificationPermissionDesc": "请允许通知权限以接收时间块提醒",
+  "openSettings": "打开设置",
+  "permissionGranted": "已授权",
+  "permissionDenied": "已拒绝",
+  "requestPermission": "请求权限",
+  "hourBefore": "{count}小时前",
+  "@hourBefore": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "alarmSettings": "提醒设置",
+  "alarmTimingNote": "可多选",
+  "noonTime": "中午 (12:00)"
 }

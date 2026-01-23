@@ -478,4 +478,61 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get focusModeTooltip => 'फोकस मोड';
+
+  @override
+  String get startAlarm => 'प्रारंभ अलार्म';
+
+  @override
+  String get endAlarm => 'समाप्ति अलार्म';
+
+  @override
+  String get notifyBeforeStart => 'शुरू होने से पहले सूचित करें';
+
+  @override
+  String get notifyBeforeEnd => 'समाप्त होने से पहले सूचित करें';
+
+  @override
+  String get selectMultipleTimings => 'एक से अधिक समय चुन सकते हैं';
+
+  @override
+  String get dailyReminder => 'दैनिक रिमाइंडर';
+
+  @override
+  String get dailyReminderDesc => 'जिन दिनों ऐप नहीं खोला उन दिनों सूचना';
+
+  @override
+  String get dailyReminderTime => 'रिमाइंडर समय';
+
+  @override
+  String get notificationPermissionRequired => 'सूचना अनुमति आवश्यक';
+
+  @override
+  String get notificationPermissionDesc =>
+      'टाइम ब्लॉक अलर्ट के लिए सूचना अनुमति दें';
+
+  @override
+  String get openSettings => 'सेटिंग्स खोलें';
+
+  @override
+  String get permissionGranted => 'अनुमति दी गई';
+
+  @override
+  String get permissionDenied => 'अनुमति अस्वीकार';
+
+  @override
+  String get requestPermission => 'अनुमति का अनुरोध करें';
+
+  @override
+  String hourBefore(int count) {
+    return '$count घंटे पहले';
+  }
+
+  @override
+  String get alarmSettings => 'अलार्म सेटिंग्स';
+
+  @override
+  String get alarmTimingNote => 'एकाधिक चयन संभव';
+
+  @override
+  String get noonTime => 'दोपहर (12:00)';
 }

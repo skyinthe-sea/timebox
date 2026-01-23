@@ -10,6 +10,7 @@ import '../../domain/usecases/delete_time_block.dart';
 import '../../domain/usecases/get_time_blocks_for_day.dart';
 import '../../domain/usecases/move_time_block.dart';
 import '../../domain/usecases/update_time_block.dart';
+import '../../../notification/domain/repositories/notification_repository.dart';
 
 part 'calendar_event.dart';
 part 'calendar_state.dart';
@@ -25,6 +26,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   final DeleteTimeBlock deleteTimeBlock;
   final MoveTimeBlock moveTimeBlock;
   final ResizeTimeBlock resizeTimeBlock;
+  final NotificationRepository? notificationRepository;
 
   StreamSubscription? _timeBlocksSubscription;
   final _uuid = const Uuid();
@@ -37,6 +39,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     required this.deleteTimeBlock,
     required this.moveTimeBlock,
     required this.resizeTimeBlock,
+    this.notificationRepository,
   }) : super(CalendarState()) {
     on<WatchTimeBlocksStarted>(_onWatchTimeBlocksStarted);
     on<TimeBlocksUpdated>(_onTimeBlocksUpdated);
@@ -125,7 +128,13 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         status: CalendarStateStatus.failure,
         errorMessage: failure.message,
       )),
-      (_) => {}, // watchTimeBlocksForDay가 자동으로 업데이트
+      (_) {
+        // 알림 예약 (현재 시간과 겹치지 않는 경우만)
+        notificationRepository?.scheduleTimeBlockAlarms(
+          timeBlock,
+          taskTitle: event.title,
+        );
+      },
     );
   }
 
@@ -133,6 +142,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     MoveTimeBlockEvent event,
     Emitter<CalendarState> emit,
   ) async {
+    // 기존 알림 취소
+    await notificationRepository?.cancelTimeBlockAlarms(event.id);
+
     final result = await moveTimeBlock(
       MoveTimeBlockParams(id: event.id, newStartTime: event.newStartTime),
     );
@@ -142,7 +154,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         status: CalendarStateStatus.failure,
         errorMessage: failure.message,
       )),
-      (_) => {},
+      (movedTimeBlock) {
+        // 새 알림 예약
+        notificationRepository?.scheduleTimeBlockAlarms(movedTimeBlock);
+      },
     );
   }
 
@@ -150,6 +165,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     ResizeTimeBlockEvent event,
     Emitter<CalendarState> emit,
   ) async {
+    // 기존 알림 취소
+    await notificationRepository?.cancelTimeBlockAlarms(event.id);
+
     final result = await resizeTimeBlock(
       ResizeTimeBlockParams(
         id: event.id,
@@ -163,7 +181,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         status: CalendarStateStatus.failure,
         errorMessage: failure.message,
       )),
-      (_) => {},
+      (resizedTimeBlock) {
+        // 새 알림 예약
+        notificationRepository?.scheduleTimeBlockAlarms(resizedTimeBlock);
+      },
     );
   }
 
@@ -171,6 +192,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     DeleteTimeBlockEvent event,
     Emitter<CalendarState> emit,
   ) async {
+    // 알림 먼저 취소
+    await notificationRepository?.cancelTimeBlockAlarms(event.id);
+
     final result = await deleteTimeBlock(event.id);
     result.fold(
       (failure) => emit(state.copyWith(
