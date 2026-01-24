@@ -532,4 +532,33 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get noonTime => '정오 (12:00)';
+
+  @override
+  String get mathChallenge => '수학 문제';
+
+  @override
+  String mathChallengeProgress(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get enterAnswer => '답 입력';
+
+  @override
+  String get wrongAnswer => '틀렸습니다. 다시 시도하세요.';
+
+  @override
+  String get focusLockEnabled => '화면 잠금 활성화됨';
+
+  @override
+  String get overlayPermissionRequired => '오버레이 권한이 필요합니다';
+
+  @override
+  String get noActiveTimeBlock => '진행 중인 타임블록이 없습니다';
+
+  @override
+  String get createTimeBlockFirst => '캘린더에서 타임블록을 먼저 생성하세요';
+
+  @override
+  String get exitFocus => '종료하기';
 }

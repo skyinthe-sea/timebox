@@ -8,12 +8,16 @@ class FocusState extends Equatable {
   final FocusSession? currentSession;
   final int remainingSeconds;
   final String? errorMessage;
+  final String? taskTitle;
+  final bool showMathChallenge;
 
   const FocusState({
     this.status = FocusStateStatus.idle,
     this.currentSession,
     this.remainingSeconds = 0,
     this.errorMessage,
+    this.taskTitle,
+    this.showMathChallenge = false,
   });
 
   /// 포맷된 남은 시간 (MM:SS)
@@ -51,6 +55,9 @@ class FocusState extends Equatable {
     String? errorMessage,
     bool clearError = false,
     bool clearSession = false,
+    String? taskTitle,
+    bool clearTaskTitle = false,
+    bool? showMathChallenge,
   }) {
     return FocusState(
       status: status ?? this.status,
@@ -58,10 +65,12 @@ class FocusState extends Equatable {
           clearSession ? null : (currentSession ?? this.currentSession),
       remainingSeconds: remainingSeconds ?? this.remainingSeconds,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      taskTitle: clearTaskTitle ? null : (taskTitle ?? this.taskTitle),
+      showMathChallenge: showMathChallenge ?? this.showMathChallenge,
     );
   }
 
   @override
   List<Object?> get props =>
-      [status, currentSession, remainingSeconds, errorMessage];
+      [status, currentSession, remainingSeconds, errorMessage, taskTitle, showMathChallenge];
 }

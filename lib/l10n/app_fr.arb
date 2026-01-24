@@ -214,5 +214,21 @@
   },
   "alarmSettings": "Paramètres d'alarme",
   "alarmTimingNote": "Sélection multiple possible",
-  "noonTime": "Midi (12:00)"
+  "noonTime": "Midi (12:00)",
+
+  "mathChallenge": "Défi mathématique",
+  "mathChallengeProgress": "{current} / {total}",
+  "@mathChallengeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "enterAnswer": "Entrez la réponse",
+  "wrongAnswer": "Incorrect. Veuillez réessayer.",
+  "focusLockEnabled": "Verrouillage d'écran activé",
+  "overlayPermissionRequired": "Permission de superposition requise",
+  "noActiveTimeBlock": "Aucun bloc de temps actif",
+  "createTimeBlockFirst": "Créez d'abord un bloc de temps dans le calendrier",
+  "exitFocus": "Quitter"
 }

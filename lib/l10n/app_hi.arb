@@ -214,5 +214,21 @@
   },
   "alarmSettings": "अलार्म सेटिंग्स",
   "alarmTimingNote": "एकाधिक चयन संभव",
-  "noonTime": "दोपहर (12:00)"
+  "noonTime": "दोपहर (12:00)",
+
+  "mathChallenge": "गणित चुनौती",
+  "mathChallengeProgress": "{current} / {total}",
+  "@mathChallengeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "enterAnswer": "उत्तर दर्ज करें",
+  "wrongAnswer": "गलत। कृपया पुनः प्रयास करें।",
+  "focusLockEnabled": "स्क्रीन लॉक सक्षम",
+  "overlayPermissionRequired": "ओवरले अनुमति आवश्यक",
+  "noActiveTimeBlock": "कोई सक्रिय टाइम ब्लॉक नहीं",
+  "createTimeBlockFirst": "पहले कैलेंडर से टाइम ब्लॉक बनाएं",
+  "exitFocus": "बाहर निकलें"
 }

@@ -532,4 +532,33 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get noonTime => '中午 (12:00)';
+
+  @override
+  String get mathChallenge => '数学题';
+
+  @override
+  String mathChallengeProgress(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get enterAnswer => '输入答案';
+
+  @override
+  String get wrongAnswer => '答案错误，请重试。';
+
+  @override
+  String get focusLockEnabled => '屏幕锁定已启用';
+
+  @override
+  String get overlayPermissionRequired => '需要悬浮窗权限';
+
+  @override
+  String get noActiveTimeBlock => '没有正在进行的时间块';
+
+  @override
+  String get createTimeBlockFirst => '请先在日历中创建时间块';
+
+  @override
+  String get exitFocus => '退出';
 }

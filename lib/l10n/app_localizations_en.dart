@@ -536,4 +536,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noonTime => 'Noon (12:00)';
+
+  @override
+  String get mathChallenge => 'Math Challenge';
+
+  @override
+  String mathChallengeProgress(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get enterAnswer => 'Enter answer';
+
+  @override
+  String get wrongAnswer => 'Incorrect. Please try again.';
+
+  @override
+  String get focusLockEnabled => 'Screen lock enabled';
+
+  @override
+  String get overlayPermissionRequired => 'Overlay permission required';
+
+  @override
+  String get noActiveTimeBlock => 'No active time block';
+
+  @override
+  String get createTimeBlockFirst =>
+      'Create a time block first from the calendar';
+
+  @override
+  String get exitFocus => 'Exit';
 }

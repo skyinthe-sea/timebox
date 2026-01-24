@@ -87,7 +87,47 @@ class FocusSession {
     return pauseRecords.last.resumeTime == null;
   }
 
-  // TODO: copyWith, props (Equatable), toJson/fromJson 구현
+  /// copyWith 메서드
+  FocusSession copyWith({
+    String? id,
+    String? timeBlockId,
+    String? taskId,
+    bool clearTaskId = false,
+    SessionStatus? status,
+    DateTime? plannedStartTime,
+    DateTime? plannedEndTime,
+    DateTime? actualStartTime,
+    bool clearActualStartTime = false,
+    DateTime? actualEndTime,
+    bool clearActualEndTime = false,
+    List<PauseRecord>? pauseRecords,
+    DateTime? createdAt,
+  }) {
+    return FocusSession(
+      id: id ?? this.id,
+      timeBlockId: timeBlockId ?? this.timeBlockId,
+      taskId: clearTaskId ? null : (taskId ?? this.taskId),
+      status: status ?? this.status,
+      plannedStartTime: plannedStartTime ?? this.plannedStartTime,
+      plannedEndTime: plannedEndTime ?? this.plannedEndTime,
+      actualStartTime: clearActualStartTime
+          ? null
+          : (actualStartTime ?? this.actualStartTime),
+      actualEndTime:
+          clearActualEndTime ? null : (actualEndTime ?? this.actualEndTime),
+      pauseRecords: pauseRecords ?? this.pauseRecords,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is FocusSession && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 /// 일시 정지 기록

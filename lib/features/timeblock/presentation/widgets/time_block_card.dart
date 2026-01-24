@@ -164,15 +164,19 @@ class _TimeBlockCardState extends State<TimeBlockCard>
         final priorityColor = widget.priority != null ? _getPriorityColor(widget.priority!) : null;
         final priorityBarWidth = widget.priority != null ? _getPriorityBarWidth(widget.priority!) : 0.0;
 
-        return GestureDetector(
-          onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: widget.height,
-            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Row(
+        return Hero(
+          tag: 'timeblock_${widget.timeBlock.id}',
+          child: Material(
+            type: MaterialType.transparency,
+            child: GestureDetector(
+              onTap: widget.onTap,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: widget.height,
+                margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Row(
                 children: [
                   // 좌측 우선순위 컬러바
                   if (priorityColor != null)
@@ -194,13 +198,15 @@ class _TimeBlockCardState extends State<TimeBlockCard>
                           bottom: BorderSide(color: statusColor, width: 2),
                         ),
                       ),
-                      child: _buildCardContent(theme, title, statusColor),
+                        child: _buildCardContent(theme, title, statusColor),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
+        ),
         );
       },
     );

@@ -214,5 +214,21 @@
   },
   "alarmSettings": "Alarm-Einstellungen",
   "alarmTimingNote": "Mehrfachauswahl möglich",
-  "noonTime": "Mittag (12:00)"
+  "noonTime": "Mittag (12:00)",
+
+  "mathChallenge": "Mathe-Aufgabe",
+  "mathChallengeProgress": "{current} / {total}",
+  "@mathChallengeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "enterAnswer": "Antwort eingeben",
+  "wrongAnswer": "Falsch. Bitte erneut versuchen.",
+  "focusLockEnabled": "Bildschirmsperre aktiviert",
+  "overlayPermissionRequired": "Overlay-Berechtigung erforderlich",
+  "noActiveTimeBlock": "Kein aktiver Zeitblock",
+  "createTimeBlockFirst": "Erstellen Sie zuerst einen Zeitblock im Kalender",
+  "exitFocus": "Beenden"
 }

@@ -209,7 +209,9 @@ Future<void> init() async {
   );
 
   // BLoC
-  sl.registerFactory(() => FocusBloc());
+  sl.registerFactory(
+    () => FocusBloc(sessionDataSource: sl<FocusSessionLocalDataSource>()),
+  );
 
   //===========================================================================
   // Features - Analytics

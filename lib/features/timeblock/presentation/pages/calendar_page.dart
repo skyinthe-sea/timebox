@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../../config/routes/route_names.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../focus/presentation/widgets/focus_mode_transition.dart';
 import '../../../planner/presentation/bloc/planner_bloc.dart';
 import '../../../task/domain/entities/task.dart';
 import '../../domain/entities/time_block.dart';
@@ -173,14 +174,14 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                 ],
               ),
-              // FAB
+              // FAB - 버닝타임!
               Positioned(
                 right: 16,
                 bottom: 16,
                 child: FloatingActionButton(
-                  onPressed: () => context.push(RouteNames.focus),
-                  tooltip: '집중 모드',
-                  child: const Icon(Icons.timer),
+                  onPressed: () => _handleFocusFAB(context, calendarState, l10n),
+                  tooltip: l10n?.focusModeTooltip ?? '버닝타임!',
+                  child: const Icon(Icons.local_fire_department),
                 ),
               ),
             ],
@@ -426,6 +427,82 @@ class _CalendarPageState extends State<CalendarPage> {
     if (difference == -1) return 'Yesterday';
 
     return DateFormat.EEEE().format(date);
+  }
+
+  /// FAB 클릭 시 집중 모드 처리
+  void _handleFocusFAB(
+    BuildContext context,
+    CalendarState calendarState,
+    AppLocalizations? l10n,
+  ) {
+    final currentBlock = calendarState.currentTimeBlock;
+
+    if (currentBlock != null) {
+      // 현재 진행 중인 타임블록이 있으면 집중 모드로 전환
+      _navigateToFocusWithAnimation(context, currentBlock);
+    } else {
+      // 타임블록이 없으면 안내 메시지 표시
+      _showNoTimeBlockMessage(context, l10n);
+    }
+  }
+
+  /// 애니메이션과 함께 집중 모드로 이동
+  void _navigateToFocusWithAnimation(
+    BuildContext context,
+    TimeBlock timeBlock,
+  ) {
+    // 연결된 Task의 제목 찾기
+    String? taskTitle;
+    try {
+      final plannerState = context.read<PlannerBloc>().state;
+      if (timeBlock.taskId != null) {
+        final task = plannerState.tasks.firstWhere(
+          (t) => t.id == timeBlock.taskId,
+        );
+        taskTitle = task.title;
+      }
+    } catch (_) {
+      // PlannerBloc이 없거나 Task를 찾을 수 없는 경우
+    }
+
+    Navigator.of(context).push(
+      FocusModePageRoute(
+        timeBlock: timeBlock,
+        taskTitle: taskTitle ?? timeBlock.title,
+      ),
+    );
+  }
+
+  /// 진행 중인 타임블록이 없을 때 안내 메시지 표시
+  void _showNoTimeBlockMessage(BuildContext context, AppLocalizations? l10n) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n?.noActiveTimeBlock ?? '진행 중인 타임블록이 없습니다',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n?.createTimeBlockFirst ?? '캘린더에서 타임블록을 먼저 생성하세요',
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: l10n?.quickStart ?? '빠른 시작',
+          onPressed: () {
+            // 빠른 시작 - 타임블록 없이 집중 모드로 이동
+            context.push(RouteNames.focus);
+          },
+        ),
+      ),
+    );
   }
 
   /// Task ID별 우선순위 맵 생성

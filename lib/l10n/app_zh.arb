@@ -214,5 +214,21 @@
   },
   "alarmSettings": "提醒设置",
   "alarmTimingNote": "可多选",
-  "noonTime": "中午 (12:00)"
+  "noonTime": "中午 (12:00)",
+
+  "mathChallenge": "数学题",
+  "mathChallengeProgress": "{current} / {total}",
+  "@mathChallengeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "enterAnswer": "输入答案",
+  "wrongAnswer": "答案错误，请重试。",
+  "focusLockEnabled": "屏幕锁定已启用",
+  "overlayPermissionRequired": "需要悬浮窗权限",
+  "noActiveTimeBlock": "没有正在进行的时间块",
+  "createTimeBlockFirst": "请先在日历中创建时间块",
+  "exitFocus": "退出"
 }

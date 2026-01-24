@@ -228,5 +228,21 @@
   },
   "alarmSettings": "알림 설정",
   "alarmTimingNote": "다중 선택 가능",
-  "noonTime": "정오 (12:00)"
+  "noonTime": "정오 (12:00)",
+
+  "mathChallenge": "수학 문제",
+  "mathChallengeProgress": "{current} / {total}",
+  "@mathChallengeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "enterAnswer": "답 입력",
+  "wrongAnswer": "틀렸습니다. 다시 시도하세요.",
+  "focusLockEnabled": "화면 잠금 활성화됨",
+  "overlayPermissionRequired": "오버레이 권한이 필요합니다",
+  "noActiveTimeBlock": "진행 중인 타임블록이 없습니다",
+  "createTimeBlockFirst": "캘린더에서 타임블록을 먼저 생성하세요",
+  "exitFocus": "종료하기"
 }

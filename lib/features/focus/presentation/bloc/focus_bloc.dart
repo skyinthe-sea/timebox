@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/datasources/focus_session_local_datasource.dart';
+import '../../data/models/focus_session_model.dart';
 import '../../domain/entities/focus_session.dart';
 import '../../domain/entities/session_status.dart';
 
@@ -14,15 +16,19 @@ part 'focus_state.dart';
 /// 포커스 모드 상태 관리 (타이머 포함)
 class FocusBloc extends Bloc<FocusEvent, FocusState> {
   Timer? _timer;
+  final FocusSessionLocalDataSource? sessionDataSource;
 
-  FocusBloc() : super(const FocusState()) {
+  FocusBloc({this.sessionDataSource}) : super(const FocusState()) {
     on<StartFocusSession>(_onStartSession);
+    on<StartTimeBlockFocusSession>(_onStartTimeBlockSession);
     on<PauseFocusSession>(_onPauseSession);
     on<ResumeFocusSession>(_onResumeSession);
     on<CompleteFocusSession>(_onCompleteSession);
     on<SkipFocusSession>(_onSkipSession);
     on<TimerTick>(_onTimerTick);
     on<LoadFocusSession>(_onLoadSession);
+    on<RequestEndFocusSession>(_onRequestEndSession);
+    on<EndFocusSessionAfterChallenge>(_onEndSessionAfterChallenge);
   }
 
   void _onStartSession(
@@ -106,6 +112,90 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
     Emitter<FocusState> emit,
   ) {
     // TODO: Load session from repository
+  }
+
+  /// 타임블록 기반 집중 세션 시작
+  Future<void> _onStartTimeBlockSession(
+    StartTimeBlockFocusSession event,
+    Emitter<FocusState> emit,
+  ) async {
+    final now = DateTime.now();
+    final remainingSeconds = event.endTime.difference(now).inSeconds;
+
+    if (remainingSeconds <= 0) {
+      emit(state.copyWith(
+        errorMessage: '타임블록이 이미 종료되었습니다.',
+      ));
+      return;
+    }
+
+    final session = FocusSession(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      timeBlockId: event.timeBlockId,
+      taskId: event.taskId,
+      status: SessionStatus.inProgress,
+      plannedStartTime: now,
+      plannedEndTime: event.endTime,
+      actualStartTime: now,
+      createdAt: now,
+    );
+
+    // 세션 저장
+    await _saveSession(session);
+
+    emit(state.copyWith(
+      status: FocusStateStatus.running,
+      currentSession: session,
+      remainingSeconds: remainingSeconds,
+      taskTitle: event.taskTitle,
+      clearError: true,
+    ));
+
+    _startTimer();
+  }
+
+  /// 세션 종료 요청 (수학 문제 다이얼로그 표시)
+  void _onRequestEndSession(
+    RequestEndFocusSession event,
+    Emitter<FocusState> emit,
+  ) {
+    emit(state.copyWith(showMathChallenge: true));
+  }
+
+  /// 수학 문제 해제 후 세션 종료
+  Future<void> _onEndSessionAfterChallenge(
+    EndFocusSessionAfterChallenge event,
+    Emitter<FocusState> emit,
+  ) async {
+    _timer?.cancel();
+
+    // 세션 완료 처리
+    if (state.currentSession != null) {
+      final completedSession = state.currentSession!.copyWith(
+        status: SessionStatus.completed,
+        actualEndTime: DateTime.now(),
+      );
+      await _saveSession(completedSession);
+    }
+
+    emit(state.copyWith(
+      status: FocusStateStatus.completed,
+      remainingSeconds: 0,
+      showMathChallenge: false,
+    ));
+  }
+
+  /// 세션 저장
+  Future<void> _saveSession(FocusSession session) async {
+    if (sessionDataSource != null) {
+      try {
+        await sessionDataSource!.saveSession(
+          FocusSessionModel.fromEntity(session),
+        );
+      } catch (e) {
+        // 저장 실패 시 로그만 남김
+      }
+    }
   }
 
   void _startTimer() {

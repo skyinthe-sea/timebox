@@ -214,5 +214,21 @@
   },
   "alarmSettings": "Alarm Settings",
   "alarmTimingNote": "Multiple selection available",
-  "noonTime": "Noon (12:00)"
+  "noonTime": "Noon (12:00)",
+
+  "mathChallenge": "Math Challenge",
+  "mathChallengeProgress": "{current} / {total}",
+  "@mathChallengeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "enterAnswer": "Enter answer",
+  "wrongAnswer": "Incorrect. Please try again.",
+  "focusLockEnabled": "Screen lock enabled",
+  "overlayPermissionRequired": "Overlay permission required",
+  "noActiveTimeBlock": "No active time block",
+  "createTimeBlockFirst": "Create a time block first from the calendar",
+  "exitFocus": "Exit"
 }

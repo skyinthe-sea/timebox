@@ -214,5 +214,21 @@
   },
   "alarmSettings": "アラーム設定",
   "alarmTimingNote": "複数選択可能",
-  "noonTime": "正午 (12:00)"
+  "noonTime": "正午 (12:00)",
+
+  "mathChallenge": "計算問題",
+  "mathChallengeProgress": "{current} / {total}",
+  "@mathChallengeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "enterAnswer": "答えを入力",
+  "wrongAnswer": "不正解です。もう一度お試しください。",
+  "focusLockEnabled": "画面ロックが有効です",
+  "overlayPermissionRequired": "オーバーレイ権限が必要です",
+  "noActiveTimeBlock": "進行中のタイムブロックがありません",
+  "createTimeBlockFirst": "まずカレンダーでタイムブロックを作成してください",
+  "exitFocus": "終了する"
 }

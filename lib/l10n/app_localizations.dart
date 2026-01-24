@@ -1133,6 +1133,60 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'정오 (12:00)'**
   String get noonTime;
+
+  /// No description provided for @mathChallenge.
+  ///
+  /// In ko, this message translates to:
+  /// **'수학 문제'**
+  String get mathChallenge;
+
+  /// No description provided for @mathChallengeProgress.
+  ///
+  /// In ko, this message translates to:
+  /// **'{current} / {total}'**
+  String mathChallengeProgress(int current, int total);
+
+  /// No description provided for @enterAnswer.
+  ///
+  /// In ko, this message translates to:
+  /// **'답 입력'**
+  String get enterAnswer;
+
+  /// No description provided for @wrongAnswer.
+  ///
+  /// In ko, this message translates to:
+  /// **'틀렸습니다. 다시 시도하세요.'**
+  String get wrongAnswer;
+
+  /// No description provided for @focusLockEnabled.
+  ///
+  /// In ko, this message translates to:
+  /// **'화면 잠금 활성화됨'**
+  String get focusLockEnabled;
+
+  /// No description provided for @overlayPermissionRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'오버레이 권한이 필요합니다'**
+  String get overlayPermissionRequired;
+
+  /// No description provided for @noActiveTimeBlock.
+  ///
+  /// In ko, this message translates to:
+  /// **'진행 중인 타임블록이 없습니다'**
+  String get noActiveTimeBlock;
+
+  /// No description provided for @createTimeBlockFirst.
+  ///
+  /// In ko, this message translates to:
+  /// **'캘린더에서 타임블록을 먼저 생성하세요'**
+  String get createTimeBlockFirst;
+
+  /// No description provided for @exitFocus.
+  ///
+  /// In ko, this message translates to:
+  /// **'종료하기'**
+  String get exitFocus;
 }
 
 class _AppLocalizationsDelegate

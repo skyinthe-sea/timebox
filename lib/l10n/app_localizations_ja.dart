@@ -532,4 +532,33 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get noonTime => '正午 (12:00)';
+
+  @override
+  String get mathChallenge => '計算問題';
+
+  @override
+  String mathChallengeProgress(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get enterAnswer => '答えを入力';
+
+  @override
+  String get wrongAnswer => '不正解です。もう一度お試しください。';
+
+  @override
+  String get focusLockEnabled => '画面ロックが有効です';
+
+  @override
+  String get overlayPermissionRequired => 'オーバーレイ権限が必要です';
+
+  @override
+  String get noActiveTimeBlock => '進行中のタイムブロックがありません';
+
+  @override
+  String get createTimeBlockFirst => 'まずカレンダーでタイムブロックを作成してください';
+
+  @override
+  String get exitFocus => '終了する';
 }
