@@ -39,6 +39,9 @@ class NotificationService {
 
   bool _isInitialized = false;
 
+  /// 알림 서비스 사용 가능 여부
+  bool get isAvailable => _isInitialized;
+
   /// 서비스 초기화
   ///
   /// 앱 시작 시 main()에서 호출
@@ -47,8 +50,14 @@ class NotificationService {
 
     // 타임존 초기화
     tz.initializeTimeZones();
-    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    try {
+      final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    } catch (e) {
+      // 시뮬레이터나 플러그인 미지원 환경에서는 기본 타임존 사용
+      debugPrint('FlutterTimezone failed, using fallback: $e');
+      tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
+    }
 
     // Android 설정
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -65,12 +74,17 @@ class NotificationService {
       iOS: iosSettings,
     );
 
-    await _plugin.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: _onNotificationTapped,
-    );
-
-    _isInitialized = true;
+    try {
+      await _plugin.initialize(
+        initSettings,
+        onDidReceiveNotificationResponse: _onNotificationTapped,
+      );
+      _isInitialized = true;
+    } catch (e) {
+      // Hot restart 또는 시뮬레이터에서 네이티브 플러그인 미지원
+      debugPrint('NotificationService initialization failed: $e');
+      debugPrint('Notifications will be disabled for this session.');
+    }
   }
 
   /// 알림 탭 핸들러
@@ -84,6 +98,8 @@ class NotificationService {
   /// Android 13+, iOS 모두 처리
   /// 반환: 권한 허용 여부
   Future<bool> requestPermissions() async {
+    if (!_isInitialized) return false;
+
     if (Platform.isAndroid) {
       // Android 13+ (API 33+) POST_NOTIFICATIONS
       final notificationStatus = await Permission.notification.request();
@@ -108,6 +124,8 @@ class NotificationService {
 
   /// 권한 상태 확인
   Future<bool> hasPermissions() async {
+    if (!_isInitialized) return false;
+
     if (Platform.isAndroid) {
       return await Permission.notification.isGranted;
     } else if (Platform.isIOS) {
@@ -134,6 +152,8 @@ class NotificationService {
     required DateTime scheduledTime,
     String? payload,
   }) async {
+    if (!_isInitialized) return;
+
     // 과거 시간이면 스케줄링하지 않음
     if (scheduledTime.isBefore(DateTime.now())) {
       debugPrint('Skipping past notification: $scheduledTime');
@@ -178,6 +198,8 @@ class NotificationService {
 
   /// 특정 알림 취소
   Future<void> cancelNotification(int id) async {
+    if (!_isInitialized) return;
+
     await _plugin.cancel(id);
     debugPrint('Cancelled notification: id=$id');
   }
@@ -191,12 +213,16 @@ class NotificationService {
 
   /// 모든 알림 취소
   Future<void> cancelAllNotifications() async {
+    if (!_isInitialized) return;
+
     await _plugin.cancelAll();
     debugPrint('Cancelled all notifications');
   }
 
   /// 대기 중인 알림 조회
   Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+    if (!_isInitialized) return [];
+
     return await _plugin.pendingNotificationRequests();
   }
 

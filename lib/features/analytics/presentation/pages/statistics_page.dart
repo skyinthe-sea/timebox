@@ -36,115 +36,130 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('통계'),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<StatisticsBloc>().add(const RefreshStatistics());
-            },
-          ),
-        ],
-      ),
-      body: BlocBuilder<StatisticsBloc, StatisticsState>(
-        builder: (context, state) {
-          if (state.status == StatisticsStatus.loading && !state.hasData) {
-            return const Center(child: LoadingIndicator());
-          }
+    return BlocBuilder<StatisticsBloc, StatisticsState>(
+      builder: (context, state) {
+        if (state.status == StatisticsStatus.loading && !state.hasData) {
+          return const Center(child: LoadingIndicator());
+        }
 
-          if (state.status == StatisticsStatus.error && !state.hasData) {
-            return _buildErrorState(context, state.errorMessage);
-          }
+        if (state.status == StatisticsStatus.error && !state.hasData) {
+          return _buildErrorState(context, state.errorMessage);
+        }
 
-          return RefreshIndicator(
-            onRefresh: () async {
-              context.read<StatisticsBloc>().add(const RefreshStatistics());
-            },
-            child: CustomScrollView(
-              slivers: [
-                // 기간 선택 탭
-                SliverToBoxAdapter(
-                  child: _buildPeriodSelector(context, state),
-                ),
-
-                // 생산성 점수 카드
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: ProductivityScoreCard(
-                      score: state.todayStats?.score ?? 0,
-                      scoreChange: state.scoreChange,
-                      title: '생산성 점수',
+        return Column(
+          children: [
+            // 헤더
+            Container(
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '통계',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ),
-
-                // 오늘의 하이라이트
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '오늘의 하이라이트',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        HighlightsSection(
-                          completedTasks: state.completedTasks,
-                          focusMinutes: state.focusMinutes,
-                          timeDifferenceMinutes: state.timeDifferenceMinutes,
-                          top3Completed:
-                              state.dailySummary?.top3CompletedCount ?? 0,
-                        ),
-                      ],
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () {
+                      context.read<StatisticsBloc>().add(const RefreshStatistics());
+                    },
                   ),
-                ),
-
-                // 주간 트렌드 차트 (주간/월간 뷰에서만)
-                if (state.currentPeriod != StatsPeriod.daily &&
-                    state.periodStats.isNotEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: _buildTrendChart(context, state),
-                    ),
-                  ),
-
-                // 태그별 분석 차트
-                if (state.tagStats.isNotEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: _buildTagChart(context, state),
-                    ),
-                  ),
-
-                // 인사이트 섹션
-                if (state.insights.isNotEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: _buildInsightsSection(context, state),
-                    ),
-                  ),
-
-                // 하단 여백
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 32),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        },
-      ),
+            // 콘텐츠
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<StatisticsBloc>().add(const RefreshStatistics());
+                },
+                child: CustomScrollView(
+                  slivers: [
+                    // 기간 선택 탭
+                    SliverToBoxAdapter(
+                      child: _buildPeriodSelector(context, state),
+                    ),
+
+                    // 생산성 점수 카드
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: ProductivityScoreCard(
+                          score: state.todayStats?.score ?? 0,
+                          scoreChange: state.scoreChange,
+                          title: '생산성 점수',
+                        ),
+                      ),
+                    ),
+
+                    // 오늘의 하이라이트
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '오늘의 하이라이트',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            HighlightsSection(
+                              completedTasks: state.completedTasks,
+                              focusMinutes: state.focusMinutes,
+                              timeDifferenceMinutes: state.timeDifferenceMinutes,
+                              top3Completed:
+                                  state.dailySummary?.top3CompletedCount ?? 0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // 주간 트렌드 차트 (주간/월간 뷰에서만)
+                    if (state.currentPeriod != StatsPeriod.daily &&
+                        state.periodStats.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: _buildTrendChart(context, state),
+                        ),
+                      ),
+
+                    // 태그별 분석 차트
+                    if (state.tagStats.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: _buildTagChart(context, state),
+                        ),
+                      ),
+
+                    // 인사이트 섹션
+                    if (state.insights.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: _buildInsightsSection(context, state),
+                        ),
+                      ),
+
+                    // 하단 여백
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 32),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -152,7 +167,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: SegmentedButton<StatsPeriod>(
         segments: const [
           ButtonSegment(

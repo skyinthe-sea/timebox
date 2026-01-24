@@ -25,65 +25,71 @@ class SettingsPage extends StatelessWidget {
 
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(l10n.settings),
-          ),
-          body: ListView(
-            children: [
-              // 외관 섹션
-              _buildSectionHeader(theme, l10n.appearance),
-              _buildThemeTile(context, state, l10n),
-              _buildLanguageTile(context, state, l10n),
-
-              const Divider(),
-
-              // 알림 섹션
-              _buildSectionHeader(theme, l10n.notifications),
-              _buildNotificationMasterTile(context, state, l10n),
-              if (!state.hasNotificationPermission && state.notificationsEnabled)
-                _buildPermissionWarningTile(context, l10n),
-              if (state.notificationsEnabled) ...[
-                _buildStartAlarmSection(context, state, l10n, theme),
-                _buildEndAlarmSection(context, state, l10n, theme),
-                const SizedBox(height: 8),
-                _buildDailyReminderSection(context, state, l10n, theme),
-              ],
-
-              const Divider(),
-
-              // 캘린더 섹션
-              _buildSectionHeader(theme, l10n.calendarSync),
-              _buildCalendarSyncTile(context, l10n),
-
-              const Divider(),
-
-              // 시간 설정 섹션
-              _buildSectionHeader(theme, l10n.timeSettings),
-              _buildDayTimeTile(context, state, l10n),
-              _buildDefaultDurationTile(context, state, l10n),
-
-              const Divider(),
-
-              // 데이터 섹션
-              _buildSectionHeader(theme, l10n.data),
-              _buildExportTile(context, l10n),
-              _buildResetTile(context, l10n),
-
-              const SizedBox(height: 24),
-
-              // 앱 정보
-              Center(
+        return Column(
+          children: [
+            // 헤더
+            Container(
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Center(
                 child: Text(
-                  'Timebox Planner v1.0.0',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
+                  l10n.settings,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            ),
+            // 콘텐츠
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  // 외관 섹션
+                  _buildSectionHeader(theme, l10n.appearance),
+                  _buildThemeTile(context, state, l10n),
+                  _buildLanguageTile(context, state, l10n),
+                  const Divider(),
+                  // 알림 섹션
+                  _buildSectionHeader(theme, l10n.notifications),
+                  _buildNotificationMasterTile(context, state, l10n),
+                  if (!state.hasNotificationPermission && state.notificationsEnabled)
+                    _buildPermissionWarningTile(context, l10n),
+                  if (state.notificationsEnabled) ...[
+                    _buildStartAlarmSection(context, state, l10n, theme),
+                    _buildEndAlarmSection(context, state, l10n, theme),
+                    const SizedBox(height: 8),
+                    _buildDailyReminderSection(context, state, l10n, theme),
+                  ],
+                  const Divider(),
+                  // 캘린더 섹션
+                  _buildSectionHeader(theme, l10n.calendarSync),
+                  _buildCalendarSyncTile(context, l10n),
+                  const Divider(),
+                  // 시간 설정 섹션
+                  _buildSectionHeader(theme, l10n.timeSettings),
+                  _buildDayTimeTile(context, state, l10n),
+                  _buildDefaultDurationTile(context, state, l10n),
+                  const Divider(),
+                  // 데이터 섹션
+                  _buildSectionHeader(theme, l10n.data),
+                  _buildExportTile(context, l10n),
+                  _buildResetTile(context, l10n),
+                  const SizedBox(height: 24),
+                  // 앱 정보
+                  Center(
+                    child: Text(
+                      'Timebox Planner v1.0.0',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.outline,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ],
         );
       },
     );
@@ -91,7 +97,7 @@ class SettingsPage extends StatelessWidget {
 
   Widget _buildSectionHeader(ThemeData theme, String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Text(
         title,
         style: theme.textTheme.titleSmall?.copyWith(

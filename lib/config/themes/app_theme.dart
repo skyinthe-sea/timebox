@@ -30,7 +30,10 @@ class AppTheme {
       textTheme: AppTextStyles.textTheme,
       appBarTheme: const AppBarTheme(
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
+        toolbarHeight: 40,
+        titleSpacing: 0,
       ),
       // TODO: 추가 테마 설정 (버튼, 카드, 입력 필드 등)
     );
@@ -56,7 +59,10 @@ class AppTheme {
       textTheme: AppTextStyles.textTheme,
       appBarTheme: const AppBarTheme(
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
+        toolbarHeight: 40,
+        titleSpacing: 0,
       ),
       // TODO: 추가 테마 설정 (버튼, 카드, 입력 필드 등)
     );

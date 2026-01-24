@@ -112,3 +112,9 @@ class ExtendTimeBlockEvent extends CalendarEvent {
     required this.newEndTime,
   });
 }
+
+/// 만료된 TimeBlock 일괄 실패 처리
+/// 종료 시간이 현재 시간보다 과거인데 완료되지 않은 블록들을 skipped로 변경
+class MarkExpiredAsSkippedEvent extends CalendarEvent {
+  const MarkExpiredAsSkippedEvent();
+}

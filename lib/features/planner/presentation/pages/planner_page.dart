@@ -38,41 +38,39 @@ class _PlannerPageState extends State<PlannerPage> {
 
     return BlocBuilder<PlannerBloc, PlannerState>(
       builder: (context, state) {
-        return SafeArea(
-          child: Column(
-            children: [
-              // 날짜 헤더
-              _DateHeader(
-                date: state.selectedDate,
-                isToday: state.isToday,
-                onPrevious: () => _changeDate(-1),
-                onNext: () => _changeDate(1),
-                onToday: () =>
-                    context.read<PlannerBloc>().add(const PlannerGoToToday()),
-                onDatePick: () => _pickDate(context, state.selectedDate),
-              ),
+        return Column(
+          children: [
+            // 날짜 헤더
+            _DateHeader(
+              date: state.selectedDate,
+              isToday: state.isToday,
+              onPrevious: () => _changeDate(-1),
+              onNext: () => _changeDate(1),
+              onToday: () =>
+                  context.read<PlannerBloc>().add(const PlannerGoToToday()),
+              onDatePick: () => _pickDate(context, state.selectedDate),
+            ),
 
-              // 완료율 프로그레스 바
-              _CompletionRateBar(
-                completionRate: state.completionRate,
-                taskCount: state.tasks.length,
-              ),
+            // 완료율 프로그레스 바
+            _CompletionRateBar(
+              completionRate: state.completionRate,
+              taskCount: state.tasks.length,
+            ),
 
-              // Top 3 섹션
-              const TopThreeSection(),
+            // Top 3 섹션
+            const TopThreeSection(),
 
-              // 브레인덤프 섹션 헤더
-              _SectionHeader(
-                icon: Icons.lightbulb_outline_rounded,
-                title: l10n?.brainDump ?? 'Brain Dump',
-              ),
+            // 브레인덤프 섹션 헤더
+            _SectionHeader(
+              icon: Icons.lightbulb_outline_rounded,
+              title: l10n?.brainDump ?? 'Brain Dump',
+            ),
 
-              // 브레인덤프
-              const Expanded(
-                child: BrainDumpView(),
-              ),
-            ],
-          ),
+            // 브레인덤프
+            const Expanded(
+              child: BrainDumpView(),
+            ),
+          ],
         );
       },
     );
@@ -125,7 +123,8 @@ class _DateHeader extends StatelessWidget {
     final weekdayFormat = DateFormat.EEEE();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      height: 40,
       child: Row(
         children: [
           // 이전 날짜

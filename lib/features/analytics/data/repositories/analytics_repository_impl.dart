@@ -339,18 +339,35 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     // 실행률
     final executionRate = totalTimeBlocks > 0
         ? (completedTimeBlocks / totalTimeBlocks) * 100
-        : 100.0;
+        : 0.0;
 
     // 평균 시간 오차
     final avgTimeDiff = timeDiffCount > 0 ? timeDiffSum ~/ timeDiffCount : 0;
 
     // 생산성 점수 계산
-    final taskRate = totalTasks > 0 ? completedTasks / totalTasks : 1.0;
+    // 데이터가 전혀 없으면 0점
+    if (totalTasks == 0 && totalTimeBlocks == 0) {
+      return ProductivityStats(
+        date: date,
+        score: 0,
+        completedTasks: 0,
+        totalPlannedTasks: 0,
+        completedTimeBlocks: 0,
+        totalPlannedTimeBlocks: 0,
+        executionRate: 0,
+        totalPlannedTime: Duration.zero,
+        totalActualTime: Duration.zero,
+        focusTime: Duration(minutes: focusMinutes),
+        averageTimeDifference: Duration.zero,
+      );
+    }
+
+    final taskRate = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
     final timeAccuracy = plannedMinutes > 0
         ? (1 - (avgTimeDiff.abs() / plannedMinutes)).clamp(0.0, 1.0)
-        : 1.0;
+        : 0.0;
     final blockRate =
-        totalTimeBlocks > 0 ? completedTimeBlocks / totalTimeBlocks : 1.0;
+        totalTimeBlocks > 0 ? completedTimeBlocks / totalTimeBlocks : 0.0;
 
     final score =
         ((taskRate * 0.3 + timeAccuracy * 0.3 + blockRate * 0.4) * 100).round();
