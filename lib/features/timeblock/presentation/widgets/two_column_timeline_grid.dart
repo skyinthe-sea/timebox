@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/utils/date_time_utils.dart';
 import '../../domain/entities/time_block.dart';
+import '../bloc/calendar_bloc.dart';
 import '../cubit/timeline_selection_cubit.dart';
 import '../cubit/timeline_selection_state.dart';
 import 'selection_overlay.dart';
@@ -25,6 +26,9 @@ class TwoColumnTimelineGrid extends StatefulWidget {
   final void Function(String id, DateTime newStart, DateTime newEnd)?
       onTimeBlockResized;
 
+  /// 최근에 실패 처리된 TimeBlock ID 목록 (애니메이션용)
+  final List<String> recentlySkippedIds;
+
   const TwoColumnTimelineGrid({
     super.key,
     required this.date,
@@ -34,6 +38,7 @@ class TwoColumnTimelineGrid extends StatefulWidget {
     this.onTimeBlockTap,
     this.onTimeBlockMoved,
     this.onTimeBlockResized,
+    this.recentlySkippedIds = const [],
   });
 
   @override
@@ -216,26 +221,267 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     final top = startMinutesFromDayStart * _slotHeight / 30;
     final height = durationMinutes * _slotHeight / 30;
 
+    // 완료/실패된 블록은 스와이프 비활성화
+    final isFinished = timeBlock.status == TimeBlockStatus.completed ||
+        timeBlock.status == TimeBlockStatus.skipped;
+
+    final animateToSkipped = widget.recentlySkippedIds.contains(timeBlock.id);
+
     return Positioned(
       top: top,
       left: _blockPadding,
       right: _blockPadding,
-      child: TimeBlockCard(
-        timeBlock: timeBlock,
-        height: height.clamp(20, double.infinity),
-        onTap: () => widget.onTimeBlockTap?.call(timeBlock),
-        onResizeTop: (delta) {
-          final newStart = timeBlock.startTime.add(
-              Duration(minutes: (delta / (_slotHeight / 30)).round()));
-          widget.onTimeBlockResized
-              ?.call(timeBlock.id, newStart, timeBlock.endTime);
-        },
-        onResizeBottom: (delta) {
-          final newEnd = timeBlock.endTime.add(
-              Duration(minutes: (delta / (_slotHeight / 30)).round()));
-          widget.onTimeBlockResized
-              ?.call(timeBlock.id, timeBlock.startTime, newEnd);
-        },
+      child: isFinished
+          ? TimeBlockCard(
+              timeBlock: timeBlock,
+              height: height.clamp(20, double.infinity),
+              onTap: () => widget.onTimeBlockTap?.call(timeBlock),
+              animateToSkipped: animateToSkipped,
+            )
+          : Dismissible(
+              key: Key('dismissible_${timeBlock.id}'),
+              direction: DismissDirection.horizontal,
+              // 오른쪽으로 스와이프 배경 (완료)
+              background: _buildSwipeBackground(
+                alignment: Alignment.centerLeft,
+                color: AppColors.successLight,
+                icon: Icons.check_circle_outline,
+                label: '완료',
+              ),
+              // 왼쪽으로 스와이프 배경 (삭제)
+              secondaryBackground: _buildSwipeBackground(
+                alignment: Alignment.centerRight,
+                color: AppColors.errorLight,
+                icon: Icons.delete_outline,
+                label: '삭제',
+              ),
+              confirmDismiss: (direction) async {
+                if (direction == DismissDirection.endToStart) {
+                  // 왼쪽 스와이프: 삭제 확인
+                  return await _showDeleteConfirmDialog(context, timeBlock);
+                } else {
+                  // 오른쪽 스와이프: 완료/실패 선택
+                  await _showCompletionDialog(context, timeBlock);
+                  return false; // Dismissible 애니메이션 취소
+                }
+              },
+              onDismissed: (direction) {
+                if (direction == DismissDirection.endToStart) {
+                  // 삭제 처리
+                  context.read<CalendarBloc>().add(
+                        DeleteTimeBlockEvent(timeBlock.id),
+                      );
+                }
+              },
+              child: TimeBlockCard(
+                timeBlock: timeBlock,
+                height: height.clamp(20, double.infinity),
+                onTap: () => widget.onTimeBlockTap?.call(timeBlock),
+                onResizeTop: (delta) {
+                  final newStart = timeBlock.startTime.add(
+                      Duration(minutes: (delta / (_slotHeight / 30)).round()));
+                  widget.onTimeBlockResized
+                      ?.call(timeBlock.id, newStart, timeBlock.endTime);
+                },
+                onResizeBottom: (delta) {
+                  final newEnd = timeBlock.endTime.add(
+                      Duration(minutes: (delta / (_slotHeight / 30)).round()));
+                  widget.onTimeBlockResized
+                      ?.call(timeBlock.id, timeBlock.startTime, newEnd);
+                },
+                animateToSkipped: animateToSkipped,
+              ),
+            ),
+    );
+  }
+
+  Widget _buildSwipeBackground({
+    required Alignment alignment,
+    required Color color,
+    required IconData icon,
+    required String label,
+  }) {
+    return Container(
+      alignment: alignment,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (alignment == Alignment.centerRight) ...[
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(width: 4),
+          ],
+          Icon(icon, color: color, size: 20),
+          if (alignment == Alignment.centerLeft) ...[
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<bool?> _showDeleteConfirmDialog(
+    BuildContext context,
+    TimeBlock timeBlock,
+  ) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('타임블록 삭제'),
+        content: Text(
+          '${timeBlock.title ?? "이 타임블록"}을(를) 삭제하시겠습니까?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('취소'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.errorLight,
+            ),
+            child: const Text('삭제'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showCompletionDialog(
+    BuildContext context,
+    TimeBlock timeBlock,
+  ) async {
+    final bloc = context.read<CalendarBloc>();
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // 핸들
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // 제목
+                Text(
+                  '타임블록 결과',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  timeBlock.title ?? '제목 없음',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                ),
+                const SizedBox(height: 24),
+                // 버튼들
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          bloc.add(UpdateTimeBlockStatusEvent(
+                            id: timeBlock.id,
+                            status: TimeBlockStatus.skipped,
+                          ));
+                          Navigator.pop(ctx);
+                          _showResultSnackBar(context, false);
+                        },
+                        icon: const Icon(Icons.cancel_outlined),
+                        label: const Text('미완료'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.errorLight,
+                          side: BorderSide(color: AppColors.errorLight),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: () {
+                          bloc.add(UpdateTimeBlockStatusEvent(
+                            id: timeBlock.id,
+                            status: TimeBlockStatus.completed,
+                          ));
+                          Navigator.pop(ctx);
+                          _showResultSnackBar(context, true);
+                        },
+                        icon: const Icon(Icons.check_circle_outline),
+                        label: const Text('완료'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.successLight,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showResultSnackBar(BuildContext context, bool isCompleted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(
+              isCompleted ? Icons.check_circle : Icons.cancel,
+              color: Colors.white,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Text(isCompleted ? '완료 처리되었습니다' : '미완료 처리되었습니다'),
+          ],
+        ),
+        backgroundColor: isCompleted ? AppColors.successLight : AppColors.errorLight,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
       ),
     );
   }

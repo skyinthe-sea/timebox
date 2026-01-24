@@ -122,6 +122,7 @@ class StatCard extends StatelessWidget {
 /// 하이라이트 섹션 (2x2 그리드)
 class HighlightsSection extends StatelessWidget {
   final int completedTasks;
+  final int skippedTasks;
   final int focusMinutes;
   final int timeDifferenceMinutes;
   final int top3Completed;
@@ -129,6 +130,7 @@ class HighlightsSection extends StatelessWidget {
   const HighlightsSection({
     super.key,
     required this.completedTasks,
+    this.skippedTasks = 0,
     required this.focusMinutes,
     required this.timeDifferenceMinutes,
     required this.top3Completed,
@@ -144,7 +146,7 @@ class HighlightsSection extends StatelessWidget {
               child: StatCard(
                 icon: Icons.check_circle_outline,
                 value: completedTasks,
-                label: '완료한 Task',
+                label: '완료',
                 suffix: '개',
                 color: AppColors.successLight,
               ),
@@ -152,11 +154,11 @@ class HighlightsSection extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: StatCard(
-                icon: Icons.timer_outlined,
-                value: focusMinutes,
-                label: '집중 시간',
-                isTime: true,
-                color: AppColors.primaryLight,
+                icon: Icons.cancel_outlined,
+                value: skippedTasks,
+                label: '미완료',
+                suffix: '개',
+                color: AppColors.errorLight,
               ),
             ),
           ],
@@ -166,16 +168,11 @@ class HighlightsSection extends StatelessWidget {
           children: [
             Expanded(
               child: StatCard(
-                icon: timeDifferenceMinutes >= 0
-                    ? Icons.trending_up
-                    : Icons.trending_down,
-                value: timeDifferenceMinutes,
-                label: timeDifferenceMinutes >= 0 ? '절약한 시간' : '초과한 시간',
-                suffix: '분',
-                showSign: true,
-                color: timeDifferenceMinutes >= 0
-                    ? AppColors.successLight
-                    : AppColors.warningLight,
+                icon: Icons.timer_outlined,
+                value: focusMinutes,
+                label: '집중 시간',
+                isTime: true,
+                color: AppColors.primaryLight,
               ),
             ),
             const SizedBox(width: 12),

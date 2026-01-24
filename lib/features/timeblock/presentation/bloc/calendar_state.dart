@@ -9,11 +9,15 @@ class CalendarState extends Equatable {
   final List<TimeBlock> timeBlocks;
   final String? errorMessage;
 
+  /// 최근에 실패 처리된 TimeBlock ID 목록 (애니메이션용)
+  final List<String> recentlySkippedIds;
+
   CalendarState({
     this.status = CalendarStateStatus.initial,
     DateTime? selectedDate,
     this.timeBlocks = const [],
     this.errorMessage,
+    this.recentlySkippedIds = const [],
   }) : selectedDate = selectedDate ?? DateTime.now();
 
   /// 현재 선택된 날짜가 오늘인지
@@ -57,15 +61,21 @@ class CalendarState extends Equatable {
     List<TimeBlock>? timeBlocks,
     String? errorMessage,
     bool clearError = false,
+    List<String>? recentlySkippedIds,
+    bool clearRecentlySkipped = false,
   }) {
     return CalendarState(
       status: status ?? this.status,
       selectedDate: selectedDate ?? this.selectedDate,
       timeBlocks: timeBlocks ?? this.timeBlocks,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      recentlySkippedIds: clearRecentlySkipped
+          ? const []
+          : (recentlySkippedIds ?? this.recentlySkippedIds),
     );
   }
 
   @override
-  List<Object?> get props => [status, selectedDate, timeBlocks, errorMessage];
+  List<Object?> get props =>
+      [status, selectedDate, timeBlocks, errorMessage, recentlySkippedIds];
 }

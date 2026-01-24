@@ -8,6 +8,7 @@ import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../planner/presentation/bloc/planner_bloc.dart';
 import '../../../task/domain/entities/task.dart';
+import '../../domain/entities/time_block.dart';
 import '../bloc/calendar_bloc.dart';
 import '../cubit/timeline_selection_cubit.dart';
 import '../cubit/timeline_selection_state.dart';
@@ -28,10 +29,33 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  bool _hasCheckedExpired = false;
+
   @override
   void initState() {
     super.initState();
     context.read<CalendarBloc>().add(WatchTimeBlocksStarted(DateTime.now()));
+  }
+
+  void _checkAndMarkExpiredBlocks(CalendarState state) {
+    if (_hasCheckedExpired) return;
+    if (state.status != CalendarStateStatus.success) return;
+    if (state.timeBlocks.isEmpty) return;
+
+    // 만료된 타임블록이 있는지 확인
+    final now = DateTime.now();
+    final hasExpired = state.timeBlocks.any((tb) =>
+        tb.endTime.isBefore(now) && tb.status == TimeBlockStatus.pending);
+
+    if (hasExpired) {
+      // 약간의 딜레이 후 실패 처리 (UI 로딩 후 애니메이션 효과)
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          context.read<CalendarBloc>().add(const MarkExpiredAsSkippedEvent());
+        }
+      });
+    }
+    _hasCheckedExpired = true;
   }
 
   @override
@@ -43,6 +67,11 @@ class _CalendarPageState extends State<CalendarPage> {
       create: (_) => TimelineSelectionCubit(),
       child: BlocBuilder<CalendarBloc, CalendarState>(
         builder: (context, calendarState) {
+          // 페이지 로드 후 만료된 타임블록 확인
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _checkAndMarkExpiredBlocks(calendarState);
+          });
+
           if (calendarState.status == CalendarStateStatus.loading) {
             return const LoadingIndicator();
           }
@@ -96,6 +125,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           timeBlocks: calendarState.timeBlocks,
                           startHour: 0,
                           endHour: 24,
+                          recentlySkippedIds: calendarState.recentlySkippedIds,
                           onTimeBlockTap: (tb) {
                             // TODO: 포커스 모드로 이동
                           },

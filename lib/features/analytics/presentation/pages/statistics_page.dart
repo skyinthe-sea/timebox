@@ -111,6 +111,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                             const SizedBox(height: 12),
                             HighlightsSection(
                               completedTasks: state.completedTasks,
+                              skippedTasks: state.skippedTasks,
                               focusMinutes: state.focusMinutes,
                               timeDifferenceMinutes: state.timeDifferenceMinutes,
                               top3Completed:

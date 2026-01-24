@@ -19,6 +19,9 @@ class ProductivityStats {
   /// 완료한 TimeBlock 수
   final int completedTimeBlocks;
 
+  /// 실패(건너뛴) TimeBlock 수
+  final int skippedTimeBlocks;
+
   /// 전체 계획한 TimeBlock 수
   final int totalPlannedTimeBlocks;
 
@@ -43,6 +46,7 @@ class ProductivityStats {
     required this.completedTasks,
     required this.totalPlannedTasks,
     required this.completedTimeBlocks,
+    this.skippedTimeBlocks = 0,
     required this.totalPlannedTimeBlocks,
     required this.executionRate,
     required this.totalPlannedTime,

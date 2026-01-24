@@ -308,6 +308,8 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     final totalTimeBlocks = timeBlocks.length;
     final completedTimeBlocks =
         timeBlocks.where((b) => b.status == 'completed').length;
+    final skippedTimeBlocks =
+        timeBlocks.where((b) => b.status == 'skipped').length;
 
     // 계획/실제 시간
     var plannedMinutes = 0;
@@ -378,6 +380,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       completedTasks: completedTasks,
       totalPlannedTasks: totalTasks,
       completedTimeBlocks: completedTimeBlocks,
+      skippedTimeBlocks: skippedTimeBlocks,
       totalPlannedTimeBlocks: totalTimeBlocks,
       executionRate: executionRate,
       totalPlannedTime: Duration(minutes: plannedMinutes),

@@ -77,8 +77,11 @@ class StatisticsState extends Equatable {
     return todayStats!.score - yesterdayStats!.score;
   }
 
-  /// 오늘 완료한 Task 수
-  int get completedTasks => todayStats?.completedTasks ?? 0;
+  /// 오늘 완료한 TimeBlock 수
+  int get completedTasks => todayStats?.completedTimeBlocks ?? 0;
+
+  /// 오늘 실패(미완료)한 TimeBlock 수
+  int get skippedTasks => todayStats?.skippedTimeBlocks ?? 0;
 
   /// 오늘 총 집중 시간 (분)
   int get focusMinutes => todayStats?.focusTime.inMinutes ?? 0;

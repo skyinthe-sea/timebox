@@ -53,6 +53,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<UpdateTimeBlockStatusEvent>(_onUpdateTimeBlockStatus);
     on<MergeTimeBlocksEvent>(_onMergeTimeBlocks);
     on<ExtendTimeBlockEvent>(_onExtendTimeBlock);
+    on<MarkExpiredAsSkippedEvent>(_onMarkExpiredAsSkipped);
   }
 
   Future<void> _onWatchTimeBlocksStarted(
@@ -289,6 +290,38 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       )),
       (_) => {},
     );
+  }
+
+  Future<void> _onMarkExpiredAsSkipped(
+    MarkExpiredAsSkippedEvent event,
+    Emitter<CalendarState> emit,
+  ) async {
+    final now = DateTime.now();
+    final expiredBlocks = state.timeBlocks.where((tb) =>
+        tb.endTime.isBefore(now) &&
+        tb.status == TimeBlockStatus.pending);
+
+    if (expiredBlocks.isEmpty) return;
+
+    final skippedIds = <String>[];
+
+    for (final block in expiredBlocks) {
+      final result = await updateTimeBlockStatus(
+        UpdateTimeBlockStatusParams(id: block.id, status: TimeBlockStatus.skipped),
+      );
+      result.fold(
+        (failure) {},
+        (_) => skippedIds.add(block.id),
+      );
+    }
+
+    if (skippedIds.isNotEmpty) {
+      emit(state.copyWith(recentlySkippedIds: skippedIds));
+
+      // 애니메이션 후 ID 목록 클리어 (1초 후)
+      await Future.delayed(const Duration(milliseconds: 1000));
+      emit(state.copyWith(clearRecentlySkipped: true));
+    }
   }
 
   @override
