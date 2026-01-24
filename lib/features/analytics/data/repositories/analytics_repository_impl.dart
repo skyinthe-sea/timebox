@@ -414,23 +414,27 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     try {
       final stats = await _calculateDailyStats(date);
 
-      // Top 3 달성 계산
+      // Top 3 달성 계산 (TimeBlock 완료 기준)
       final priority = await dailyPriorityDataSource.getDailyPriority(date);
       var top3Completed = 0;
       if (priority != null) {
-        final tasks = await taskDataSource.getTasksByDate(date);
-        final taskMap = {for (final t in tasks) t.id: t};
+        final timeBlocks = await timeBlockDataSource.getTimeBlocksForDay(date);
+        // TaskId별로 완료된 TimeBlock이 있는지 확인
+        final completedTaskIds = timeBlocks
+            .where((tb) => tb.status == 'completed' && tb.taskId != null)
+            .map((tb) => tb.taskId)
+            .toSet();
 
         if (priority.rank1TaskId != null &&
-            taskMap[priority.rank1TaskId]?.status == 'done') {
+            completedTaskIds.contains(priority.rank1TaskId)) {
           top3Completed++;
         }
         if (priority.rank2TaskId != null &&
-            taskMap[priority.rank2TaskId]?.status == 'done') {
+            completedTaskIds.contains(priority.rank2TaskId)) {
           top3Completed++;
         }
         if (priority.rank3TaskId != null &&
-            taskMap[priority.rank3TaskId]?.status == 'done') {
+            completedTaskIds.contains(priority.rank3TaskId)) {
           top3Completed++;
         }
       }
@@ -629,6 +633,26 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
 
   bool _isSameDate(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  @override
+  Future<Either<Failure, DailyStatsSummary>> getDailyStatsSummary(
+    DateTime date,
+  ) async {
+    try {
+      // 캐시된 데이터 확인
+      final cached = await analyticsDataSource.getDailyStatsSummary(date);
+      if (cached != null) {
+        return Right(cached.toEntity());
+      }
+
+      // 캐시가 없으면 새로 계산하고 저장
+      return saveDailyStatsSummary(date);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
   }
 }
 

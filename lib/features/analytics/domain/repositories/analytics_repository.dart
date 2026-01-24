@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
+import '../entities/daily_stats_summary.dart';
 import '../entities/productivity_stats.dart';
 import '../entities/time_comparison.dart';
 
@@ -56,4 +57,8 @@ abstract class AnalyticsRepository {
 
   /// 일간 통계 스트림 (실시간 업데이트)
   Stream<Either<Failure, ProductivityStats>> watchDailyStats(DateTime date);
+
+  /// 일간 통계 요약 조회 (Top3 달성 등 추가 정보 포함)
+  /// 캐시가 없거나 무효화된 경우 새로 계산
+  Future<Either<Failure, DailyStatsSummary>> getDailyStatsSummary(DateTime date);
 }

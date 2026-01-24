@@ -59,6 +59,13 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       // 히트맵 데이터 로드 (주간/월간만) - 현재 미구현
       // await _loadHourlyProductivity(event.date, event.period);
 
+      // 일간 요약 로드 (Top3 달성 등)
+      final summaryResult = await _analyticsRepository.getDailyStatsSummary(event.date);
+      final dailySummary = summaryResult.fold(
+        (failure) => null,
+        (summary) => summary,
+      );
+
       // 인사이트 생성
       final insights = await _generateInsights(event.date);
 
@@ -68,6 +75,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         yesterdayStats: yesterdayStats,
         periodStats: periodStats,
         tagStats: tagStats,
+        dailySummary: dailySummary,
         insights: insights,
         errorMessage: null,
       ));
