@@ -126,6 +126,7 @@ class _CalendarPageState extends State<CalendarPage> {
                           startHour: 0,
                           endHour: 24,
                           recentlySkippedIds: calendarState.recentlySkippedIds,
+                          taskPriorities: _buildTaskPriorities(context),
                           onTimeBlockTap: (tb) {
                             // TODO: 포커스 모드로 이동
                           },
@@ -425,5 +426,41 @@ class _CalendarPageState extends State<CalendarPage> {
     if (difference == -1) return 'Yesterday';
 
     return DateFormat.EEEE().format(date);
+  }
+
+  /// Task ID별 우선순위 맵 생성
+  ///
+  /// DailyPriority의 Top 3 Task는 high/medium/low 순위로 강조
+  /// 그 외 Task는 자체 priority 사용
+  Map<String, TaskPriority> _buildTaskPriorities(BuildContext context) {
+    try {
+      final plannerState = context.read<PlannerBloc>().state;
+      final priorities = <String, TaskPriority>{};
+
+      // DailyPriority의 Top 3 Task에 우선순위 부여
+      final dailyPriority = plannerState.dailyPriority;
+      if (dailyPriority != null) {
+        if (dailyPriority.rank1TaskId != null) {
+          priorities[dailyPriority.rank1TaskId!] = TaskPriority.high;
+        }
+        if (dailyPriority.rank2TaskId != null) {
+          priorities[dailyPriority.rank2TaskId!] = TaskPriority.medium;
+        }
+        if (dailyPriority.rank3TaskId != null) {
+          priorities[dailyPriority.rank3TaskId!] = TaskPriority.low;
+        }
+      }
+
+      // Top 3에 없는 Task는 자체 priority 사용 (high만 강조)
+      for (final task in plannerState.tasks) {
+        if (!priorities.containsKey(task.id) && task.priority == TaskPriority.high) {
+          priorities[task.id] = TaskPriority.high;
+        }
+      }
+
+      return priorities;
+    } catch (_) {
+      return {};
+    }
   }
 }

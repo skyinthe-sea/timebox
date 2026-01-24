@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/utils/date_time_utils.dart';
+import '../../../task/domain/entities/task.dart';
 import '../../domain/entities/time_block.dart';
 import '../bloc/calendar_bloc.dart';
 import '../cubit/timeline_selection_cubit.dart';
@@ -16,6 +17,7 @@ import 'time_range_label.dart';
 /// - 48개 슬롯 (24시간 × 2열)
 /// - 롱프레스-드래그 선택 지원
 /// - 타임블록 표시
+/// - 우선순위별 강조 표시
 class TwoColumnTimelineGrid extends StatefulWidget {
   final DateTime date;
   final List<TimeBlock> timeBlocks;
@@ -29,6 +31,9 @@ class TwoColumnTimelineGrid extends StatefulWidget {
   /// 최근에 실패 처리된 TimeBlock ID 목록 (애니메이션용)
   final List<String> recentlySkippedIds;
 
+  /// Task ID별 우선순위 맵 (강조 표시용)
+  final Map<String, TaskPriority> taskPriorities;
+
   const TwoColumnTimelineGrid({
     super.key,
     required this.date,
@@ -39,6 +44,7 @@ class TwoColumnTimelineGrid extends StatefulWidget {
     this.onTimeBlockMoved,
     this.onTimeBlockResized,
     this.recentlySkippedIds = const [],
+    this.taskPriorities = const {},
   });
 
   @override
@@ -227,6 +233,11 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
 
     final animateToSkipped = widget.recentlySkippedIds.contains(timeBlock.id);
 
+    // Task ID로 우선순위 조회
+    final priority = timeBlock.taskId != null
+        ? widget.taskPriorities[timeBlock.taskId]
+        : null;
+
     return Positioned(
       top: top,
       left: _blockPadding,
@@ -234,6 +245,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
       child: isFinished
           ? TimeBlockCard(
               timeBlock: timeBlock,
+              priority: priority,
               height: height.clamp(20, double.infinity),
               onTap: () => widget.onTimeBlockTap?.call(timeBlock),
               animateToSkipped: animateToSkipped,
@@ -275,6 +287,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
               },
               child: TimeBlockCard(
                 timeBlock: timeBlock,
+                priority: priority,
                 height: height.clamp(20, double.infinity),
                 onTap: () => widget.onTimeBlockTap?.call(timeBlock),
                 onResizeTop: (delta) {

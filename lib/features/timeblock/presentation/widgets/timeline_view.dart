@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/utils/date_time_utils.dart';
+import '../../../task/domain/entities/task.dart';
 import '../../domain/entities/time_block.dart';
 import 'time_block_card.dart';
 
@@ -20,6 +21,9 @@ class TimelineView extends StatefulWidget {
   final void Function(String id, DateTime newStart, DateTime newEnd)?
       onTimeBlockResized;
 
+  /// Task ID별 우선순위 맵 (강조 표시용)
+  final Map<String, TaskPriority> taskPriorities;
+
   const TimelineView({
     super.key,
     required this.date,
@@ -31,6 +35,7 @@ class TimelineView extends StatefulWidget {
     this.onTaskDropped,
     this.onTimeBlockMoved,
     this.onTimeBlockResized,
+    this.taskPriorities = const {},
   });
 
   @override
@@ -164,12 +169,18 @@ class _TimelineViewState extends State<TimelineView> {
     final top = startMinutesFromDayStart * widget.hourHeight / 60;
     final height = durationMinutes * widget.hourHeight / 60;
 
+    // Task ID로 우선순위 조회
+    final priority = timeBlock.taskId != null
+        ? widget.taskPriorities[timeBlock.taskId]
+        : null;
+
     return Positioned(
       top: top,
       left: 0,
       right: 0,
       child: TimeBlockCard(
         timeBlock: timeBlock,
+        priority: priority,
         height: height.clamp(20, double.infinity),
         onTap: () => widget.onTimeBlockTap?.call(timeBlock),
         onResizeTop: (delta) {

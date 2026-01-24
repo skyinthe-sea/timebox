@@ -237,6 +237,9 @@ Future<void> init() async {
   //===========================================================================
   // Cubit
   sl.registerLazySingleton(
-    () => SettingsCubit(notificationRepository: sl()),
+    () => SettingsCubit(
+      notificationRepository: sl(),
+      sharedPreferences: sl(),
+    ),
   );
 }

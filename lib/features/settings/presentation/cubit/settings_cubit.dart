@@ -1,20 +1,59 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../notification/domain/entities/notification_settings.dart';
 import '../../../notification/domain/repositories/notification_repository.dart';
 
 part 'settings_state.dart';
 
+/// SharedPreferences 키 상수
+const _kThemeMode = 'settings_theme_mode';
+const _kLocale = 'settings_locale';
+const _kDefaultDuration = 'settings_default_duration';
+const _kDayStartHour = 'settings_day_start_hour';
+const _kDayEndHour = 'settings_day_end_hour';
+
 /// Settings Cubit
 ///
 /// 앱 설정 상태 관리
 class SettingsCubit extends Cubit<SettingsState> {
   final NotificationRepository? notificationRepository;
+  final SharedPreferences? sharedPreferences;
 
-  SettingsCubit({this.notificationRepository}) : super(const SettingsState()) {
-    _loadNotificationSettings();
+  SettingsCubit({
+    this.notificationRepository,
+    this.sharedPreferences,
+  }) : super(const SettingsState()) {
+    _loadSettings();
+  }
+
+  /// 모든 설정 로드
+  Future<void> _loadSettings() async {
+    await _loadAppSettings();
+    await _loadNotificationSettings();
+  }
+
+  /// 앱 설정 로드 (테마, 언어 등)
+  Future<void> _loadAppSettings() async {
+    if (sharedPreferences == null) return;
+
+    final themeModeIndex = sharedPreferences!.getInt(_kThemeMode);
+    final localeCode = sharedPreferences!.getString(_kLocale);
+    final defaultDuration = sharedPreferences!.getInt(_kDefaultDuration);
+    final dayStartHour = sharedPreferences!.getInt(_kDayStartHour);
+    final dayEndHour = sharedPreferences!.getInt(_kDayEndHour);
+
+    emit(state.copyWith(
+      themeMode: themeModeIndex != null
+          ? ThemeMode.values[themeModeIndex]
+          : ThemeMode.system,
+      locale: localeCode != null ? Locale(localeCode) : const Locale('ko'),
+      defaultTimeBlockMinutes: defaultDuration ?? 30,
+      dayStartHour: dayStartHour ?? 6,
+      dayEndHour: dayEndHour ?? 24,
+    ));
   }
 
   /// 알림 설정 로드
@@ -67,28 +106,33 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   /// 테마 모드 변경
-  void setThemeMode(ThemeMode themeMode) {
+  Future<void> setThemeMode(ThemeMode themeMode) async {
     emit(state.copyWith(themeMode: themeMode));
+    await sharedPreferences?.setInt(_kThemeMode, themeMode.index);
   }
 
   /// 언어 변경
-  void setLocale(Locale locale) {
+  Future<void> setLocale(Locale locale) async {
     emit(state.copyWith(locale: locale));
+    await sharedPreferences?.setString(_kLocale, locale.languageCode);
   }
 
   /// 기본 타임블록 길이 변경
-  void setDefaultDuration(int minutes) {
+  Future<void> setDefaultDuration(int minutes) async {
     emit(state.copyWith(defaultTimeBlockMinutes: minutes));
+    await sharedPreferences?.setInt(_kDefaultDuration, minutes);
   }
 
   /// 하루 시작 시간 변경
-  void setDayStartHour(int hour) {
+  Future<void> setDayStartHour(int hour) async {
     emit(state.copyWith(dayStartHour: hour));
+    await sharedPreferences?.setInt(_kDayStartHour, hour);
   }
 
   /// 하루 종료 시간 변경
-  void setDayEndHour(int hour) {
+  Future<void> setDayEndHour(int hour) async {
     emit(state.copyWith(dayEndHour: hour));
+    await sharedPreferences?.setInt(_kDayEndHour, hour);
   }
 
   /// 알림 권한 요청
@@ -165,5 +209,12 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> resetToDefaults() async {
     emit(const SettingsState());
     await _saveNotificationSettings();
+
+    // 앱 설정도 초기화
+    await sharedPreferences?.remove(_kThemeMode);
+    await sharedPreferences?.remove(_kLocale);
+    await sharedPreferences?.remove(_kDefaultDuration);
+    await sharedPreferences?.remove(_kDayStartHour);
+    await sharedPreferences?.remove(_kDayEndHour);
   }
 }
