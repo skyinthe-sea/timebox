@@ -135,7 +135,10 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<TimeBlockRepository>(
-    () => TimeBlockRepositoryImpl(localDataSource: sl()),
+    () => TimeBlockRepositoryImpl(
+      localDataSource: sl(),
+      analyticsDataSource: sl<AnalyticsLocalDataSource>(),
+    ),
   );
 
   // Use Cases

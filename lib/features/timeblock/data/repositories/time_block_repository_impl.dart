@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/utils/date_time_utils.dart';
+import '../../../analytics/data/datasources/analytics_local_datasource.dart';
 import '../../domain/entities/time_block.dart';
 import '../../domain/repositories/time_block_repository.dart';
 import '../datasources/time_block_local_datasource.dart';
@@ -11,8 +12,12 @@ import '../models/time_block_model.dart';
 /// TimeBlock Repository 구현
 class TimeBlockRepositoryImpl implements TimeBlockRepository {
   final TimeBlockLocalDataSource localDataSource;
+  final AnalyticsLocalDataSource? analyticsDataSource;
 
-  TimeBlockRepositoryImpl({required this.localDataSource});
+  TimeBlockRepositoryImpl({
+    required this.localDataSource,
+    this.analyticsDataSource,
+  });
 
   @override
   Future<Either<Failure, List<TimeBlock>>> getTimeBlocksForDay(
@@ -88,7 +93,21 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
   @override
   Future<Either<Failure, void>> deleteTimeBlock(String id) async {
     try {
+      // 삭제 전 날짜 정보 먼저 조회
+      final model = await localDataSource.getTimeBlockById(id);
+
       await localDataSource.deleteTimeBlock(id);
+
+      // 통계 캐시 무효화
+      if (model != null && analyticsDataSource != null) {
+        final date = DateTime(
+          model.startTime.year,
+          model.startTime.month,
+          model.startTime.day,
+        );
+        await analyticsDataSource!.deleteDailyStatsSummary(date);
+      }
+
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -189,6 +208,17 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
 
       final updatedModel = model.copyWith(status: status.name);
       final savedModel = await localDataSource.saveTimeBlock(updatedModel);
+
+      // 통계 캐시 무효화
+      if (analyticsDataSource != null) {
+        final date = DateTime(
+          savedModel.startTime.year,
+          savedModel.startTime.month,
+          savedModel.startTime.day,
+        );
+        await analyticsDataSource!.deleteDailyStatsSummary(date);
+      }
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

@@ -227,7 +227,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     final top = startMinutesFromDayStart * _slotHeight / 30;
     final height = durationMinutes * _slotHeight / 30;
 
-    // 완료/실패된 블록은 스와이프 비활성화
+    // 완료/실패된 블록 여부 확인
     final isFinished = timeBlock.status == TimeBlockStatus.completed ||
         timeBlock.status == TimeBlockStatus.skipped;
 
@@ -238,73 +238,85 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
         ? widget.taskPriorities[timeBlock.taskId]
         : null;
 
+    // 상태별 스와이프 라벨/아이콘/색상 결정
+    final String rightSwipeLabel;
+    final IconData rightSwipeIcon;
+    final Color rightSwipeColor;
+
+    if (isFinished) {
+      rightSwipeLabel = '되돌리기';
+      rightSwipeIcon = Icons.undo;
+      rightSwipeColor = AppColors.warningLight;
+    } else {
+      rightSwipeLabel = '완료';
+      rightSwipeIcon = Icons.check_circle_outline;
+      rightSwipeColor = AppColors.successLight;
+    }
+
     return Positioned(
       top: top,
       left: _blockPadding,
       right: _blockPadding,
-      child: isFinished
-          ? TimeBlockCard(
-              timeBlock: timeBlock,
-              priority: priority,
-              height: height.clamp(20, double.infinity),
-              onTap: () => widget.onTimeBlockTap?.call(timeBlock),
-              animateToSkipped: animateToSkipped,
-            )
-          : Dismissible(
-              key: Key('dismissible_${timeBlock.id}'),
-              direction: DismissDirection.horizontal,
-              // 오른쪽으로 스와이프 배경 (완료)
-              background: _buildSwipeBackground(
-                alignment: Alignment.centerLeft,
-                color: AppColors.successLight,
-                icon: Icons.check_circle_outline,
-                label: '완료',
-              ),
-              // 왼쪽으로 스와이프 배경 (삭제)
-              secondaryBackground: _buildSwipeBackground(
-                alignment: Alignment.centerRight,
-                color: AppColors.errorLight,
-                icon: Icons.delete_outline,
-                label: '삭제',
-              ),
-              confirmDismiss: (direction) async {
-                if (direction == DismissDirection.endToStart) {
-                  // 왼쪽 스와이프: 삭제 확인
-                  return await _showDeleteConfirmDialog(context, timeBlock);
-                } else {
-                  // 오른쪽 스와이프: 완료/실패 선택
-                  await _showCompletionDialog(context, timeBlock);
-                  return false; // Dismissible 애니메이션 취소
-                }
-              },
-              onDismissed: (direction) {
-                if (direction == DismissDirection.endToStart) {
-                  // 삭제 처리
-                  context.read<CalendarBloc>().add(
-                        DeleteTimeBlockEvent(timeBlock.id),
-                      );
-                }
-              },
-              child: TimeBlockCard(
-                timeBlock: timeBlock,
-                priority: priority,
-                height: height.clamp(20, double.infinity),
-                onTap: () => widget.onTimeBlockTap?.call(timeBlock),
-                onResizeTop: (delta) {
-                  final newStart = timeBlock.startTime.add(
-                      Duration(minutes: (delta / (_slotHeight / 30)).round()));
+      child: Dismissible(
+        key: Key('dismissible_${timeBlock.id}'),
+        direction: DismissDirection.horizontal,
+        // 오른쪽으로 스와이프 배경 (상태별)
+        background: _buildSwipeBackground(
+          alignment: Alignment.centerLeft,
+          color: rightSwipeColor,
+          icon: rightSwipeIcon,
+          label: rightSwipeLabel,
+        ),
+        // 왼쪽으로 스와이프 배경 (삭제)
+        secondaryBackground: _buildSwipeBackground(
+          alignment: Alignment.centerRight,
+          color: AppColors.errorLight,
+          icon: Icons.delete_outline,
+          label: '삭제',
+        ),
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.endToStart) {
+            // 왼쪽 스와이프: 삭제 확인
+            return await _showDeleteConfirmDialog(context, timeBlock);
+          } else {
+            // 오른쪽 스와이프: 상태 변경 다이얼로그
+            await _showStatusChangeDialog(context, timeBlock);
+            return false; // Dismissible 애니메이션 취소
+          }
+        },
+        onDismissed: (direction) {
+          if (direction == DismissDirection.endToStart) {
+            // 삭제 처리
+            context.read<CalendarBloc>().add(
+                  DeleteTimeBlockEvent(timeBlock.id),
+                );
+          }
+        },
+        child: TimeBlockCard(
+          timeBlock: timeBlock,
+          priority: priority,
+          height: height.clamp(20, double.infinity),
+          onTap: () => widget.onTimeBlockTap?.call(timeBlock),
+          // 완료/미완료 상태에서는 리사이즈 비활성화 유지
+          onResizeTop: isFinished
+              ? null
+              : (delta) {
+                  final newStart = timeBlock.startTime.add(Duration(
+                      minutes: (delta / (_slotHeight / 30)).round()));
                   widget.onTimeBlockResized
                       ?.call(timeBlock.id, newStart, timeBlock.endTime);
                 },
-                onResizeBottom: (delta) {
+          onResizeBottom: isFinished
+              ? null
+              : (delta) {
                   final newEnd = timeBlock.endTime.add(
                       Duration(minutes: (delta / (_slotHeight / 30)).round()));
                   widget.onTimeBlockResized
                       ?.call(timeBlock.id, timeBlock.startTime, newEnd);
                 },
-                animateToSkipped: animateToSkipped,
-              ),
-            ),
+          animateToSkipped: animateToSkipped,
+        ),
+      ),
     );
   }
 
@@ -382,11 +394,14 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     );
   }
 
-  Future<void> _showCompletionDialog(
+  Future<void> _showStatusChangeDialog(
     BuildContext context,
     TimeBlock timeBlock,
   ) async {
     final bloc = context.read<CalendarBloc>();
+    final currentStatus = timeBlock.status;
+    final isCompleted = currentStatus == TimeBlockStatus.completed;
+    final isSkipped = currentStatus == TimeBlockStatus.skipped;
 
     await showModalBottomSheet(
       context: context,
@@ -414,7 +429,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                 const SizedBox(height: 20),
                 // 제목
                 Text(
-                  '타임블록 결과',
+                  isCompleted || isSkipped ? '상태 변경' : '타임블록 결과',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -427,49 +442,141 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                       ),
                 ),
                 const SizedBox(height: 24),
-                // 버튼들
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          bloc.add(UpdateTimeBlockStatusEvent(
-                            id: timeBlock.id,
-                            status: TimeBlockStatus.skipped,
-                          ));
-                          Navigator.pop(ctx);
-                          _showResultSnackBar(context, false);
-                        },
-                        icon: const Icon(Icons.cancel_outlined),
-                        label: const Text('미완료'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.errorLight,
-                          side: BorderSide(color: AppColors.errorLight),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                // 상태별 버튼들
+                if (isCompleted) ...[
+                  // 완료 → 미완료 또는 되돌리기(pending)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            bloc.add(UpdateTimeBlockStatusEvent(
+                              id: timeBlock.id,
+                              status: TimeBlockStatus.pending,
+                            ));
+                            Navigator.pop(ctx);
+                            _showResultSnackBar(context, null, '되돌림 처리되었습니다');
+                          },
+                          icon: const Icon(Icons.undo),
+                          label: const Text('되돌리기'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.warningLight,
+                            side: BorderSide(color: AppColors.warningLight),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: () {
-                          bloc.add(UpdateTimeBlockStatusEvent(
-                            id: timeBlock.id,
-                            status: TimeBlockStatus.completed,
-                          ));
-                          Navigator.pop(ctx);
-                          _showResultSnackBar(context, true);
-                        },
-                        icon: const Icon(Icons.check_circle_outline),
-                        label: const Text('완료'),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.successLight,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            bloc.add(UpdateTimeBlockStatusEvent(
+                              id: timeBlock.id,
+                              status: TimeBlockStatus.skipped,
+                            ));
+                            Navigator.pop(ctx);
+                            _showResultSnackBar(context, false, null);
+                          },
+                          icon: const Icon(Icons.cancel_outlined),
+                          label: const Text('미완료'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.errorLight,
+                            side: BorderSide(color: AppColors.errorLight),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ] else if (isSkipped) ...[
+                  // 미완료 → 완료 또는 되돌리기(pending)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            bloc.add(UpdateTimeBlockStatusEvent(
+                              id: timeBlock.id,
+                              status: TimeBlockStatus.pending,
+                            ));
+                            Navigator.pop(ctx);
+                            _showResultSnackBar(context, null, '되돌림 처리되었습니다');
+                          },
+                          icon: const Icon(Icons.undo),
+                          label: const Text('되돌리기'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.warningLight,
+                            side: BorderSide(color: AppColors.warningLight),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: () {
+                            bloc.add(UpdateTimeBlockStatusEvent(
+                              id: timeBlock.id,
+                              status: TimeBlockStatus.completed,
+                            ));
+                            Navigator.pop(ctx);
+                            _showResultSnackBar(context, true, null);
+                          },
+                          icon: const Icon(Icons.check_circle_outline),
+                          label: const Text('완료'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.successLight,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ] else ...[
+                  // pending → 완료/미완료 (기존 로직)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            bloc.add(UpdateTimeBlockStatusEvent(
+                              id: timeBlock.id,
+                              status: TimeBlockStatus.skipped,
+                            ));
+                            Navigator.pop(ctx);
+                            _showResultSnackBar(context, false, null);
+                          },
+                          icon: const Icon(Icons.cancel_outlined),
+                          label: const Text('미완료'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.errorLight,
+                            side: BorderSide(color: AppColors.errorLight),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: () {
+                            bloc.add(UpdateTimeBlockStatusEvent(
+                              id: timeBlock.id,
+                              status: TimeBlockStatus.completed,
+                            ));
+                            Navigator.pop(ctx);
+                            _showResultSnackBar(context, true, null);
+                          },
+                          icon: const Icon(Icons.check_circle_outline),
+                          label: const Text('완료'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.successLight,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
@@ -478,21 +585,35 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     );
   }
 
-  void _showResultSnackBar(BuildContext context, bool isCompleted) {
+  void _showResultSnackBar(BuildContext context, bool? isCompleted, String? customMessage) {
+    final String message;
+    final Color backgroundColor;
+    final IconData icon;
+
+    if (customMessage != null) {
+      message = customMessage;
+      backgroundColor = AppColors.warningLight;
+      icon = Icons.undo;
+    } else if (isCompleted == true) {
+      message = '완료 처리되었습니다';
+      backgroundColor = AppColors.successLight;
+      icon = Icons.check_circle;
+    } else {
+      message = '미완료 처리되었습니다';
+      backgroundColor = AppColors.errorLight;
+      icon = Icons.cancel;
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            Icon(
-              isCompleted ? Icons.check_circle : Icons.cancel,
-              color: Colors.white,
-              size: 20,
-            ),
+            Icon(icon, color: Colors.white, size: 20),
             const SizedBox(width: 8),
-            Text(isCompleted ? '완료 처리되었습니다' : '미완료 처리되었습니다'),
+            Text(message),
           ],
         ),
-        backgroundColor: isCompleted ? AppColors.successLight : AppColors.errorLight,
+        backgroundColor: backgroundColor,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
       ),
