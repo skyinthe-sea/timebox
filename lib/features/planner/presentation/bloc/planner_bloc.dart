@@ -9,6 +9,7 @@ import '../../../task/domain/usecases/copy_task_to_date.dart';
 import '../../../task/domain/usecases/create_task.dart';
 import '../../../task/domain/usecases/delete_task.dart';
 import '../../../task/domain/usecases/rollover_task.dart';
+import '../../../task/domain/usecases/update_task.dart';
 import '../../../task/domain/usecases/watch_tasks_by_date.dart';
 import '../../../timeblock/domain/entities/time_block.dart';
 import '../../../timeblock/domain/usecases/create_time_block.dart';
@@ -38,6 +39,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
   final CreateTimeBlock createTimeBlock;
   final CopyTaskToDate copyTaskToDate;
   final RolloverTask rolloverTask;
+  final UpdateTaskStatus updateTaskStatus;
 
   StreamSubscription? _tasksSubscription;
   StreamSubscription? _dailyPrioritySubscription;
@@ -56,6 +58,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     required this.createTimeBlock,
     required this.copyTaskToDate,
     required this.rolloverTask,
+    required this.updateTaskStatus,
   }) : super(PlannerState()) {
     on<InitializePlanner>(_onInitializePlanner);
     on<PlannerDateChanged>(_onDateChanged);
@@ -72,6 +75,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     on<RolloverTaskEvent>(_onRolloverTask);
     on<DeleteBrainDumpTask>(_onDeleteBrainDumpTask);
     on<ClearLastCreatedTask>(_onClearLastCreatedTask);
+    on<ToggleBrainDumpTaskStatus>(_onToggleBrainDumpTaskStatus);
   }
 
   Future<void> _onInitializePlanner(
@@ -332,6 +336,34 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     Emitter<PlannerState> emit,
   ) {
     emit(state.copyWith(clearLastCreatedTaskId: true));
+  }
+
+  Future<void> _onToggleBrainDumpTaskStatus(
+    ToggleBrainDumpTaskStatus event,
+    Emitter<PlannerState> emit,
+  ) async {
+    // 현재 Task 찾기
+    final task = state.tasks.firstWhere(
+      (t) => t.id == event.taskId,
+      orElse: () => throw Exception('Task not found'),
+    );
+
+    // 새 상태 결정 (토글)
+    final newStatus =
+        task.status == TaskStatus.done ? TaskStatus.todo : TaskStatus.done;
+
+    final result = await updateTaskStatus(UpdateTaskStatusParams(
+      id: event.taskId,
+      status: newStatus,
+    ));
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: PlannerStateStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => {}, // watchTasksByDate가 자동으로 업데이트
+    );
   }
 
   @override

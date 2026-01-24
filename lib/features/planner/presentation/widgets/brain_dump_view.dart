@@ -124,6 +124,11 @@ class _BrainDumpViewState extends State<BrainDumpView> {
                                     .read<PlannerBloc>()
                                     .add(DeleteBrainDumpTask(task.id));
                               },
+                              onToggleComplete: () {
+                                context
+                                    .read<PlannerBloc>()
+                                    .add(ToggleBrainDumpTaskStatus(task.id));
+                              },
                             ),
                           ),
                         );

@@ -14,12 +14,14 @@ class DraggableTaskCard extends StatelessWidget {
   final Task task;
   final int? rank; // Top 3 순위 (null이면 Top 3 아님)
   final VoidCallback? onDelete;
+  final VoidCallback? onToggleComplete;
 
   const DraggableTaskCard({
     super.key,
     required this.task,
     this.rank,
     this.onDelete,
+    this.onToggleComplete,
   });
 
   Color? get _rankColor => switch (rank) {
@@ -37,8 +39,22 @@ class DraggableTaskCard extends StatelessWidget {
 
     return Dismissible(
       key: Key(task.id),
-      direction: DismissDirection.endToStart, // 오른쪽 → 왼쪽 스와이프만
+      direction: DismissDirection.horizontal, // 양방향 스와이프
+      // 왼쪽→오른쪽 스와이프 (완료 토글) 배경
       background: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.successDark : AppColors.successLight,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(
+          task.isCompleted ? Icons.undo : Icons.check,
+          color: Colors.white,
+        ),
+      ),
+      // 오른쪽→왼쪽 스와이프 (삭제) 배경
+      secondaryBackground: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
@@ -48,25 +64,32 @@ class DraggableTaskCard extends StatelessWidget {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       confirmDismiss: (direction) async {
-        return await showDialog<bool>(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text(l10n?.deleteTask ?? 'Delete Task'),
-                content: Text(
-                    l10n?.deleteTaskConfirm ?? 'Delete this task?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(l10n?.cancel ?? 'Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text(l10n?.delete ?? 'Delete'),
-                  ),
-                ],
-              ),
-            ) ??
-            false;
+        if (direction == DismissDirection.startToEnd) {
+          // 왼쪽→오른쪽: 완료 토글 (확인 없이 바로 실행)
+          onToggleComplete?.call();
+          return false; // dismiss 하지 않음 (제자리에 유지)
+        } else {
+          // 오른쪽→왼쪽: 삭제 확인
+          return await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(l10n?.deleteTask ?? 'Delete Task'),
+                  content: Text(
+                      l10n?.deleteTaskConfirm ?? 'Delete this task?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text(l10n?.cancel ?? 'Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text(l10n?.delete ?? 'Delete'),
+                    ),
+                  ],
+                ),
+              ) ??
+              false;
+        }
       },
       onDismissed: (_) => onDelete?.call(),
       child: LongPressDraggable<Task>(
@@ -185,6 +208,12 @@ class _TaskCardContent extends StatelessWidget {
                       task.title,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w500,
+                        decoration: task.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                        color: task.isCompleted
+                            ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
+                            : null,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

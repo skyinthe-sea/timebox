@@ -197,6 +197,7 @@ Future<void> init() async {
       createTimeBlock: sl(),
       copyTaskToDate: sl(),
       rolloverTask: sl(),
+      updateTaskStatus: sl(),
     ),
   );
 

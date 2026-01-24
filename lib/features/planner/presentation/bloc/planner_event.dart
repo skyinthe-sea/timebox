@@ -114,3 +114,10 @@ class DeleteBrainDumpTask extends PlannerEvent {
 class ClearLastCreatedTask extends PlannerEvent {
   const ClearLastCreatedTask();
 }
+
+/// Task 완료 상태 토글 (브레인 덤프)
+class ToggleBrainDumpTaskStatus extends PlannerEvent {
+  final String taskId;
+
+  const ToggleBrainDumpTaskStatus(this.taskId);
+}
