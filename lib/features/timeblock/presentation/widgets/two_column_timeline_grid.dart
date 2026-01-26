@@ -51,6 +51,56 @@ class TwoColumnTimelineGrid extends StatefulWidget {
   State<TwoColumnTimelineGrid> createState() => _TwoColumnTimelineGridState();
 }
 
+/// 리사이즈 프리뷰 상태 (ValueNotifier용)
+class _ResizeState {
+  final String blockId;
+  final bool isTop;
+  final double deltaMinutes;
+  final double baseTopPx;    // 원본 top 위치 (픽셀)
+  final double baseHeightPx; // 원본 height (픽셀)
+  final double maxDelta;     // 최대 허용 델타 (분)
+  final double minDelta;     // 최소 허용 델타 (분)
+  final double pxPerMinute;  // 픽셀/분 변환 계수
+
+  const _ResizeState({
+    required this.blockId,
+    required this.isTop,
+    required this.deltaMinutes,
+    required this.baseTopPx,
+    required this.baseHeightPx,
+    required this.maxDelta,
+    required this.minDelta,
+    required this.pxPerMinute,
+  });
+
+  _ResizeState copyWith({double? deltaMinutes}) {
+    // 경계 체크 적용
+    final clampedDelta = (deltaMinutes ?? this.deltaMinutes).clamp(minDelta, maxDelta);
+    return _ResizeState(
+      blockId: blockId,
+      isTop: isTop,
+      deltaMinutes: clampedDelta,
+      baseTopPx: baseTopPx,
+      baseHeightPx: baseHeightPx,
+      maxDelta: maxDelta,
+      minDelta: minDelta,
+      pxPerMinute: pxPerMinute,
+    );
+  }
+
+  // 프리뷰 계산 (픽셀 단위)
+  double get previewTopPx => isTop
+      ? baseTopPx + (deltaMinutes * pxPerMinute)
+      : baseTopPx;
+
+  double get previewHeightPx {
+    final h = isTop
+        ? baseHeightPx - (deltaMinutes * pxPerMinute)
+        : baseHeightPx + (deltaMinutes * pxPerMinute);
+    return h.clamp(30 * pxPerMinute, double.infinity); // 최소 30분
+  }
+}
+
 class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
   late ScrollController _scrollController;
   final GlobalKey _gridKey = GlobalKey();
@@ -64,6 +114,9 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
   /// 타임블록 좌우 패딩
   static const double _blockPadding = 4.0;
 
+  // === 리사이즈 프리뷰 상태 (ValueNotifier로 최적화) ===
+  final ValueNotifier<_ResizeState?> _resizeNotifier = ValueNotifier(null);
+
   @override
   void initState() {
     super.initState();
@@ -76,6 +129,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _resizeNotifier.dispose();
     super.dispose();
   }
 
@@ -92,6 +146,106 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+  }
+
+  // === 리사이즈 핸들러 (ValueNotifier 기반 최적화) ===
+
+  /// 리사이즈 시작: ValueNotifier 초기화 + 경계 계산
+  void _onResizeStart(String blockId, bool isTop) {
+    final block = widget.timeBlocks.firstWhere(
+      (b) => b.id == blockId,
+      orElse: () => widget.timeBlocks.first,
+    );
+    if (block.id != blockId) return;
+
+    final startMinutes = (block.startTime.hour - widget.startHour) * 60 +
+        block.startTime.minute;
+    final durationMinutes =
+        block.endTime.difference(block.startTime).inMinutes;
+
+    // 픽셀 변환 계수
+    const pxPerMinute = _slotHeight / 30;
+    final baseTopPx = startMinutes * pxPerMinute;
+    final baseHeightPx = durationMinutes * pxPerMinute;
+
+    // 경계 계산 (최소 30분 간격 유지)
+    const minDuration = 30.0; // 최소 30분
+    double maxDelta;
+    double minDelta;
+
+    if (isTop) {
+      // 상단 드래그: 위로는 무제한, 아래로는 (duration - 30분)까지
+      maxDelta = durationMinutes - minDuration; // 아래로 이동 제한
+      minDelta = -startMinutes.toDouble(); // 위로는 0시까지
+    } else {
+      // 하단 드래그: 아래로는 무제한, 위로는 -(duration - 30분)까지
+      maxDelta = ((widget.endHour - widget.startHour) * 60 -
+              startMinutes -
+              durationMinutes)
+          .toDouble(); // 아래로는 끝시간까지
+      minDelta = -(durationMinutes - minDuration); // 위로 이동 제한
+    }
+
+    _resizeNotifier.value = _ResizeState(
+      blockId: blockId,
+      isTop: isTop,
+      deltaMinutes: 0,
+      baseTopPx: baseTopPx,
+      baseHeightPx: baseHeightPx,
+      maxDelta: maxDelta,
+      minDelta: minDelta,
+      pxPerMinute: pxPerMinute,
+    );
+  }
+
+  /// 리사이즈 중: ValueNotifier만 업데이트 (setState 없음, 즉각 반응)
+  void _onResizeUpdate(double pixelDelta) {
+    final current = _resizeNotifier.value;
+    if (current == null) return;
+
+    // 픽셀 → 분 변환 후 누적
+    final deltaMins = pixelDelta / (_slotHeight / 30);
+    _resizeNotifier.value = current.copyWith(
+      deltaMinutes: current.deltaMinutes + deltaMins,
+    );
+  }
+
+  /// 리사이즈 종료: BLoC에 최종 결과 커밋
+  void _onResizeEnd() {
+    final resizeState = _resizeNotifier.value;
+    if (resizeState == null) return;
+
+    final block = widget.timeBlocks.firstWhere(
+      (b) => b.id == resizeState.blockId,
+      orElse: () => widget.timeBlocks.first,
+    );
+
+    if (block.id != resizeState.blockId) {
+      _resizeNotifier.value = null;
+      return;
+    }
+
+    final deltaMinutes = resizeState.deltaMinutes.round();
+
+    // 변경이 없으면 스킵
+    if (deltaMinutes == 0) {
+      _resizeNotifier.value = null;
+      return;
+    }
+
+    final DateTime newStart;
+    final DateTime newEnd;
+
+    if (resizeState.isTop) {
+      newStart = block.startTime.add(Duration(minutes: deltaMinutes));
+      newEnd = block.endTime;
+    } else {
+      newStart = block.startTime;
+      newEnd = block.endTime.add(Duration(minutes: deltaMinutes));
+    }
+
+    widget.onTimeBlockResized?.call(resizeState.blockId, newStart, newEnd);
+    _resizeNotifier.value = null;
   }
 
   @override
@@ -143,9 +297,19 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                                 isAnimating: selectionState.isAnimating,
                               ),
 
-                            // 타임블록들
-                            ...widget.timeBlocks
-                                .map((tb) => _buildTimeBlockCard(tb)),
+                            // 타임블록들 (정적 렌더링 - 리사이즈 중에도 리빌드 없음)
+                            ...widget.timeBlocks.map((tb) => _buildStaticTimeBlockCard(tb)),
+
+                            // 리사이즈 프리뷰 오버레이 (이것만 리빌드됨)
+                            ValueListenableBuilder<_ResizeState?>(
+                              valueListenable: _resizeNotifier,
+                              builder: (context, resizeState, _) {
+                                if (resizeState == null) {
+                                  return const SizedBox.shrink();
+                                }
+                                return _buildResizePreviewOverlay(resizeState);
+                              },
+                            ),
 
                             // 현재 시간 표시선
                             if (isToday) _buildCurrentTimeLine(theme, isDark),
@@ -217,7 +381,34 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     );
   }
 
-  Widget _buildTimeBlockCard(TimeBlock timeBlock) {
+  /// 리사이즈 프리뷰 오버레이 (매우 가벼움 - 이것만 드래그 중 리빌드)
+  Widget _buildResizePreviewOverlay(_ResizeState resizeState) {
+    // 이미 계산된 픽셀 값 사용 (추가 연산 없음)
+    return Positioned(
+      top: resizeState.previewTopPx,
+      left: _blockPadding,
+      right: _blockPadding,
+      height: resizeState.previewHeightPx.clamp(20, double.infinity),
+      child: RepaintBoundary(
+        child: IgnorePointer(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Theme.of(context).colorScheme.primary,
+                width: 2,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 정적 타임블록 카드 (리사이즈 중에도 리빌드 없음)
+  Widget _buildStaticTimeBlockCard(TimeBlock timeBlock) {
     final startMinutesFromDayStart =
         (timeBlock.startTime.hour - widget.startHour) * 60 +
             timeBlock.startTime.minute;
@@ -298,22 +489,17 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
           height: height.clamp(20, double.infinity),
           onTap: () => widget.onTimeBlockTap?.call(timeBlock),
           // 완료/미완료 상태에서는 리사이즈 비활성화 유지
-          onResizeTop: isFinished
+          // 최적화: 드래그 중에는 로컬 프리뷰만, 드래그 종료 시 BLoC 커밋
+          onResizeTopStart: isFinished
               ? null
-              : (delta) {
-                  final newStart = timeBlock.startTime.add(Duration(
-                      minutes: (delta / (_slotHeight / 30)).round()));
-                  widget.onTimeBlockResized
-                      ?.call(timeBlock.id, newStart, timeBlock.endTime);
-                },
-          onResizeBottom: isFinished
+              : () => _onResizeStart(timeBlock.id, true),
+          onResizeTop: isFinished ? null : _onResizeUpdate,
+          onResizeTopEnd: isFinished ? null : _onResizeEnd,
+          onResizeBottomStart: isFinished
               ? null
-              : (delta) {
-                  final newEnd = timeBlock.endTime.add(
-                      Duration(minutes: (delta / (_slotHeight / 30)).round()));
-                  widget.onTimeBlockResized
-                      ?.call(timeBlock.id, timeBlock.startTime, newEnd);
-                },
+              : () => _onResizeStart(timeBlock.id, false),
+          onResizeBottom: isFinished ? null : _onResizeUpdate,
+          onResizeBottomEnd: isFinished ? null : _onResizeEnd,
           animateToSkipped: animateToSkipped,
         ),
       ),

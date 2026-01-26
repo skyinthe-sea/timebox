@@ -55,6 +55,13 @@ class CalendarState extends Equatable {
     }
   }
 
+  /// TimeBlock 기반 완료율 (0.0 ~ 1.0)
+  double get completionRate {
+    if (timeBlocks.isEmpty) return 0.0;
+    final completedCount = timeBlocks.where((tb) => tb.isCompleted).length;
+    return completedCount / timeBlocks.length;
+  }
+
   CalendarState copyWith({
     CalendarStateStatus? status,
     DateTime? selectedDate,

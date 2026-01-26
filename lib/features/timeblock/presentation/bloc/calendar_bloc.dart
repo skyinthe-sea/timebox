@@ -60,7 +60,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     WatchTimeBlocksStarted event,
     Emitter<CalendarState> emit,
   ) async {
-    emit(state.copyWith(status: CalendarStateStatus.loading));
+    emit(state.copyWith(
+      status: CalendarStateStatus.loading,
+      selectedDate: event.date,
+    ));
 
     await _timeBlocksSubscription?.cancel();
     _timeBlocksSubscription = watchTimeBlocksForDay(event.date).listen(

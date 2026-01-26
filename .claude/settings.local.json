@@ -7,7 +7,8 @@
       "Bash(flutter pub run build_runner build:*)",
       "Bash(flutter analyze:*)",
       "Bash(flutter gen-l10n:*)",
-      "Bash(flutter build:*)"
+      "Bash(flutter build:*)",
+      "Bash(grep:*)"
     ]
   }
 }

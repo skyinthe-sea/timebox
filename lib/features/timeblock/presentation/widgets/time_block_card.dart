@@ -36,11 +36,23 @@ class TimeBlockCard extends StatefulWidget {
   /// 드래그 완료 콜백
   final void Function(Offset)? onDragEnd;
 
-  /// 리사이즈 콜백 (상단)
+  /// 리사이즈 콜백 (상단) - 드래그 중 매 프레임 호출
   final void Function(double delta)? onResizeTop;
 
-  /// 리사이즈 콜백 (하단)
+  /// 리사이즈 콜백 (하단) - 드래그 중 매 프레임 호출
   final void Function(double delta)? onResizeBottom;
+
+  /// 리사이즈 시작 콜백 (상단)
+  final VoidCallback? onResizeTopStart;
+
+  /// 리사이즈 종료 콜백 (상단)
+  final VoidCallback? onResizeTopEnd;
+
+  /// 리사이즈 시작 콜백 (하단)
+  final VoidCallback? onResizeBottomStart;
+
+  /// 리사이즈 종료 콜백 (하단)
+  final VoidCallback? onResizeBottomEnd;
 
   /// 애니메이션 여부 (실패 처리 시 true)
   final bool animateToSkipped;
@@ -56,6 +68,10 @@ class TimeBlockCard extends StatefulWidget {
     this.onDragEnd,
     this.onResizeTop,
     this.onResizeBottom,
+    this.onResizeTopStart,
+    this.onResizeTopEnd,
+    this.onResizeBottomStart,
+    this.onResizeBottomEnd,
     this.animateToSkipped = false,
   });
 
@@ -217,7 +233,12 @@ class _TimeBlockCardState extends State<TimeBlockCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 리사이즈 핸들 (상단)
-        _buildResizeHandle(widget.onResizeTop),
+        _buildResizeHandle(
+          onUpdate: widget.onResizeTop,
+          onStart: widget.onResizeTopStart,
+          onEnd: widget.onResizeTopEnd,
+          isTop: true,
+        ),
 
         // 내용
         Expanded(
@@ -282,7 +303,12 @@ class _TimeBlockCardState extends State<TimeBlockCard>
         ),
 
         // 리사이즈 핸들 (하단)
-        _buildResizeHandle(widget.onResizeBottom),
+        _buildResizeHandle(
+          onUpdate: widget.onResizeBottom,
+          onStart: widget.onResizeBottomStart,
+          onEnd: widget.onResizeBottomEnd,
+          isTop: false,
+        ),
       ],
     );
   }
@@ -342,19 +368,32 @@ class _TimeBlockCardState extends State<TimeBlockCard>
     };
   }
 
-  Widget _buildResizeHandle(void Function(double)? onResize) {
-    if (onResize == null) return const SizedBox.shrink();
+  Widget _buildResizeHandle({
+    required void Function(double)? onUpdate,
+    VoidCallback? onStart,
+    VoidCallback? onEnd,
+    bool isTop = true,
+  }) {
+    if (onUpdate == null) return const SizedBox.shrink();
 
+    // 터치 영역 확장 (UI는 8px, 터치는 24px)
     return GestureDetector(
-      onVerticalDragUpdate: (details) => onResize(details.delta.dy),
+      behavior: HitTestBehavior.opaque,
+      onVerticalDragStart: onStart != null ? (_) => onStart() : null,
+      onVerticalDragUpdate: (details) => onUpdate(details.delta.dy),
+      onVerticalDragEnd: onEnd != null ? (_) => onEnd() : null,
       child: Container(
-        height: 8,
-        decoration: BoxDecoration(
-          color: Colors.grey.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: const Center(
-          child: Icon(Icons.drag_handle, size: 12),
+        height: 24, // 확장된 터치 영역
+        alignment: isTop ? Alignment.topCenter : Alignment.bottomCenter,
+        child: Container(
+          height: 8, // 실제 보이는 UI
+          decoration: BoxDecoration(
+            color: Colors.grey.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: const Center(
+            child: Icon(Icons.drag_handle, size: 12),
+          ),
         ),
       ),
     );

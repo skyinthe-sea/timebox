@@ -110,7 +110,7 @@ class _CalendarPageState extends State<CalendarPage> {
             children: [
               Column(
                 children: [
-                  // 날짜 헤더 (AppBar 대체)
+                  // 날짜 헤더 (AppBar 대체) - TimeBlock 기반 완료율 표시
                   _buildDateHeader(context, calendarState, l10n),
 
                   // 날짜 네비게이션
@@ -198,12 +198,19 @@ class _CalendarPageState extends State<CalendarPage> {
   ) {
     final theme = Theme.of(context);
 
+    // TimeBlock 기반 완료율 계산 (TimeBlock이 있을 때만)
+    final completionPercentage = state.timeBlocks.isNotEmpty
+        ? (state.completionRate * 100).toInt()
+        : null;
+
     return Container(
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: [
-          const Spacer(),
+          // 왼쪽 여백
+          const Expanded(child: SizedBox()),
+          // 날짜 (중앙)
           GestureDetector(
             onTap: () => _showDatePicker(context, state.selectedDate),
             child: Row(
@@ -219,10 +226,20 @@ class _CalendarPageState extends State<CalendarPage> {
               ],
             ),
           ),
+          // 오른쪽: 완료율 + Today 버튼
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                // 완료율 표시 (TimeBlock이 있을 때만)
+                if (completionPercentage != null)
+                  Text(
+                    '$completionPercentage%',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
                 if (!state.isToday)
                   IconButton(
                     icon: const Icon(Icons.today),
@@ -260,11 +277,10 @@ class _CalendarPageState extends State<CalendarPage> {
           IconButton(
             icon: const Icon(Icons.chevron_left),
             onPressed: () {
-              context.read<CalendarBloc>().add(
-                    DateChanged(
-                      state.selectedDate.subtract(const Duration(days: 1)),
-                    ),
-                  );
+              final newDate = state.selectedDate.subtract(const Duration(days: 1));
+              context.read<CalendarBloc>().add(DateChanged(newDate));
+              // PlannerBloc 날짜도 동기화
+              context.read<PlannerBloc>().add(PlannerDateChanged(newDate));
             },
           ),
           Text(
@@ -276,11 +292,10 @@ class _CalendarPageState extends State<CalendarPage> {
           IconButton(
             icon: const Icon(Icons.chevron_right),
             onPressed: () {
-              context.read<CalendarBloc>().add(
-                    DateChanged(
-                      state.selectedDate.add(const Duration(days: 1)),
-                    ),
-                  );
+              final newDate = state.selectedDate.add(const Duration(days: 1));
+              context.read<CalendarBloc>().add(DateChanged(newDate));
+              // PlannerBloc 날짜도 동기화
+              context.read<PlannerBloc>().add(PlannerDateChanged(newDate));
             },
           ),
         ],
@@ -297,7 +312,13 @@ class _CalendarPageState extends State<CalendarPage> {
     List<Task> unscheduledTasks = [];
     try {
       final plannerState = context.read<PlannerBloc>().state;
-      unscheduledTasks = plannerState.unscheduledTasks;
+      // 캘린더의 선택된 날짜와 일치하는 태스크만 필터링
+      final selectedDate = calendarState.selectedDate;
+      unscheduledTasks = plannerState.unscheduledTasks.where((task) {
+        return task.targetDate.year == selectedDate.year &&
+            task.targetDate.month == selectedDate.month &&
+            task.targetDate.day == selectedDate.day;
+      }).toList();
     } catch (_) {
       // PlannerBloc이 없는 경우 빈 목록
     }
@@ -408,6 +429,8 @@ class _CalendarPageState extends State<CalendarPage> {
 
     if (selectedDate != null && context.mounted) {
       context.read<CalendarBloc>().add(DateChanged(selectedDate));
+      // PlannerBloc 날짜도 동기화
+      context.read<PlannerBloc>().add(PlannerDateChanged(selectedDate));
     }
   }
 

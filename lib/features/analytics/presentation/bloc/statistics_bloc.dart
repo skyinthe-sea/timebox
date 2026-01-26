@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/entities/daily_stats_summary.dart';
 import '../../domain/entities/insight.dart';
 import '../../domain/entities/productivity_stats.dart';
 import '../../domain/entities/time_comparison.dart';
@@ -66,8 +67,13 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         (summary) => summary,
       );
 
-      // 인사이트 생성
-      final insights = await _generateInsights(event.date);
+      // 인사이트 생성 (로드된 데이터 전달)
+      final insights = await _generateInsights(
+        date: event.date,
+        todayStats: todayStats,
+        yesterdayStats: yesterdayStats,
+        dailySummary: dailySummary,
+      );
 
       emit(state.copyWith(
         status: StatisticsStatus.loaded,
@@ -121,7 +127,12 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     RefreshInsights event,
     Emitter<StatisticsState> emit,
   ) async {
-    final insights = await _generateInsights(state.selectedDate);
+    final insights = await _generateInsights(
+      date: state.selectedDate,
+      todayStats: state.todayStats,
+      yesterdayStats: state.yesterdayStats,
+      dailySummary: state.dailySummary,
+    );
     emit(state.copyWith(insights: insights));
   }
 
@@ -174,20 +185,101 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   }
 
   /// 인사이트 생성
-  Future<List<Insight>> _generateInsights(DateTime date) async {
-    // 기본 인사이트 생성
+  Future<List<Insight>> _generateInsights({
+    required DateTime date,
+    ProductivityStats? todayStats,
+    ProductivityStats? yesterdayStats,
+    DailyStatsSummary? dailySummary,
+  }) async {
     final insights = <Insight>[];
+    final now = DateTime.now();
 
-    // 어제 대비 점수 변화 인사이트
-    if (state.todayStats != null && state.yesterdayStats != null) {
-      final scoreDiff = state.todayStats!.score - state.yesterdayStats!.score;
-      if (scoreDiff.abs() >= 5) {
+    // 1. 어제 대비 점수 변화 인사이트 (조건 완화: 1점 이상 차이)
+    if (todayStats != null && yesterdayStats != null) {
+      final scoreDiff = todayStats.score - yesterdayStats.score;
+      if (scoreDiff.abs() >= 1) {
         insights.add(Insight.productivityChange(
-          id: 'insight_score_${DateTime.now().millisecondsSinceEpoch}',
+          id: 'insight_score_${now.millisecondsSinceEpoch}',
           scoreDiff: scoreDiff,
           periodText: '어제',
         ));
       }
+    }
+
+    // 2. 이월 경고 (dailySummary에서 이월된 태스크 확인)
+    if (dailySummary != null && dailySummary.rolledOverTasks >= 3) {
+      insights.add(Insight.rolloverWarning(
+        id: 'insight_rollover_${now.millisecondsSinceEpoch}',
+        rolloverCount: 3,
+        taskCount: dailySummary.rolledOverTasks,
+      ));
+    }
+
+    // 3. 시간 절약 (예상 시간보다 빨리 완료한 경우)
+    if (dailySummary != null && dailySummary.totalPlannedDuration.inMinutes > 0) {
+      final savedMinutes = dailySummary.timeDifferenceMinutes;
+      if (savedMinutes >= 10) {
+        insights.add(Insight.timeSaved(
+          id: 'insight_timesaved_${now.millisecondsSinceEpoch}',
+          minutesSaved: savedMinutes,
+          periodText: '오늘',
+        ));
+      }
+    }
+
+    // 4. Top3 달성 축하 (Top3 전부 완료 시)
+    if (dailySummary != null && dailySummary.top3CompletedCount == 3) {
+      insights.add(Insight.streak(
+        id: 'insight_top3_${now.millisecondsSinceEpoch}',
+        days: 1, // Top3 달성을 streak로 표현
+      ));
+    }
+
+    // 5. 완료율 기반 인사이트 (오늘 통계가 있는 경우)
+    if (todayStats != null) {
+      // 점수가 높으면 칭찬 메시지
+      if (todayStats.score >= 80) {
+        insights.add(Insight(
+          id: 'insight_great_${now.millisecondsSinceEpoch}',
+          type: InsightType.completionRate,
+          priority: InsightPriority.medium,
+          title: '오늘 생산성이 아주 높아요!',
+          description: '${todayStats.score}점을 달성했어요. 대단해요!',
+          value: todayStats.score.toDouble(),
+          unit: '점',
+          iconCodePoint: 0xe838, // Icons.star
+          isPositive: true,
+          createdAt: now,
+        ));
+      } else if (todayStats.score >= 50 && insights.isEmpty) {
+        // 다른 인사이트가 없고 점수가 보통일 때 기본 인사이트
+        insights.add(Insight(
+          id: 'insight_normal_${now.millisecondsSinceEpoch}',
+          type: InsightType.completionRate,
+          priority: InsightPriority.low,
+          title: '오늘도 꾸준히 진행 중이에요',
+          description: '현재 ${todayStats.score}점이에요. 조금만 더 힘내봐요!',
+          value: todayStats.score.toDouble(),
+          unit: '점',
+          iconCodePoint: 0xe5cd, // Icons.check
+          isPositive: true,
+          createdAt: now,
+        ));
+      }
+    }
+
+    // 인사이트가 전혀 없으면 기본 메시지 추가
+    if (insights.isEmpty) {
+      insights.add(Insight(
+        id: 'insight_default_${now.millisecondsSinceEpoch}',
+        type: InsightType.completionRate,
+        priority: InsightPriority.low,
+        title: '오늘의 첫 번째 Task를 시작해보세요!',
+        description: '작은 성취가 큰 변화를 만들어요.',
+        iconCodePoint: 0xe8b5, // Icons.lightbulb_outline
+        isPositive: true,
+        createdAt: now,
+      ));
     }
 
     return insights;

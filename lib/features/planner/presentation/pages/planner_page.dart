@@ -51,12 +51,6 @@ class _PlannerPageState extends State<PlannerPage> {
               onDatePick: () => _pickDate(context, state.selectedDate),
             ),
 
-            // 완료율 프로그레스 바
-            _CompletionRateBar(
-              completionRate: state.completionRate,
-              taskCount: state.tasks.length,
-            ),
-
             // Top 3 섹션
             const TopThreeSection(),
 
@@ -213,64 +207,6 @@ class _SectionHeader extends StatelessWidget {
             style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w600,
               color: theme.colorScheme.primary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CompletionRateBar extends StatelessWidget {
-  final double completionRate;
-  final int taskCount;
-
-  const _CompletionRateBar({
-    required this.completionRate,
-    required this.taskCount,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
-    final percentage = (completionRate * 100).toInt();
-
-    if (taskCount == 0) {
-      return const SizedBox.shrink();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                l10n?.completionRate ?? 'Completion Rate',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.outline,
-                ),
-              ),
-              Text(
-                '$percentage%',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: completionRate,
-              backgroundColor: theme.colorScheme.surfaceContainerHighest,
-              valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
-              minHeight: 6,
             ),
           ),
         ],
