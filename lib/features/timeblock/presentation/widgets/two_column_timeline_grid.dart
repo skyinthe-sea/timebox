@@ -62,6 +62,9 @@ class _ResizeState {
   final double minDelta;     // 최소 허용 델타 (분)
   final double pxPerMinute;  // 픽셀/분 변환 계수
 
+  /// 30분 단위 스냅 간격
+  static const double _snapInterval = 30.0;
+
   const _ResizeState({
     required this.blockId,
     required this.isTop,
@@ -72,6 +75,12 @@ class _ResizeState {
     required this.minDelta,
     required this.pxPerMinute,
   });
+
+  /// 30분 단위로 스냅된 델타값
+  double get snappedDeltaMinutes {
+    final snapped = (deltaMinutes / _snapInterval).round() * _snapInterval;
+    return snapped.clamp(minDelta, maxDelta);
+  }
 
   _ResizeState copyWith({double? deltaMinutes}) {
     // 경계 체크 적용
@@ -88,15 +97,15 @@ class _ResizeState {
     );
   }
 
-  // 프리뷰 계산 (픽셀 단위)
+  // 프리뷰 계산 (픽셀 단위) - 30분 단위로 스냅된 값 사용
   double get previewTopPx => isTop
-      ? baseTopPx + (deltaMinutes * pxPerMinute)
+      ? baseTopPx + (snappedDeltaMinutes * pxPerMinute)
       : baseTopPx;
 
   double get previewHeightPx {
     final h = isTop
-        ? baseHeightPx - (deltaMinutes * pxPerMinute)
-        : baseHeightPx + (deltaMinutes * pxPerMinute);
+        ? baseHeightPx - (snappedDeltaMinutes * pxPerMinute)
+        : baseHeightPx + (snappedDeltaMinutes * pxPerMinute);
     return h.clamp(30 * pxPerMinute, double.infinity); // 최소 30분
   }
 }
@@ -210,7 +219,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     );
   }
 
-  /// 리사이즈 종료: BLoC에 최종 결과 커밋
+  /// 리사이즈 종료: BLoC에 최종 결과 커밋 (30분 단위 스냅 적용)
   void _onResizeEnd() {
     final resizeState = _resizeNotifier.value;
     if (resizeState == null) return;
@@ -225,7 +234,8 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
       return;
     }
 
-    final deltaMinutes = resizeState.deltaMinutes.round();
+    // 30분 단위로 스냅된 델타값 사용
+    final deltaMinutes = resizeState.snappedDeltaMinutes.round();
 
     // 변경이 없으면 스킵
     if (deltaMinutes == 0) {

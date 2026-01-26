@@ -184,14 +184,22 @@ class _TimelineViewState extends State<TimelineView> {
         height: height.clamp(20, double.infinity),
         onTap: () => widget.onTimeBlockTap?.call(timeBlock),
         onResizeTop: (delta) {
+          // 30분 단위로 스냅
+          final rawMinutes = (delta / widget.hourHeight * 60).round();
+          final snappedMinutes = (rawMinutes / 30).round() * 30;
+          if (snappedMinutes == 0) return;
           final newStart = timeBlock.startTime
-              .add(Duration(minutes: (delta / widget.hourHeight * 60).round()));
+              .add(Duration(minutes: snappedMinutes));
           widget.onTimeBlockResized
               ?.call(timeBlock.id, newStart, timeBlock.endTime);
         },
         onResizeBottom: (delta) {
+          // 30분 단위로 스냅
+          final rawMinutes = (delta / widget.hourHeight * 60).round();
+          final snappedMinutes = (rawMinutes / 30).round() * 30;
+          if (snappedMinutes == 0) return;
           final newEnd = timeBlock.endTime
-              .add(Duration(minutes: (delta / widget.hourHeight * 60).round()));
+              .add(Duration(minutes: snappedMinutes));
           widget.onTimeBlockResized
               ?.call(timeBlock.id, timeBlock.startTime, newEnd);
         },
