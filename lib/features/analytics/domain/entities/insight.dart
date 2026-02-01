@@ -25,6 +25,15 @@ enum InsightType {
 
   /// 시간 절약
   timeSaved,
+
+  /// Task 완료율
+  taskCompletion,
+
+  /// 집중 효율
+  focusEfficiency,
+
+  /// 시간 예측 정확도
+  timeEstimation,
 }
 
 /// 인사이트 우선순위
@@ -222,12 +231,131 @@ class Insight extends Equatable {
       id: id,
       type: InsightType.timeSaved,
       priority: InsightPriority.medium,
-      title: '$periodText 총 $minutesSaved분을 절약했어요',
-      description: '효율적으로 일하고 있네요!',
+      title: '$periodText 예상보다 $minutesSaved분 빨리 끝났어요',
+      description: '완료한 작업 기준으로 효율적으로 일하고 있네요!',
       value: minutesSaved.toDouble(),
       unit: '분',
       iconCodePoint: 0xe425, // Icons.timer
       isPositive: true,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  /// 시간 초과 인사이트 생성
+  factory Insight.timeOver({
+    required String id,
+    required int minutesOver,
+    required String periodText,
+  }) {
+    return Insight(
+      id: id,
+      type: InsightType.timeSaved,
+      priority: InsightPriority.medium,
+      title: '$periodText 예상보다 $minutesOver분 더 걸렸어요',
+      description: '시간 배분을 조금 더 여유롭게 해보세요.',
+      value: minutesOver.toDouble(),
+      unit: '분',
+      iconCodePoint: 0xe425, // Icons.timer
+      isPositive: false,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  /// Task 완료율 인사이트 생성
+  factory Insight.taskCompletion({
+    required String id,
+    required int completed,
+    required int total,
+  }) {
+    final String title;
+    final String description;
+    final bool isPositive;
+
+    if (total == 0) {
+      title = '오늘의 첫 번째 Task를 시작해보세요!';
+      description = '작은 성취가 큰 변화를 만들어요.';
+      isPositive = true;
+    } else if (completed == total) {
+      title = '오늘 모든 Task를 완료했어요! 완벽해요!';
+      description = '$total개의 Task를 모두 해냈어요.';
+      isPositive = true;
+    } else if (completed == 0) {
+      title = '아직 완료한 Task가 없어요';
+      description = '하나씩 시작해보세요. 할 수 있어요!';
+      isPositive = false;
+    } else {
+      title = '오늘 ${total}개 중 ${completed}개를 완료했어요';
+      description = '${total - completed}개가 남았어요. 조금만 더 힘내봐요!';
+      isPositive = completed >= total / 2;
+    }
+
+    return Insight(
+      id: id,
+      type: InsightType.taskCompletion,
+      priority: InsightPriority.high,
+      title: title,
+      description: description,
+      value: total > 0 ? (completed / total * 100) : 0,
+      unit: '%',
+      iconCodePoint: 0xef6b, // Icons.task_alt
+      isPositive: isPositive,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  /// 집중 효율 인사이트 생성
+  factory Insight.focusEfficiency({
+    required String id,
+    required int efficiencyPercent,
+    required int focusMinutes,
+  }) {
+    final String description;
+    if (efficiencyPercent >= 90) {
+      description = '매우 높은 집중력을 보여주고 있어요!';
+    } else if (efficiencyPercent >= 70) {
+      description = '좋은 집중력이에요. 꾸준히 유지해보세요.';
+    } else {
+      description = '일시정지를 줄이면 효율이 올라갈 거예요.';
+    }
+
+    return Insight(
+      id: id,
+      type: InsightType.focusEfficiency,
+      priority: InsightPriority.medium,
+      title: '집중 시간의 $efficiencyPercent%를 실제 작업에 사용했어요',
+      description: description,
+      value: efficiencyPercent.toDouble(),
+      unit: '%',
+      iconCodePoint: 0xe4a2, // Icons.psychology
+      isPositive: efficiencyPercent >= 70,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  /// 시간 예측 정확도 인사이트 생성
+  factory Insight.timeEstimation({
+    required String id,
+    required int accuracyPercent,
+  }) {
+    final String description;
+    if (accuracyPercent >= 90) {
+      description = '정확하게 예측하고 있어요!';
+    } else if (accuracyPercent >= 70) {
+      description = '꽤 정확해요. 조금만 더 조절해보세요.';
+    } else {
+      description = '예상 시간을 조금 더 넉넉하게 잡아보세요.';
+    }
+
+    return Insight(
+      id: id,
+      type: InsightType.timeEstimation,
+      priority: InsightPriority.medium,
+      title: '시간 예측 정확도가 $accuracyPercent%에요',
+      description: description,
+      value: accuracyPercent.toDouble(),
+      unit: '%',
+      iconCodePoint: 0xe1b1, // Icons.analytics_outlined
+      isPositive: accuracyPercent >= 70,
       createdAt: DateTime.now(),
     );
   }

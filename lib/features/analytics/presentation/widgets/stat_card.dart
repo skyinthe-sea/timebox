@@ -122,6 +122,7 @@ class StatCard extends StatelessWidget {
 /// 하이라이트 섹션 (2x2 그리드)
 class HighlightsSection extends StatelessWidget {
   final int completedTasks;
+  final int totalTasks;
   final int skippedTasks;
   final int focusMinutes;
   final int timeDifferenceMinutes;
@@ -130,6 +131,7 @@ class HighlightsSection extends StatelessWidget {
   const HighlightsSection({
     super.key,
     required this.completedTasks,
+    this.totalTasks = 0,
     this.skippedTasks = 0,
     required this.focusMinutes,
     required this.timeDifferenceMinutes,
@@ -147,7 +149,7 @@ class HighlightsSection extends StatelessWidget {
                 icon: Icons.check_circle_outline,
                 value: completedTasks,
                 label: '완료',
-                suffix: '개',
+                suffix: totalTasks > 0 ? '/$totalTasks' : '개',
                 color: AppColors.successLight,
               ),
             ),

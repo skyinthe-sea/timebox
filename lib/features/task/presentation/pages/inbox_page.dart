@@ -123,11 +123,6 @@ class _InboxPageState extends State<InboxPage> {
                       onTap: () {
                         // TODO: Task 상세 페이지로 이동
                       },
-                      onToggleComplete: () {
-                        context
-                            .read<TaskBloc>()
-                            .add(ToggleTaskStatus(task.id));
-                      },
                       onDelete: () {
                         context
                             .read<TaskBloc>()

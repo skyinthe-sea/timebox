@@ -14,14 +14,14 @@ class DraggableTaskCard extends StatelessWidget {
   final Task task;
   final int? rank; // Top 3 순위 (null이면 Top 3 아님)
   final VoidCallback? onDelete;
-  final VoidCallback? onToggleComplete;
+  final bool isScheduled;
 
   const DraggableTaskCard({
     super.key,
     required this.task,
     this.rank,
     this.onDelete,
-    this.onToggleComplete,
+    this.isScheduled = false,
   });
 
   Color? get _rankColor => switch (rank) {
@@ -39,22 +39,9 @@ class DraggableTaskCard extends StatelessWidget {
 
     return Dismissible(
       key: Key(task.id),
-      direction: DismissDirection.horizontal, // 양방향 스와이프
-      // 왼쪽→오른쪽 스와이프 (완료 토글) 배경
+      direction: DismissDirection.endToStart, // 왼쪽 스와이프(삭제)만
+      // 왼쪽 스와이프 (삭제) 배경
       background: Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 20),
-        decoration: BoxDecoration(
-          color: isDark ? AppColors.successDark : AppColors.successLight,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(
-          task.isCompleted ? Icons.undo : Icons.check,
-          color: Colors.white,
-        ),
-      ),
-      // 오른쪽→왼쪽 스와이프 (삭제) 배경
-      secondaryBackground: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
@@ -64,69 +51,65 @@ class DraggableTaskCard extends StatelessWidget {
         child: const Icon(Icons.delete, color: Colors.white),
       ),
       confirmDismiss: (direction) async {
-        if (direction == DismissDirection.startToEnd) {
-          // 왼쪽→오른쪽: 완료 토글 (확인 없이 바로 실행)
-          onToggleComplete?.call();
-          return false; // dismiss 하지 않음 (제자리에 유지)
-        } else {
-          // 오른쪽→왼쪽: 삭제 확인
-          return await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(l10n?.deleteTask ?? 'Delete Task'),
-                  content: Text(
-                      l10n?.deleteTaskConfirm ?? 'Delete this task?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text(l10n?.cancel ?? 'Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: Text(l10n?.delete ?? 'Delete'),
-                    ),
-                  ],
-                ),
-              ) ??
-              false;
-        }
+        return await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l10n?.deleteTask ?? 'Delete Task'),
+                content: Text(
+                    l10n?.deleteTaskConfirm ?? 'Delete this task?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(l10n?.cancel ?? 'Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(l10n?.delete ?? 'Delete'),
+                  ),
+                ],
+              ),
+            ) ??
+            false;
       },
       onDismissed: (_) => onDelete?.call(),
       child: LongPressDraggable<Task>(
-      data: task,
-      delay: const Duration(milliseconds: 150),
-      hapticFeedbackOnStart: true,
-      onDragStarted: () => HapticFeedback.mediumImpact(),
-      feedback: Material(
-        elevation: 8,
-        borderRadius: BorderRadius.circular(12),
-        child: Transform.scale(
-          scale: 1.05,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width - 64,
-            child: _TaskCardContent(
-              task: task,
-              rank: rank,
-              rankColor: _rankColor,
-              isDragging: true,
+        data: task,
+        delay: const Duration(milliseconds: 150),
+        hapticFeedbackOnStart: true,
+        onDragStarted: () => HapticFeedback.mediumImpact(),
+        feedback: Material(
+          elevation: 8,
+          borderRadius: BorderRadius.circular(12),
+          child: Transform.scale(
+            scale: 1.05,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width - 64,
+              child: _TaskCardContent(
+                task: task,
+                rank: rank,
+                rankColor: _rankColor,
+                isDragging: true,
+                isScheduled: isScheduled,
+              ),
             ),
           ),
         ),
-      ),
-      childWhenDragging: Opacity(
-        opacity: 0.3,
+        childWhenDragging: Opacity(
+          opacity: 0.3,
+          child: _TaskCardContent(
+            task: task,
+            rank: rank,
+            rankColor: _rankColor,
+            isScheduled: isScheduled,
+          ),
+        ),
         child: _TaskCardContent(
           task: task,
           rank: rank,
           rankColor: _rankColor,
+          isScheduled: isScheduled,
         ),
       ),
-      child: _TaskCardContent(
-        task: task,
-        rank: rank,
-        rankColor: _rankColor,
-      ),
-    ),
     );
   }
 }
@@ -136,12 +119,14 @@ class _TaskCardContent extends StatelessWidget {
   final int? rank;
   final Color? rankColor;
   final bool isDragging;
+  final bool isScheduled;
 
   const _TaskCardContent({
     required this.task,
     this.rank,
     this.rankColor,
     this.isDragging = false,
+    this.isScheduled = false,
   });
 
   @override
@@ -150,14 +135,21 @@ class _TaskCardContent extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
 
+    final backgroundColor = isScheduled
+        ? theme.colorScheme.primary.withValues(alpha: 0.08)
+        : theme.colorScheme.surface;
+    final borderColor = isScheduled
+        ? theme.colorScheme.primary.withValues(alpha: 0.3)
+        : rankColor ??
+            (isDark ? AppColors.borderDark : AppColors.borderLight);
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: rankColor ??
-              (isDark ? AppColors.borderDark : AppColors.borderLight),
+          color: borderColor,
           width: rank != null ? 2 : 1,
         ),
         boxShadow: isDragging
@@ -208,12 +200,6 @@ class _TaskCardContent extends StatelessWidget {
                       task.title,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w500,
-                        decoration: task.isCompleted
-                            ? TextDecoration.lineThrough
-                            : null,
-                        color: task.isCompleted
-                            ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
-                            : null,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -246,11 +232,12 @@ class _TaskCardContent extends StatelessWidget {
                   ),
                 ),
 
-              // 드래그 핸들
-              Icon(
-                Icons.drag_indicator,
-                color: theme.colorScheme.outline.withValues(alpha: 0.5),
-              ),
+              // 드래그 핸들 (배정된 태스크는 숨김)
+              if (!isScheduled)
+                Icon(
+                  Icons.drag_indicator,
+                  color: theme.colorScheme.outline.withValues(alpha: 0.5),
+                ),
             ],
           ),
 

@@ -57,19 +57,20 @@ class ProductivityStats {
 
   /// Task 완료율 (%)
   double get taskCompletionRate {
-    if (totalPlannedTasks == 0) return 100.0;
+    if (totalPlannedTasks == 0) return 0.0;
     return (completedTasks / totalPlannedTasks) * 100;
   }
 
   /// TimeBlock 완료율 (%)
   double get timeBlockCompletionRate {
-    if (totalPlannedTimeBlocks == 0) return 100.0;
+    if (totalPlannedTimeBlocks == 0) return 0.0;
     return (completedTimeBlocks / totalPlannedTimeBlocks) * 100;
   }
 
   /// 시간 정확도 (100% - 오차율)
+  /// totalPlannedTime과 averageTimeDifference는 측정된 블록 기준
   double get timeAccuracy {
-    if (totalPlannedTime.inMinutes == 0) return 100.0;
+    if (totalPlannedTime.inMinutes == 0) return 0.0;
     final diffRatio = averageTimeDifference.inMinutes.abs() /
         totalPlannedTime.inMinutes;
     return (1 - diffRatio).clamp(0.0, 1.0) * 100;

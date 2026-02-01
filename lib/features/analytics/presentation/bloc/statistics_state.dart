@@ -3,7 +3,10 @@ import 'package:equatable/equatable.dart';
 import '../../domain/entities/daily_stats_summary.dart';
 import '../../domain/entities/hourly_productivity.dart';
 import '../../domain/entities/insight.dart';
+import '../../domain/entities/priority_breakdown_stats.dart';
 import '../../domain/entities/productivity_stats.dart';
+import '../../domain/entities/task_completion_ranking.dart';
+import '../../domain/entities/task_pipeline_stats.dart';
 import '../../domain/entities/time_comparison.dart';
 import 'statistics_event.dart';
 
@@ -47,6 +50,21 @@ class StatisticsState extends Equatable {
   /// 일간 요약 (캐시된 데이터)
   final DailyStatsSummary? dailySummary;
 
+  /// Task Pipeline 통계
+  final TaskPipelineStats? pipelineStats;
+
+  /// 우선순위별 성과 통계
+  final PriorityBreakdownStats? priorityBreakdown;
+
+  /// 계획 vs 실제 시간 비교 데이터
+  final List<TimeComparison> timeComparisons;
+
+  /// Top 5 성공 Task 랭킹
+  final List<TaskCompletionRanking> topSuccessTasks;
+
+  /// Top 5 실패 Task 랭킹
+  final List<TaskCompletionRanking> topFailureTasks;
+
   /// 에러 메시지
   final String? errorMessage;
 
@@ -61,6 +79,11 @@ class StatisticsState extends Equatable {
     this.hourlyProductivity,
     this.insights = const [],
     this.dailySummary,
+    this.pipelineStats,
+    this.priorityBreakdown,
+    this.timeComparisons = const [],
+    this.topSuccessTasks = const [],
+    this.topFailureTasks = const [],
     this.errorMessage,
   });
 
@@ -71,19 +94,78 @@ class StatisticsState extends Equatable {
     );
   }
 
-  /// 생산성 점수 변화 (어제 대비)
+  /// 현재 기간에 맞는 표시용 통계
+  /// daily: 오늘 통계, weekly/monthly: 기간 집계
+  ProductivityStats? get displayStats {
+    if (currentPeriod == StatsPeriod.daily || periodStats.isEmpty) {
+      return todayStats;
+    }
+    // 데이터가 있는 날만 집계
+    final validStats = periodStats.where((s) =>
+        s.score > 0 ||
+        s.totalPlannedTasks > 0 ||
+        s.totalPlannedTimeBlocks > 0).toList();
+    if (validStats.isEmpty) return todayStats;
+
+    final avgScore =
+        validStats.fold<int>(0, (sum, s) => sum + s.score) ~/ validStats.length;
+    final totalCompleted =
+        validStats.fold<int>(0, (sum, s) => sum + s.completedTasks);
+    final totalPlanned =
+        validStats.fold<int>(0, (sum, s) => sum + s.totalPlannedTasks);
+    final totalCompletedBlocks =
+        validStats.fold<int>(0, (sum, s) => sum + s.completedTimeBlocks);
+    final totalSkippedBlocks =
+        validStats.fold<int>(0, (sum, s) => sum + s.skippedTimeBlocks);
+    final totalPlannedBlocks =
+        validStats.fold<int>(0, (sum, s) => sum + s.totalPlannedTimeBlocks);
+    final totalPlannedTime = validStats.fold<Duration>(
+        Duration.zero, (sum, s) => sum + s.totalPlannedTime);
+    final totalActualTime = validStats.fold<Duration>(
+        Duration.zero, (sum, s) => sum + s.totalActualTime);
+    final totalFocusTime = validStats.fold<Duration>(
+        Duration.zero, (sum, s) => sum + s.focusTime);
+    final executionRate = totalPlannedBlocks > 0
+        ? (totalCompletedBlocks / totalPlannedBlocks) * 100
+        : 0.0;
+
+    return ProductivityStats(
+      date: selectedDate,
+      score: avgScore,
+      completedTasks: totalCompleted,
+      totalPlannedTasks: totalPlanned,
+      completedTimeBlocks: totalCompletedBlocks,
+      skippedTimeBlocks: totalSkippedBlocks,
+      totalPlannedTimeBlocks: totalPlannedBlocks,
+      executionRate: executionRate,
+      totalPlannedTime: totalPlannedTime,
+      totalActualTime: totalActualTime,
+      focusTime: totalFocusTime,
+      averageTimeDifference: totalActualTime - totalPlannedTime,
+    );
+  }
+
+  /// 생산성 점수 변화 (일간: 어제 대비, 주간/월간: 표시 안 함)
   int? get scoreChange {
+    if (currentPeriod != StatsPeriod.daily) return null;
     if (todayStats == null || yesterdayStats == null) return null;
     return todayStats!.score - yesterdayStats!.score;
   }
 
-  /// 오늘 완료한 TimeBlock 수
-  int get completedTasks => todayStats?.completedTimeBlocks ?? 0;
+  /// 완료한 Task 수
+  int get completedTasks => dailySummary?.completedTasks ?? todayStats?.completedTasks ?? 0;
 
-  /// 오늘 실패(미완료)한 TimeBlock 수
-  int get skippedTasks => todayStats?.skippedTimeBlocks ?? 0;
+  /// 미완료 Task 수
+  int get skippedTasks {
+    final total = dailySummary?.totalPlannedTasks ?? todayStats?.totalPlannedTasks ?? 0;
+    final completed = dailySummary?.completedTasks ?? todayStats?.completedTasks ?? 0;
+    return (total - completed).clamp(0, total);
+  }
 
-  /// 오늘 총 집중 시간 (분)
+  /// 총 Task 수
+  int get totalTasks => dailySummary?.totalPlannedTasks ?? todayStats?.totalPlannedTasks ?? 0;
+
+  /// 총 집중 시간 (분)
   int get focusMinutes => todayStats?.focusTime.inMinutes ?? 0;
 
   /// 시간 절약/초과 (분)
@@ -113,6 +195,11 @@ class StatisticsState extends Equatable {
     ProductivityHeatmapData? hourlyProductivity,
     List<Insight>? insights,
     DailyStatsSummary? dailySummary,
+    TaskPipelineStats? pipelineStats,
+    PriorityBreakdownStats? priorityBreakdown,
+    List<TimeComparison>? timeComparisons,
+    List<TaskCompletionRanking>? topSuccessTasks,
+    List<TaskCompletionRanking>? topFailureTasks,
     String? errorMessage,
   }) {
     return StatisticsState(
@@ -126,6 +213,11 @@ class StatisticsState extends Equatable {
       hourlyProductivity: hourlyProductivity ?? this.hourlyProductivity,
       insights: insights ?? this.insights,
       dailySummary: dailySummary ?? this.dailySummary,
+      pipelineStats: pipelineStats ?? this.pipelineStats,
+      priorityBreakdown: priorityBreakdown ?? this.priorityBreakdown,
+      timeComparisons: timeComparisons ?? this.timeComparisons,
+      topSuccessTasks: topSuccessTasks ?? this.topSuccessTasks,
+      topFailureTasks: topFailureTasks ?? this.topFailureTasks,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -142,6 +234,11 @@ class StatisticsState extends Equatable {
         hourlyProductivity,
         insights,
         dailySummary,
+        pipelineStats,
+        priorityBreakdown,
+        timeComparisons,
+        topSuccessTasks,
+        topFailureTasks,
         errorMessage,
       ];
 }

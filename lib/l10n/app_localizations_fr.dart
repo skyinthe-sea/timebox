@@ -571,4 +571,75 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get exitFocus => 'Quitter';
+
+  @override
+  String get statsCompletionRates => 'Taux de complétion';
+
+  @override
+  String get statsTaskPipeline => 'Flux de tâches';
+
+  @override
+  String get statsPlanVsActual => 'Planifié vs Réel';
+
+  @override
+  String get statsPriorityBreakdown => 'Performance par priorité';
+
+  @override
+  String get statsFocusSummary => 'Analyse de concentration';
+
+  @override
+  String get statsTopInsights => 'Analyses';
+
+  @override
+  String get statsScheduled => 'Planifié';
+
+  @override
+  String get statsCompleted => 'Terminé';
+
+  @override
+  String get statsRolledOver => 'Reporté';
+
+  @override
+  String get statsEfficiency => 'Efficacité';
+
+  @override
+  String get statsNoData => 'Pas encore de données';
+
+  @override
+  String get navTimeline => 'Chronologie';
+
+  @override
+  String get navReport => 'Rapport';
+
+  @override
+  String get suggestedTasks => 'Suggestions';
+
+  @override
+  String get taskSuggestionsHint => 'Tâches que vous avez déjà effectuées';
+
+  @override
+  String get topSuccessTasks => 'Tâches les plus complétées';
+
+  @override
+  String get topFailureTasks => 'Tâches les plus difficiles';
+
+  @override
+  String get completionCount => 'Nombre de complétions';
+
+  @override
+  String get taskRankings => 'Classement des tâches';
+
+  @override
+  String get privacyPolicy => 'Politique de confidentialité';
+
+  @override
+  String get termsOfService => 'Conditions d\'utilisation';
+
+  @override
+  String get privacyPolicyContent =>
+      'Politique de confidentialité\n\nDernière mise à jour : 1er janvier 2026\n\n1. Collecte de données\nCette application traite les données saisies par l\'utilisateur, telles que les tâches et les enregistrements de temps.\n\n2. Stockage des données\nToutes les données sont stockées localement sur votre appareil uniquement. Aucune donnée n\'est transmise à des serveurs externes.\n\n3. Tiers\nCette application utilise Google AdMob pour la publicité. AdMob peut collecter des identifiants publicitaires. Veuillez consulter la politique de confidentialité de Google pour plus de détails.\n\n4. Suppression des données\nToutes les données stockées sur l\'appareil sont automatiquement supprimées lorsque vous désinstallez l\'application.\n\n5. Contact\nPour les questions de confidentialité : myclick90@gmail.com';
+
+  @override
+  String get termsOfServiceContent =>
+      'Conditions d\'utilisation\n\nDernière mise à jour : 1er janvier 2026\n\n1. Description du service\nTimebox Planner est une application mobile qui vous aide à gérer votre temps et planifier votre emploi du temps.\n\n2. Responsabilités de l\'utilisateur\nLes utilisateurs sont responsables de toutes les données saisies dans l\'application et doivent utiliser l\'application uniquement à des fins légales.\n\n3. Clause de non-responsabilité\nCette application est fournie telle quelle. Le développeur n\'est pas responsable des dommages directs ou indirects causés par la perte de données, les rendez-vous manqués ou d\'autres problèmes.\n\n4. Propriété intellectuelle\nTous les droits de propriété intellectuelle relatifs au design, au code et au contenu de l\'application appartiennent au développeur.\n\n5. Modification des conditions\nCes conditions peuvent être modifiées avec un préavis. Les changements seront communiqués par le biais des mises à jour de l\'application.';
 }

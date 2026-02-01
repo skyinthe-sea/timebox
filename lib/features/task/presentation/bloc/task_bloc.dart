@@ -23,7 +23,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final CreateTask createTask;
   final UpdateTask updateTask;
   final DeleteTask deleteTask;
-  final UpdateTaskStatus updateTaskStatus;
 
   StreamSubscription? _tasksSubscription;
   final _uuid = const Uuid();
@@ -33,14 +32,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     required this.createTask,
     required this.updateTask,
     required this.deleteTask,
-    required this.updateTaskStatus,
   }) : super(const TaskState()) {
     on<WatchTasksStarted>(_onWatchTasksStarted);
     on<TasksUpdated>(_onTasksUpdated);
     on<LoadTasks>(_onLoadTasks);
     on<CreateTaskEvent>(_onCreateTask);
     on<UpdateTaskEvent>(_onUpdateTask);
-    on<ToggleTaskStatus>(_onToggleTaskStatus);
     on<DeleteTaskEvent>(_onDeleteTask);
     on<FilterChanged>(_onFilterChanged);
     on<SearchTasks>(_onSearchTasks);
@@ -115,31 +112,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     Emitter<TaskState> emit,
   ) async {
     final result = await updateTask(event.task);
-    result.fold(
-      (failure) => emit(state.copyWith(
-        status: TaskStateStatus.failure,
-        errorMessage: failure.message,
-      )),
-      (_) => {},
-    );
-  }
-
-  Future<void> _onToggleTaskStatus(
-    ToggleTaskStatus event,
-    Emitter<TaskState> emit,
-  ) async {
-    final task = state.tasks.firstWhere(
-      (t) => t.id == event.taskId,
-      orElse: () => throw Exception('Task not found'),
-    );
-
-    final newStatus =
-        task.status == TaskStatus.done ? TaskStatus.todo : TaskStatus.done;
-
-    final result = await updateTaskStatus(
-      UpdateTaskStatusParams(id: event.taskId, status: newStatus),
-    );
-
     result.fold(
       (failure) => emit(state.copyWith(
         status: TaskStateStatus.failure,

@@ -17,6 +17,7 @@ import 'features/task/domain/usecases/copy_task_to_date.dart';
 import 'features/task/domain/usecases/create_task.dart';
 import 'features/task/domain/usecases/delete_task.dart';
 import 'features/task/domain/usecases/get_tasks.dart';
+import 'features/task/domain/usecases/get_task_suggestions.dart';
 import 'features/task/domain/usecases/rollover_task.dart';
 import 'features/task/domain/usecases/update_task.dart';
 import 'features/task/domain/usecases/watch_tasks.dart';
@@ -113,6 +114,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => WatchTasksByDate(sl()));
   sl.registerLazySingleton(() => CopyTaskToDate(sl()));
   sl.registerLazySingleton(() => RolloverTask(sl()));
+  sl.registerLazySingleton(() => GetTaskSuggestions(sl()));
 
   // BLoC
   sl.registerFactory(
@@ -121,7 +123,6 @@ Future<void> init() async {
       createTask: sl(),
       updateTask: sl(),
       deleteTask: sl(),
-      updateTaskStatus: sl(),
     ),
   );
 
@@ -197,7 +198,7 @@ Future<void> init() async {
       createTimeBlock: sl(),
       copyTaskToDate: sl(),
       rolloverTask: sl(),
-      updateTaskStatus: sl(),
+      getTaskSuggestions: sl(),
     ),
   );
 

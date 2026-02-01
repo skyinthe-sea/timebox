@@ -12,6 +12,7 @@ class PlannerState extends Equatable {
   final int pageIndex; // 0: 브레인덤프, 1: 타임라인
   final String? errorMessage;
   final String? lastCreatedTaskId; // 애니메이션용: 마지막 생성된 Task ID
+  final List<TaskSuggestion> suggestions; // 브레인덤프 자동완성 제안
 
   PlannerState({
     this.status = PlannerStateStatus.initial,
@@ -22,6 +23,7 @@ class PlannerState extends Equatable {
     this.pageIndex = 0,
     this.errorMessage,
     this.lastCreatedTaskId,
+    this.suggestions = const [],
   }) : selectedDate = selectedDate ?? DateTime.now();
 
   /// 브레인덤프에 표시할 Task 목록 (미완료 + 타임블록 미배정)
@@ -97,6 +99,28 @@ class PlannerState extends Equatable {
     return completed / tasks.length;
   }
 
+  /// 브레인덤프에 표시할 전체 Task 목록
+  /// 미배정 Task가 상단, 배정된 Task가 하단 (모두 todo 상태)
+  List<Task> get brainDumpTasks {
+    final scheduledTaskIds = timeBlocks
+        .where((tb) => tb.taskId != null)
+        .map((tb) => tb.taskId!)
+        .toSet();
+    final todoTasks = tasks.where((t) => t.status == TaskStatus.todo).toList();
+    todoTasks.sort((a, b) {
+      final aScheduled = scheduledTaskIds.contains(a.id);
+      final bScheduled = scheduledTaskIds.contains(b.id);
+      if (aScheduled == bScheduled) return 0;
+      return aScheduled ? 1 : -1;
+    });
+    return todoTasks;
+  }
+
+  /// 특정 Task가 타임블록에 배정되었는지 확인
+  bool isTaskScheduled(String taskId) {
+    return timeBlocks.any((tb) => tb.taskId == taskId);
+  }
+
   /// 이월된 Task 목록
   List<Task> get rolloverTasks => tasks.where((t) => t.rolloverCount > 0).toList();
 
@@ -109,6 +133,7 @@ class PlannerState extends Equatable {
     int? pageIndex,
     String? errorMessage,
     String? lastCreatedTaskId,
+    List<TaskSuggestion>? suggestions,
     bool clearError = false,
     bool clearDailyPriority = false,
     bool clearLastCreatedTaskId = false,
@@ -125,6 +150,7 @@ class PlannerState extends Equatable {
       lastCreatedTaskId: clearLastCreatedTaskId
           ? null
           : (lastCreatedTaskId ?? this.lastCreatedTaskId),
+      suggestions: suggestions ?? this.suggestions,
     );
   }
 
@@ -138,5 +164,6 @@ class PlannerState extends Equatable {
         pageIndex,
         errorMessage,
         lastCreatedTaskId,
+        suggestions,
       ];
 }

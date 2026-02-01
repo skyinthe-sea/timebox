@@ -1187,6 +1187,144 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'종료하기'**
   String get exitFocus;
+
+  /// No description provided for @statsCompletionRates.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료율'**
+  String get statsCompletionRates;
+
+  /// No description provided for @statsTaskPipeline.
+  ///
+  /// In ko, this message translates to:
+  /// **'Task 흐름'**
+  String get statsTaskPipeline;
+
+  /// No description provided for @statsPlanVsActual.
+  ///
+  /// In ko, this message translates to:
+  /// **'계획 vs 실제'**
+  String get statsPlanVsActual;
+
+  /// No description provided for @statsPriorityBreakdown.
+  ///
+  /// In ko, this message translates to:
+  /// **'우선순위별 성과'**
+  String get statsPriorityBreakdown;
+
+  /// No description provided for @statsFocusSummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 분석'**
+  String get statsFocusSummary;
+
+  /// No description provided for @statsTopInsights.
+  ///
+  /// In ko, this message translates to:
+  /// **'인사이트'**
+  String get statsTopInsights;
+
+  /// No description provided for @statsScheduled.
+  ///
+  /// In ko, this message translates to:
+  /// **'스케줄'**
+  String get statsScheduled;
+
+  /// No description provided for @statsCompleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료'**
+  String get statsCompleted;
+
+  /// No description provided for @statsRolledOver.
+  ///
+  /// In ko, this message translates to:
+  /// **'이월'**
+  String get statsRolledOver;
+
+  /// No description provided for @statsEfficiency.
+  ///
+  /// In ko, this message translates to:
+  /// **'효율'**
+  String get statsEfficiency;
+
+  /// No description provided for @statsNoData.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 데이터가 없어요'**
+  String get statsNoData;
+
+  /// No description provided for @navTimeline.
+  ///
+  /// In ko, this message translates to:
+  /// **'타임라인'**
+  String get navTimeline;
+
+  /// No description provided for @navReport.
+  ///
+  /// In ko, this message translates to:
+  /// **'리포트'**
+  String get navReport;
+
+  /// No description provided for @suggestedTasks.
+  ///
+  /// In ko, this message translates to:
+  /// **'추천 할 일'**
+  String get suggestedTasks;
+
+  /// No description provided for @taskSuggestionsHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'이전에 자주 했던 할 일이에요'**
+  String get taskSuggestionsHint;
+
+  /// No description provided for @topSuccessTasks.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 잘 완료하는 Task'**
+  String get topSuccessTasks;
+
+  /// No description provided for @topFailureTasks.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료가 어려운 Task'**
+  String get topFailureTasks;
+
+  /// No description provided for @completionCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료 횟수'**
+  String get completionCount;
+
+  /// No description provided for @taskRankings.
+  ///
+  /// In ko, this message translates to:
+  /// **'Task 랭킹'**
+  String get taskRankings;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보처리방침'**
+  String get privacyPolicy;
+
+  /// No description provided for @termsOfService.
+  ///
+  /// In ko, this message translates to:
+  /// **'이용약관'**
+  String get termsOfService;
+
+  /// No description provided for @privacyPolicyContent.
+  ///
+  /// In ko, this message translates to:
+  /// **'개인정보처리방침\n\n최종 수정일: 2026년 1월 1일\n\n1. 수집 항목\n본 앱은 할 일, 시간 기록 등 사용자가 직접 입력한 앱 사용 데이터를 처리합니다.\n\n2. 저장 방식\n모든 데이터는 사용자의 기기 내에 로컬로만 저장되며, 외부 서버로 전송되지 않습니다.\n\n3. 제3자 제공\n본 앱은 광고 표시를 위해 Google AdMob을 사용합니다. AdMob은 광고 식별자를 수집할 수 있습니다. 자세한 내용은 Google 개인정보처리방침을 참고하세요.\n\n4. 데이터 삭제\n앱을 삭제하면 기기에 저장된 모든 데이터가 자동으로 삭제됩니다.\n\n5. 문의\n개인정보 관련 문의: myclick90@gmail.com'**
+  String get privacyPolicyContent;
+
+  /// No description provided for @termsOfServiceContent.
+  ///
+  /// In ko, this message translates to:
+  /// **'이용약관\n\n최종 수정일: 2026년 1월 1일\n\n1. 서비스 설명\nTimebox Planner는 시간 관리 및 일정 계획을 돕는 모바일 애플리케이션입니다.\n\n2. 사용자 책임\n사용자는 앱에 입력하는 모든 데이터에 대한 책임을 지며, 앱을 합법적인 목적으로만 사용해야 합니다.\n\n3. 면책 조항\n본 앱은 \"있는 그대로\" 제공됩니다. 데이터 손실, 일정 누락 등으로 인한 직간접적 손해에 대해 개발자는 책임을 지지 않습니다.\n\n4. 지적재산권\n본 앱의 디자인, 코드, 콘텐츠에 대한 모든 지적재산권은 개발자에게 귀속됩니다.\n\n5. 약관 변경\n본 약관은 사전 고지 후 변경될 수 있으며, 변경 사항은 앱 업데이트를 통해 공지됩니다.'**
+  String get termsOfServiceContent;
 }
 
 class _AppLocalizationsDelegate

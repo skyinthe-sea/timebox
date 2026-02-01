@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart' hide Task;
 import '../../../../core/error/failures.dart';
 import '../entities/task.dart';
+import '../entities/task_suggestion.dart';
 import '../entities/subtask.dart';
 
 /// Task Repository 인터페이스
@@ -58,4 +59,10 @@ abstract class TaskRepository {
 
   /// Task 이월 처리 (rolloverCount 증가)
   Future<Either<Failure, Task>> rolloverTask(String taskId, DateTime toDate);
+
+  /// 과거 이력 기반 Task 제안 조회
+  Future<Either<Failure, List<TaskSuggestion>>> getTaskSuggestions(
+    String query,
+    DateTime currentTime,
+  );
 }

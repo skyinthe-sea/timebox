@@ -44,12 +44,6 @@ class UpdateTaskEvent extends TaskEvent {
   const UpdateTaskEvent(this.task);
 }
 
-/// Task 상태 변경
-class ToggleTaskStatus extends TaskEvent {
-  final String taskId;
-  const ToggleTaskStatus(this.taskId);
-}
-
 /// Task 삭제
 class DeleteTaskEvent extends TaskEvent {
   final String taskId;

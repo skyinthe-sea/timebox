@@ -561,4 +561,75 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get exitFocus => '終了する';
+
+  @override
+  String get statsCompletionRates => '完了率';
+
+  @override
+  String get statsTaskPipeline => 'タスクフロー';
+
+  @override
+  String get statsPlanVsActual => '計画 vs 実績';
+
+  @override
+  String get statsPriorityBreakdown => '優先度別実績';
+
+  @override
+  String get statsFocusSummary => '集中分析';
+
+  @override
+  String get statsTopInsights => 'インサイト';
+
+  @override
+  String get statsScheduled => 'スケジュール';
+
+  @override
+  String get statsCompleted => '完了';
+
+  @override
+  String get statsRolledOver => '繰り越し';
+
+  @override
+  String get statsEfficiency => '効率';
+
+  @override
+  String get statsNoData => 'まだデータがありません';
+
+  @override
+  String get navTimeline => 'タイムライン';
+
+  @override
+  String get navReport => 'レポート';
+
+  @override
+  String get suggestedTasks => 'おすすめタスク';
+
+  @override
+  String get taskSuggestionsHint => '以前やったことのあるタスクです';
+
+  @override
+  String get topSuccessTasks => '最も完了しやすいタスク';
+
+  @override
+  String get topFailureTasks => '完了が難しいタスク';
+
+  @override
+  String get completionCount => '完了回数';
+
+  @override
+  String get taskRankings => 'タスクランキング';
+
+  @override
+  String get privacyPolicy => 'プライバシーポリシー';
+
+  @override
+  String get termsOfService => '利用規約';
+
+  @override
+  String get privacyPolicyContent =>
+      'プライバシーポリシー\n\n最終更新日: 2026年1月1日\n\n1. 収集項目\n本アプリは、タスクや時間記録など、ユーザーが入力したデータを処理します。\n\n2. 保存方法\nすべてのデータはお使いの端末にローカル保存されます。外部サーバーへの送信は行いません。\n\n3. 第三者提供\n本アプリは広告表示のためにGoogle AdMobを使用しています。AdMobは広告識別子を収集する場合があります。詳細はGoogleのプライバシーポリシーをご参照ください。\n\n4. データの削除\nアプリを削除すると、端末に保存されたすべてのデータが自動的に削除されます。\n\n5. お問い合わせ\nプライバシーに関するお問い合わせ: myclick90@gmail.com';
+
+  @override
+  String get termsOfServiceContent =>
+      '利用規約\n\n最終更新日: 2026年1月1日\n\n1. サービス説明\nTimebox Plannerは、時間管理とスケジュール計画を支援するモバイルアプリケーションです。\n\n2. ユーザーの責任\nユーザーは、アプリに入力するすべてのデータに対して責任を負い、合法的な目的でのみアプリを使用する必要があります。\n\n3. 免責事項\n本アプリは「現状のまま」提供されます。データの損失やスケジュールの見逃しなどによる直接的・間接的な損害について、開発者は責任を負いません。\n\n4. 知的財産権\n本アプリのデザイン、コード、コンテンツに関するすべての知的財産権は開発者に帰属します。\n\n5. 規約の変更\n本規約は事前通知の上、変更されることがあります。変更はアプリのアップデートを通じてお知らせします。';
 }

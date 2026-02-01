@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../task/domain/entities/task_suggestion.dart';
 import '../bloc/planner_bloc.dart';
 import 'animated_task_entry.dart';
 import 'draggable_task_card.dart';
@@ -20,12 +23,33 @@ class BrainDumpView extends StatefulWidget {
 class _BrainDumpViewState extends State<BrainDumpView> {
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
+  Timer? _debounceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _textController.addListener(_onTextChanged);
+  }
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
+    _textController.removeListener(_onTextChanged);
     _textController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  void _onTextChanged() {
+    _debounceTimer?.cancel();
+    final query = _textController.text.trim();
+    if (query.isEmpty) {
+      context.read<PlannerBloc>().add(const ClearTaskSuggestions());
+      return;
+    }
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      context.read<PlannerBloc>().add(RequestTaskSuggestions(query));
+    });
   }
 
   @override
@@ -36,7 +60,8 @@ class _BrainDumpViewState extends State<BrainDumpView> {
 
     return BlocBuilder<PlannerBloc, PlannerState>(
       builder: (context, state) {
-        final tasks = state.unscheduledTasks;
+        final tasks = state.brainDumpTasks;
+        final suggestions = state.suggestions;
 
         return Column(
           children: [
@@ -88,6 +113,12 @@ class _BrainDumpViewState extends State<BrainDumpView> {
                       ),
                     ],
                   ),
+                  // 자동완성 제안 목록
+                  if (suggestions.isNotEmpty)
+                    _SuggestionList(
+                      suggestions: suggestions,
+                      onTap: _selectSuggestion,
+                    ),
                 ],
               ),
             ),
@@ -119,15 +150,11 @@ class _BrainDumpViewState extends State<BrainDumpView> {
                             child: DraggableTaskCard(
                               task: task,
                               rank: state.getTaskRank(task.id),
+                              isScheduled: state.isTaskScheduled(task.id),
                               onDelete: () {
                                 context
                                     .read<PlannerBloc>()
                                     .add(DeleteBrainDumpTask(task.id));
-                              },
-                              onToggleComplete: () {
-                                context
-                                    .read<PlannerBloc>()
-                                    .add(ToggleBrainDumpTaskStatus(task.id));
                               },
                             ),
                           ),
@@ -141,10 +168,26 @@ class _BrainDumpViewState extends State<BrainDumpView> {
     );
   }
 
+  void _selectSuggestion(TaskSuggestion suggestion) {
+    _textController.removeListener(_onTextChanged);
+    _textController.text = suggestion.title;
+    _textController.addListener(_onTextChanged);
+
+    context.read<PlannerBloc>().add(const ClearTaskSuggestions());
+    context.read<PlannerBloc>().add(QuickCreateTask(
+          title: suggestion.title,
+          estimatedDuration: suggestion.avgEstimatedDuration,
+        ));
+
+    _textController.clear();
+    _focusNode.unfocus();
+  }
+
   void _submitTask() {
     final title = _textController.text.trim();
     if (title.isEmpty) return;
 
+    context.read<PlannerBloc>().add(const ClearTaskSuggestions());
     context.read<PlannerBloc>().add(QuickCreateTask(
           title: title,
           // 기본값 사용: estimatedDuration = 30분, priority = medium
@@ -152,6 +195,102 @@ class _BrainDumpViewState extends State<BrainDumpView> {
 
     _textController.clear();
     _focusNode.unfocus();
+  }
+}
+
+class _SuggestionList extends StatelessWidget {
+  final List<TaskSuggestion> suggestions;
+  final ValueChanged<TaskSuggestion> onTap;
+
+  const _SuggestionList({
+    required this.suggestions,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDark
+              ? AppColors.surfaceDark
+              : AppColors.surfaceLight,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDark ? AppColors.borderDark : AppColors.borderLight,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+              child: Text(
+                l10n?.suggestedTasks ?? 'Suggestions',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.outline,
+                ),
+              ),
+            ),
+            ...suggestions.map((suggestion) {
+              return InkWell(
+                onTap: () => onTap(suggestion),
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.history_rounded,
+                        size: 16,
+                        color: theme.colorScheme.outline,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          suggestion.title,
+                          style: theme.textTheme.bodyMedium,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primaryContainer
+                              .withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '${suggestion.frequency}x',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+            const SizedBox(height: 4),
+          ],
+        ),
+      ),
+    );
   }
 }
 

@@ -1,7 +1,10 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../entities/daily_stats_summary.dart';
+import '../entities/priority_breakdown_stats.dart';
 import '../entities/productivity_stats.dart';
+import '../entities/task_completion_ranking.dart';
+import '../entities/task_pipeline_stats.dart';
 import '../entities/time_comparison.dart';
 
 /// Analytics Repository 인터페이스
@@ -61,4 +64,22 @@ abstract class AnalyticsRepository {
   /// 일간 통계 요약 조회 (Top3 달성 등 추가 정보 포함)
   /// 캐시가 없거나 무효화된 경우 새로 계산
   Future<Either<Failure, DailyStatsSummary>> getDailyStatsSummary(DateTime date);
+
+  /// Task Pipeline 통계 조회 (브레인덤프→스케줄→완료 흐름)
+  Future<Either<Failure, TaskPipelineStats>> getTaskPipelineStats(
+    DateTime start,
+    DateTime end,
+  );
+
+  /// 우선순위별 완료율 통계 조회
+  Future<Either<Failure, PriorityBreakdownStats>> getPriorityBreakdownStats(
+    DateTime start,
+    DateTime end,
+  );
+
+  /// Task 완료 랭킹 조회 (Top 5 성공 / Top 5 실패)
+  Future<Either<Failure, ({List<TaskCompletionRanking> topSuccess, List<TaskCompletionRanking> topFailure})>> getTaskCompletionRankings(
+    DateTime start,
+    DateTime end,
+  );
 }

@@ -567,4 +567,75 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get exitFocus => 'Beenden';
+
+  @override
+  String get statsCompletionRates => 'Abschlussraten';
+
+  @override
+  String get statsTaskPipeline => 'Aufgabenfluss';
+
+  @override
+  String get statsPlanVsActual => 'Geplant vs Tatsächlich';
+
+  @override
+  String get statsPriorityBreakdown => 'Leistung nach Priorität';
+
+  @override
+  String get statsFocusSummary => 'Fokus-Analyse';
+
+  @override
+  String get statsTopInsights => 'Einblicke';
+
+  @override
+  String get statsScheduled => 'Geplant';
+
+  @override
+  String get statsCompleted => 'Abgeschlossen';
+
+  @override
+  String get statsRolledOver => 'Übertragen';
+
+  @override
+  String get statsEfficiency => 'Effizienz';
+
+  @override
+  String get statsNoData => 'Noch keine Daten';
+
+  @override
+  String get navTimeline => 'Zeitachse';
+
+  @override
+  String get navReport => 'Bericht';
+
+  @override
+  String get suggestedTasks => 'Vorschläge';
+
+  @override
+  String get taskSuggestionsHint => 'Aufgaben, die Sie zuvor erledigt haben';
+
+  @override
+  String get topSuccessTasks => 'Am häufigsten erledigte Aufgaben';
+
+  @override
+  String get topFailureTasks => 'Schwer zu erledigende Aufgaben';
+
+  @override
+  String get completionCount => 'Erledigungsanzahl';
+
+  @override
+  String get taskRankings => 'Aufgabenranking';
+
+  @override
+  String get privacyPolicy => 'Datenschutzrichtlinie';
+
+  @override
+  String get termsOfService => 'Nutzungsbedingungen';
+
+  @override
+  String get privacyPolicyContent =>
+      'Datenschutzrichtlinie\n\nLetzte Aktualisierung: 1. Januar 2026\n\n1. Datenerfassung\nDiese App verarbeitet vom Benutzer eingegebene Daten wie Aufgaben und Zeitaufzeichnungen.\n\n2. Datenspeicherung\nAlle Daten werden nur lokal auf Ihrem Gerät gespeichert. Es werden keine Daten an externe Server übertragen.\n\n3. Dritte\nDiese App verwendet Google AdMob für Werbung. AdMob kann Werbe-Identifikatoren erfassen. Weitere Informationen finden Sie in der Datenschutzrichtlinie von Google.\n\n4. Datenlöschung\nAlle auf dem Gerät gespeicherten Daten werden automatisch gelöscht, wenn Sie die App deinstallieren.\n\n5. Kontakt\nFür Datenschutzanfragen: myclick90@gmail.com';
+
+  @override
+  String get termsOfServiceContent =>
+      'Nutzungsbedingungen\n\nLetzte Aktualisierung: 1. Januar 2026\n\n1. Dienstbeschreibung\nTimebox Planner ist eine mobile Anwendung, die Ihnen bei der Zeitverwaltung und Terminplanung hilft.\n\n2. Benutzerverantwortung\nBenutzer sind für alle in die App eingegebenen Daten verantwortlich und dürfen die App nur für rechtmäßige Zwecke nutzen.\n\n3. Haftungsausschluss\nDiese App wird wie besehen bereitgestellt. Der Entwickler haftet nicht für direkte oder indirekte Schäden durch Datenverlust, verpasste Termine oder andere Probleme.\n\n4. Geistiges Eigentum\nAlle geistigen Eigentumsrechte am Design, Code und Inhalt der App gehören dem Entwickler.\n\n5. Änderungen der Bedingungen\nDiese Bedingungen können mit vorheriger Ankündigung geändert werden. Änderungen werden über App-Updates mitgeteilt.';
 }

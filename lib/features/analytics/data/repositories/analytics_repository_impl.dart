@@ -11,7 +11,10 @@ import '../../../planner/data/datasources/daily_priority_local_datasource.dart';
 import '../../domain/entities/daily_stats_summary.dart';
 import '../../domain/entities/hourly_productivity.dart';
 import '../../domain/entities/insight.dart';
+import '../../domain/entities/priority_breakdown_stats.dart';
 import '../../domain/entities/productivity_stats.dart';
+import '../../domain/entities/task_completion_ranking.dart';
+import '../../domain/entities/task_pipeline_stats.dart';
 import '../../domain/entities/time_comparison.dart';
 import '../../domain/repositories/analytics_repository.dart';
 import '../datasources/analytics_local_datasource.dart';
@@ -60,6 +63,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   ) async {
     try {
       final weekEnd = weekStart.add(const Duration(days: 6));
+      final today = DateTime.now();
       final summaries = await analyticsDataSource.getDailyStatsSummaryRange(
         weekStart,
         weekEnd,
@@ -68,7 +72,8 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       final stats = <ProductivityStats>[];
       var currentDate = weekStart;
 
-      while (!currentDate.isAfter(weekEnd)) {
+      // 오늘까지만 계산 (미래 날짜 제외)
+      while (!currentDate.isAfter(weekEnd) && !currentDate.isAfter(today)) {
         final existing = summaries
             .where((s) => _isSameDate(s.date, currentDate))
             .firstOrNull;
@@ -99,15 +104,31 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     try {
       final start = DateTime(year, month, 1);
       final end = DateTime(year, month + 1, 0); // 해당 월의 마지막 날
+      final today = DateTime.now();
 
       final summaries = await analyticsDataSource.getDailyStatsSummaryRange(
         start,
         end,
       );
 
-      final stats = summaries
-          .map((s) => _summaryToProductivityStats(s.toEntity()))
-          .toList();
+      final stats = <ProductivityStats>[];
+      var currentDate = start;
+
+      // 오늘까지만 계산 (미래 날짜 제외)
+      while (!currentDate.isAfter(end) && !currentDate.isAfter(today)) {
+        final existing = summaries
+            .where((s) => _isSameDate(s.date, currentDate))
+            .firstOrNull;
+
+        if (existing != null) {
+          stats.add(_summaryToProductivityStats(existing.toEntity()));
+        } else {
+          // 캐시에 없으면 실시간 계산 (주간과 동일 방식)
+          final calculated = await _calculateDailyStats(currentDate);
+          stats.add(calculated);
+        }
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
 
       return Right(stats);
     } on CacheException catch (e) {
@@ -177,8 +198,21 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
 
       while (!currentDate.isAfter(end)) {
         final tasks = await taskDataSource.getTasksByDate(currentDate);
+        final timeBlocks =
+            await timeBlockDataSource.getTimeBlocksForDay(currentDate);
 
         for (final task in tasks) {
+          // 해당 Task에 연결된 TimeBlock에서 실제 시간 계산
+          int taskActualMinutes = 0;
+          for (final block in timeBlocks) {
+            if (block.taskId == task.id &&
+                block.actualStart != null &&
+                block.actualEnd != null) {
+              taskActualMinutes +=
+                  block.actualEnd!.difference(block.actualStart!).inMinutes;
+            }
+          }
+
           for (final tag in task.tags) {
             final builder = tagStats.putIfAbsent(
               tag.name,
@@ -187,7 +221,10 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
                 colorValue: tag.colorValue,
               ),
             );
-            builder.addTask(task.estimatedDurationMinutes);
+            builder.addTask(
+              task.estimatedDurationMinutes,
+              taskActualMinutes > 0 ? taskActualMinutes : null,
+            );
           }
         }
         currentDate = currentDate.add(const Duration(days: 1));
@@ -311,30 +348,34 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     final skippedTimeBlocks =
         timeBlocks.where((b) => b.status == 'skipped').length;
 
-    // 계획/실제 시간
-    var plannedMinutes = 0;
+    // 계획/실제 시간 (측정된 블록 기준: actualStart/actualEnd가 있는 블록만)
+    var measuredPlannedMinutes = 0;
     var actualMinutes = 0;
-    var timeDiffSum = 0;
-    var timeDiffCount = 0;
 
     for (final block in timeBlocks) {
-      plannedMinutes += block.endTime.difference(block.startTime).inMinutes;
       if (block.actualStart != null && block.actualEnd != null) {
+        final blockPlanned = block.endTime.difference(block.startTime).inMinutes;
         final actual = block.actualEnd!.difference(block.actualStart!).inMinutes;
         actualMinutes += actual;
-        timeDiffSum +=
-            actual - block.endTime.difference(block.startTime).inMinutes;
-        timeDiffCount++;
+        measuredPlannedMinutes += blockPlanned;
       }
     }
 
-    // Focus 통계
+    // Focus 통계 (일시정지 시간 제외)
     final sessions = await focusSessionDataSource.getSessionsForDay(date);
     var focusMinutes = 0;
     for (final session in sessions) {
       if (session.actualStartTime != null && session.actualEndTime != null) {
-        focusMinutes +=
+        final duration =
             session.actualEndTime!.difference(session.actualStartTime!).inMinutes;
+        var sessionPauseMinutes = 0;
+        for (final pause in session.pauseRecords) {
+          if (pause.resumeTime != null) {
+            sessionPauseMinutes +=
+                pause.resumeTime!.difference(pause.pauseTime).inMinutes;
+          }
+        }
+        focusMinutes += duration - sessionPauseMinutes;
       }
     }
 
@@ -343,8 +384,8 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         ? (completedTimeBlocks / totalTimeBlocks) * 100
         : 0.0;
 
-    // 평균 시간 오차
-    final avgTimeDiff = timeDiffCount > 0 ? timeDiffSum ~/ timeDiffCount : 0;
+    // 시간 차이 총합 (측정된 블록 기준, 캐시 경로와 동일한 의미)
+    final timeDiffTotal = actualMinutes - measuredPlannedMinutes;
 
     // 생산성 점수 계산
     // 데이터가 전혀 없으면 0점
@@ -364,15 +405,32 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       );
     }
 
+    // 동적 가중치: 데이터가 있는 항목만 점수에 반영
     final taskRate = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
-    final timeAccuracy = plannedMinutes > 0
-        ? (1 - (avgTimeDiff.abs() / plannedMinutes)).clamp(0.0, 1.0)
+    final timeAccuracy = measuredPlannedMinutes > 0
+        ? (1 - (timeDiffTotal.abs() / measuredPlannedMinutes)).clamp(0.0, 1.0)
         : 0.0;
     final blockRate =
         totalTimeBlocks > 0 ? completedTimeBlocks / totalTimeBlocks : 0.0;
 
-    final score =
-        ((taskRate * 0.3 + timeAccuracy * 0.3 + blockRate * 0.4) * 100).round();
+    double weightedSum = 0;
+    double totalWeight = 0;
+    if (totalTasks > 0) {
+      weightedSum += taskRate * 0.3;
+      totalWeight += 0.3;
+    }
+    if (measuredPlannedMinutes > 0) {
+      weightedSum += timeAccuracy * 0.3;
+      totalWeight += 0.3;
+    }
+    if (totalTimeBlocks > 0) {
+      weightedSum += blockRate * 0.4;
+      totalWeight += 0.4;
+    }
+
+    final score = totalWeight > 0
+        ? ((weightedSum / totalWeight) * 100).round()
+        : 0;
 
     return ProductivityStats(
       date: date,
@@ -383,10 +441,10 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       skippedTimeBlocks: skippedTimeBlocks,
       totalPlannedTimeBlocks: totalTimeBlocks,
       executionRate: executionRate,
-      totalPlannedTime: Duration(minutes: plannedMinutes),
+      totalPlannedTime: Duration(minutes: measuredPlannedMinutes),
       totalActualTime: Duration(minutes: actualMinutes),
       focusTime: Duration(minutes: focusMinutes),
-      averageTimeDifference: Duration(minutes: avgTimeDiff),
+      averageTimeDifference: Duration(minutes: timeDiffTotal),
     );
   }
 
@@ -414,11 +472,13 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     try {
       final stats = await _calculateDailyStats(date);
 
+      // TimeBlock 데이터 조회 (Top3 달성 + 측정 데이터 계산용)
+      final timeBlocks = await timeBlockDataSource.getTimeBlocksForDay(date);
+
       // Top 3 달성 계산 (TimeBlock 완료 기준)
       final priority = await dailyPriorityDataSource.getDailyPriority(date);
       var top3Completed = 0;
       if (priority != null) {
-        final timeBlocks = await timeBlockDataSource.getTimeBlocksForDay(date);
         // TaskId별로 완료된 TimeBlock이 있는지 확인
         final completedTaskIds = timeBlocks
             .where((tb) => tb.status == 'completed' && tb.taskId != null)
@@ -436,6 +496,18 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         if (priority.rank3TaskId != null &&
             completedTaskIds.contains(priority.rank3TaskId)) {
           top3Completed++;
+        }
+      }
+
+      // 실제 데이터가 있는 블록의 계획/실제 시간 계산 (측정 가능한 비교를 위해)
+      var measuredPlannedMinutes = 0;
+      var measuredActualMinutes = 0;
+      for (final block in timeBlocks) {
+        if (block.actualStart != null && block.actualEnd != null) {
+          measuredPlannedMinutes +=
+              block.endTime.difference(block.startTime).inMinutes;
+          measuredActualMinutes +=
+              block.actualEnd!.difference(block.actualStart!).inMinutes;
         }
       }
 
@@ -463,8 +535,8 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         rolledOverTasks: rolledOver,
         totalTimeBlocks: stats.totalPlannedTimeBlocks,
         completedTimeBlocks: stats.completedTimeBlocks,
-        totalPlannedDuration: stats.totalPlannedTime,
-        totalActualDuration: stats.totalActualTime,
+        totalPlannedDuration: Duration(minutes: measuredPlannedMinutes),
+        totalActualDuration: Duration(minutes: measuredActualMinutes),
         focusSessionCount: sessions.length,
         totalFocusDuration: stats.focusTime,
         totalPauseDuration: Duration(minutes: pauseMinutes),
@@ -543,7 +615,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
               completionRate: data.totalCount > 0
                   ? (data.completedCount / data.totalCount) * 100
                   : 0.0,
-              sampleDays: dayCount ~/ 7,
+              sampleDays: dayCount > 0 ? ((dayCount + 6) ~/ 7) : 0,
             );
           },
         ),
@@ -654,6 +726,162 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       return Left(UnknownFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, TaskPipelineStats>> getTaskPipelineStats(
+    DateTime start,
+    DateTime end,
+  ) async {
+    try {
+      var totalTasks = 0;
+      var completedTasks = 0;
+      var rolledOverTasks = 0;
+      var scheduledTasks = 0;
+
+      var currentDate = start;
+      while (!currentDate.isAfter(end)) {
+        final tasks = await taskDataSource.getTasksByDate(currentDate);
+        totalTasks += tasks.length;
+        completedTasks += tasks.where((t) => t.status == 'done').length;
+        rolledOverTasks += tasks.where((t) => t.rolloverCount > 0).length;
+
+        final timeBlocks =
+            await timeBlockDataSource.getTimeBlocksForDay(currentDate);
+        // 해당 날짜의 TimeBlock에 연결된 Task ID 집합
+        final scheduledIdsForDay = timeBlocks
+            .where((b) => b.taskId != null)
+            .map((b) => b.taskId!)
+            .toSet();
+        // 해당 날짜의 Task 중 스케줄된 Task 수 (날짜별 카운트)
+        scheduledTasks +=
+            tasks.where((t) => scheduledIdsForDay.contains(t.id)).length;
+
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
+
+      return Right(TaskPipelineStats(
+        totalTasks: totalTasks,
+        scheduledTasks: scheduledTasks,
+        completedTasks: completedTasks,
+        rolledOverTasks: rolledOverTasks,
+      ));
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PriorityBreakdownStats>> getPriorityBreakdownStats(
+    DateTime start,
+    DateTime end,
+  ) async {
+    try {
+      int highTotal = 0, highCompleted = 0;
+      int mediumTotal = 0, mediumCompleted = 0;
+      int lowTotal = 0, lowCompleted = 0;
+
+      var currentDate = start;
+      while (!currentDate.isAfter(end)) {
+        final tasks = await taskDataSource.getTasksByDate(currentDate);
+        for (final task in tasks) {
+          final isDone = task.status == 'done';
+          switch (task.priority) {
+            case 'high':
+              highTotal++;
+              if (isDone) highCompleted++;
+            case 'medium':
+              mediumTotal++;
+              if (isDone) mediumCompleted++;
+            case 'low':
+              lowTotal++;
+              if (isDone) lowCompleted++;
+            default:
+              mediumTotal++;
+              if (isDone) mediumCompleted++;
+          }
+        }
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
+
+      return Right(PriorityBreakdownStats(
+        high: PriorityStat(total: highTotal, completed: highCompleted),
+        medium: PriorityStat(total: mediumTotal, completed: mediumCompleted),
+        low: PriorityStat(total: lowTotal, completed: lowCompleted),
+      ));
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
+  @override
+  Future<Either<Failure, ({List<TaskCompletionRanking> topSuccess, List<TaskCompletionRanking> topFailure})>> getTaskCompletionRankings(
+    DateTime start,
+    DateTime end,
+  ) async {
+    try {
+      // 기간 내 모든 Task 수집 → 제목별 그룹핑
+      final groups = <String, _RankingData>{};
+      var currentDate = start;
+      while (!currentDate.isAfter(end)) {
+        final tasks = await taskDataSource.getTasksByDate(currentDate);
+        for (final task in tasks) {
+          final normalized = task.title.toLowerCase().trim();
+          final data = groups.putIfAbsent(
+            normalized,
+            () => _RankingData(originalTitle: task.title),
+          );
+          data.total++;
+          if (task.status == 'done') {
+            data.completed++;
+          }
+        }
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
+
+      // 최소 2회 이상 생성된 Task만 대상
+      final qualified = groups.values.where((d) => d.total >= 2).toList();
+
+      // Top 5 성공: 완료율 높은 순
+      final successList = List<_RankingData>.from(qualified)
+        ..sort((a, b) => b.completionRate.compareTo(a.completionRate));
+      final topSuccess = successList.take(5).map((d) => TaskCompletionRanking(
+            title: d.originalTitle,
+            totalCount: d.total,
+            completedCount: d.completed,
+            completionRate: d.completionRate,
+          )).toList();
+
+      // Top 5 실패: 완료율 낮은 순, 100% 완료 제외
+      final failureCandidates =
+          qualified.where((d) => d.completionRate < 1.0).toList()
+            ..sort((a, b) => a.completionRate.compareTo(b.completionRate));
+      final topFailure = failureCandidates.take(5).map((d) => TaskCompletionRanking(
+            title: d.originalTitle,
+            totalCount: d.total,
+            completedCount: d.completed,
+            completionRate: d.completionRate,
+          )).toList();
+
+      return Right((topSuccess: topSuccess, topFailure: topFailure));
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
+}
+
+class _RankingData {
+  final String originalTitle;
+  int total = 0;
+  int completed = 0;
+
+  _RankingData({required this.originalTitle});
+
+  double get completionRate => total > 0 ? completed / total : 0.0;
 }
 
 /// 태그 통계 빌더 헬퍼
@@ -672,7 +900,7 @@ class TagTimeComparisonBuilder {
   void addTask(int plannedMinutes, [int? actualMinutes]) {
     _taskCount++;
     _totalPlannedMinutes += plannedMinutes;
-    _totalActualMinutes += actualMinutes ?? plannedMinutes;
+    _totalActualMinutes += actualMinutes ?? 0;
   }
 
   TagTimeComparison build() {

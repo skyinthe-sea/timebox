@@ -81,19 +81,19 @@ class DailyStatsSummary extends Equatable {
 
   /// Task 완료율 (%)
   double get taskCompletionRate {
-    if (totalPlannedTasks == 0) return 100.0;
+    if (totalPlannedTasks == 0) return 0.0;
     return (completedTasks / totalPlannedTasks) * 100;
   }
 
   /// TimeBlock 완료율 (%)
   double get timeBlockCompletionRate {
-    if (totalTimeBlocks == 0) return 100.0;
+    if (totalTimeBlocks == 0) return 0.0;
     return (completedTimeBlocks / totalTimeBlocks) * 100;
   }
 
   /// 시간 정확도 (%)
   double get timeAccuracy {
-    if (totalPlannedDuration.inMinutes == 0) return 100.0;
+    if (totalPlannedDuration.inMinutes == 0) return 0.0;
     final diff = (totalActualDuration - totalPlannedDuration).inMinutes.abs();
     final ratio = diff / totalPlannedDuration.inMinutes;
     return ((1 - ratio) * 100).clamp(0.0, 100.0);
@@ -102,7 +102,7 @@ class DailyStatsSummary extends Equatable {
   /// 집중 효율 (%)
   double get focusEfficiency {
     final totalTime = totalFocusDuration + totalPauseDuration;
-    if (totalTime.inMinutes == 0) return 100.0;
+    if (totalTime.inMinutes == 0) return 0.0;
     return (totalFocusDuration.inMinutes / totalTime.inMinutes) * 100;
   }
 

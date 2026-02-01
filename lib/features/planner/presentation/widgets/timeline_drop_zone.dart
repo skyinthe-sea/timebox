@@ -138,6 +138,11 @@ class _TimelineDropZoneState extends State<TimelineDropZone> {
         Expanded(
           child: DragTarget<Task>(
             onWillAcceptWithDetails: (details) {
+              // 이미 타임블록이 배정된 Task는 거부
+              final plannerState = context.read<PlannerBloc>().state;
+              if (plannerState.isTaskScheduled(details.data.id)) {
+                return false;
+              }
               setState(() => _draggingTask = details.data);
               return true;
             },

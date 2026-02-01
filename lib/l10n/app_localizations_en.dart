@@ -566,4 +566,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exitFocus => 'Exit';
+
+  @override
+  String get statsCompletionRates => 'Completion Rates';
+
+  @override
+  String get statsTaskPipeline => 'Task Pipeline';
+
+  @override
+  String get statsPlanVsActual => 'Plan vs Actual';
+
+  @override
+  String get statsPriorityBreakdown => 'Priority Performance';
+
+  @override
+  String get statsFocusSummary => 'Focus Analysis';
+
+  @override
+  String get statsTopInsights => 'Insights';
+
+  @override
+  String get statsScheduled => 'Scheduled';
+
+  @override
+  String get statsCompleted => 'Completed';
+
+  @override
+  String get statsRolledOver => 'Rolled Over';
+
+  @override
+  String get statsEfficiency => 'Efficiency';
+
+  @override
+  String get statsNoData => 'No data yet';
+
+  @override
+  String get navTimeline => 'Timeline';
+
+  @override
+  String get navReport => 'Report';
+
+  @override
+  String get suggestedTasks => 'Suggestions';
+
+  @override
+  String get taskSuggestionsHint => 'Tasks you\'ve done before';
+
+  @override
+  String get topSuccessTasks => 'Most Completed Tasks';
+
+  @override
+  String get topFailureTasks => 'Hardest to Complete';
+
+  @override
+  String get completionCount => 'Completion Count';
+
+  @override
+  String get taskRankings => 'Task Rankings';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get privacyPolicyContent =>
+      'Privacy Policy\n\nLast updated: January 1, 2026\n\n1. Data Collection\nThis app processes user-entered data such as tasks and time records.\n\n2. Data Storage\nAll data is stored locally on your device only. No data is transmitted to external servers.\n\n3. Third Parties\nThis app uses Google AdMob for advertising. AdMob may collect advertising identifiers. Please refer to Google\'s Privacy Policy for details.\n\n4. Data Deletion\nAll data stored on the device is automatically deleted when you uninstall the app.\n\n5. Contact\nFor privacy inquiries: myclick90@gmail.com';
+
+  @override
+  String get termsOfServiceContent =>
+      'Terms of Service\n\nLast updated: January 1, 2026\n\n1. Service Description\nTimebox Planner is a mobile application that helps you manage your time and plan your schedule.\n\n2. User Responsibilities\nUsers are responsible for all data entered into the app and must use the app only for lawful purposes.\n\n3. Disclaimer\nThis app is provided \"as is\". The developer is not liable for any direct or indirect damages caused by data loss, missed schedules, or other issues.\n\n4. Intellectual Property\nAll intellectual property rights in the app\'s design, code, and content belong to the developer.\n\n5. Changes to Terms\nThese terms may be modified with prior notice. Changes will be communicated through app updates.';
 }

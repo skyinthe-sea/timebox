@@ -230,5 +230,32 @@
   "overlayPermissionRequired": "Permission de superposition requise",
   "noActiveTimeBlock": "Aucun bloc de temps actif",
   "createTimeBlockFirst": "Créez d'abord un bloc de temps dans le calendrier",
-  "exitFocus": "Quitter"
+  "exitFocus": "Quitter",
+
+  "statsCompletionRates": "Taux de complétion",
+  "statsTaskPipeline": "Flux de tâches",
+  "statsPlanVsActual": "Planifié vs Réel",
+  "statsPriorityBreakdown": "Performance par priorité",
+  "statsFocusSummary": "Analyse de concentration",
+  "statsTopInsights": "Analyses",
+  "statsScheduled": "Planifié",
+  "statsCompleted": "Terminé",
+  "statsRolledOver": "Reporté",
+  "statsEfficiency": "Efficacité",
+  "statsNoData": "Pas encore de données",
+
+  "navTimeline": "Chronologie",
+  "navReport": "Rapport",
+
+  "suggestedTasks": "Suggestions",
+  "taskSuggestionsHint": "Tâches que vous avez déjà effectuées",
+  "topSuccessTasks": "Tâches les plus complétées",
+  "topFailureTasks": "Tâches les plus difficiles",
+  "completionCount": "Nombre de complétions",
+  "taskRankings": "Classement des tâches",
+
+  "privacyPolicy": "Politique de confidentialité",
+  "termsOfService": "Conditions d'utilisation",
+  "privacyPolicyContent": "Politique de confidentialité\n\nDernière mise à jour : 1er janvier 2026\n\n1. Collecte de données\nCette application traite les données saisies par l'utilisateur, telles que les tâches et les enregistrements de temps.\n\n2. Stockage des données\nToutes les données sont stockées localement sur votre appareil uniquement. Aucune donnée n'est transmise à des serveurs externes.\n\n3. Tiers\nCette application utilise Google AdMob pour la publicité. AdMob peut collecter des identifiants publicitaires. Veuillez consulter la politique de confidentialité de Google pour plus de détails.\n\n4. Suppression des données\nToutes les données stockées sur l'appareil sont automatiquement supprimées lorsque vous désinstallez l'application.\n\n5. Contact\nPour les questions de confidentialité : myclick90@gmail.com",
+  "termsOfServiceContent": "Conditions d'utilisation\n\nDernière mise à jour : 1er janvier 2026\n\n1. Description du service\nTimebox Planner est une application mobile qui vous aide à gérer votre temps et planifier votre emploi du temps.\n\n2. Responsabilités de l'utilisateur\nLes utilisateurs sont responsables de toutes les données saisies dans l'application et doivent utiliser l'application uniquement à des fins légales.\n\n3. Clause de non-responsabilité\nCette application est fournie telle quelle. Le développeur n'est pas responsable des dommages directs ou indirects causés par la perte de données, les rendez-vous manqués ou d'autres problèmes.\n\n4. Propriété intellectuelle\nTous les droits de propriété intellectuelle relatifs au design, au code et au contenu de l'application appartiennent au développeur.\n\n5. Modification des conditions\nCes conditions peuvent être modifiées avec un préavis. Les changements seront communiqués par le biais des mises à jour de l'application."
 }

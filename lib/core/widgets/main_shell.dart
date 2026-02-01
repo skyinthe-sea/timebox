@@ -41,17 +41,17 @@ class MainShell extends StatelessWidget {
           NavigationDestination(
             icon: const Icon(Icons.view_agenda_outlined),
             selectedIcon: const Icon(Icons.view_agenda),
-            label: l10n?.appName ?? 'Planner',
+            label: l10n?.planner ?? 'Timebox',
           ),
           NavigationDestination(
             icon: const Icon(Icons.calendar_today_outlined),
             selectedIcon: const Icon(Icons.calendar_today),
-            label: l10n?.calendar ?? 'Calendar',
+            label: l10n?.navTimeline ?? 'Timeline',
           ),
           NavigationDestination(
             icon: const Icon(Icons.bar_chart_outlined),
             selectedIcon: const Icon(Icons.bar_chart),
-            label: l10n?.statistics ?? 'Statistics',
+            label: l10n?.navReport ?? 'Report',
           ),
           NavigationDestination(
             icon: const Icon(Icons.settings_outlined),

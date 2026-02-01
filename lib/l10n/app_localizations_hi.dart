@@ -564,4 +564,75 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get exitFocus => 'बाहर निकलें';
+
+  @override
+  String get statsCompletionRates => 'पूर्णता दरें';
+
+  @override
+  String get statsTaskPipeline => 'कार्य प्रवाह';
+
+  @override
+  String get statsPlanVsActual => 'योजना vs वास्तविक';
+
+  @override
+  String get statsPriorityBreakdown => 'प्राथमिकता प्रदर्शन';
+
+  @override
+  String get statsFocusSummary => 'फोकस विश्लेषण';
+
+  @override
+  String get statsTopInsights => 'अंतर्दृष्टि';
+
+  @override
+  String get statsScheduled => 'शेड्यूल';
+
+  @override
+  String get statsCompleted => 'पूर्ण';
+
+  @override
+  String get statsRolledOver => 'स्थानांतरित';
+
+  @override
+  String get statsEfficiency => 'दक्षता';
+
+  @override
+  String get statsNoData => 'अभी तक कोई डेटा नहीं';
+
+  @override
+  String get navTimeline => 'टाइमलाइन';
+
+  @override
+  String get navReport => 'रिपोर्ट';
+
+  @override
+  String get suggestedTasks => 'सुझाए गए कार्य';
+
+  @override
+  String get taskSuggestionsHint => 'पहले किए गए कार्य';
+
+  @override
+  String get topSuccessTasks => 'सबसे ज़्यादा पूरे होने वाले कार्य';
+
+  @override
+  String get topFailureTasks => 'पूरा करना कठिन कार्य';
+
+  @override
+  String get completionCount => 'पूर्णता संख्या';
+
+  @override
+  String get taskRankings => 'कार्य रैंकिंग';
+
+  @override
+  String get privacyPolicy => 'गोपनीयता नीति';
+
+  @override
+  String get termsOfService => 'सेवा की शर्तें';
+
+  @override
+  String get privacyPolicyContent =>
+      'गोपनीयता नीति\n\nअंतिम अपडेट: 1 जनवरी, 2026\n\n1. डेटा संग्रह\nयह ऐप कार्य और समय रिकॉर्ड जैसे उपयोगकर्ता द्वारा दर्ज किए गए डेटा को संसाधित करता है।\n\n2. डेटा संग्रहण\nसभी डेटा केवल आपके डिवाइस पर स्थानीय रूप से संग्रहीत होता है। कोई डेटा बाहरी सर्वर पर नहीं भेजा जाता।\n\n3. तृतीय पक्ष\nयह ऐप विज्ञापन के लिए Google AdMob का उपयोग करता है। AdMob विज्ञापन पहचानकर्ता एकत्र कर सकता है। विवरण के लिए Google की गोपनीयता नीति देखें।\n\n4. डेटा हटाना\nऐप अनइंस्टॉल करने पर डिवाइस पर संग्रहीत सभी डेटा स्वचालित रूप से हटा दिया जाता है।\n\n5. संपर्क\nगोपनीयता संबंधी पूछताछ: myclick90@gmail.com';
+
+  @override
+  String get termsOfServiceContent =>
+      'सेवा की शर्तें\n\nअंतिम अपडेट: 1 जनवरी, 2026\n\n1. सेवा विवरण\nTimebox Planner एक मोबाइल एप्लिकेशन है जो आपके समय प्रबंधन और शेड्यूल नियोजन में मदद करता है।\n\n2. उपयोगकर्ता की जिम्मेदारी\nउपयोगकर्ता ऐप में दर्ज सभी डेटा के लिए जिम्मेदार हैं और केवल वैध उद्देश्यों के लिए ऐप का उपयोग करें।\n\n3. अस्वीकरण\nयह ऐप \"जैसा है\" प्रदान किया जाता है। डेटा हानि, छूटे शेड्यूल या अन्य समस्याओं से होने वाली प्रत्यक्ष या अप्रत्यक्ष क्षति के लिए डेवलपर उत्तरदायी नहीं है।\n\n4. बौद्धिक संपदा\nऐप के डिज़ाइन, कोड और सामग्री के सभी बौद्धिक संपदा अधिकार डेवलपर के हैं।\n\n5. शर्तों में परिवर्तन\nये शर्तें पूर्व सूचना के साथ संशोधित की जा सकती हैं। परिवर्तन ऐप अपडेट के माध्यम से सूचित किए जाएंगे।';
 }

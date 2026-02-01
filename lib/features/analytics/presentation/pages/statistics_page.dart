@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../../../../l10n/app_localizations.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../domain/entities/insight.dart';
+import '../../domain/entities/priority_breakdown_stats.dart';
+import '../../domain/entities/task_pipeline_stats.dart';
 import '../bloc/statistics_bloc.dart';
 import '../bloc/statistics_event.dart';
 import '../bloc/statistics_state.dart';
+import '../widgets/completion_ring_row.dart';
+import '../widgets/focus_summary_card.dart';
+import '../widgets/plan_vs_actual_chart.dart';
+import '../widgets/priority_breakdown_card.dart';
 import '../widgets/productivity_score_card.dart';
-import '../widgets/stat_card.dart';
+import '../widgets/task_completion_ranking_card.dart';
+import '../widgets/task_pipeline_funnel.dart';
+import '../widgets/top_insights_section.dart';
 
 /// 통계 페이지
 ///
-/// 생산성 통계 및 인사이트 대시보드
+/// 그래프/차트/애니메이션 중심 대시보드
 class StatisticsPage extends StatefulWidget {
   const StatisticsPage({super.key});
 
@@ -25,7 +34,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
   @override
   void initState() {
     super.initState();
-    // 페이지 진입 시 통계 로드
     context.read<StatisticsBloc>().add(LoadStatistics(
           date: DateTime.now(),
           period: StatsPeriod.daily,
@@ -35,6 +43,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<StatisticsBloc, StatisticsState>(
       builder: (context, state) {
@@ -56,7 +65,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '통계',
+                    l10n.statistics,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -64,7 +73,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   IconButton(
                     icon: const Icon(Icons.refresh),
                     onPressed: () {
-                      context.read<StatisticsBloc>().add(const RefreshStatistics());
+                      context
+                          .read<StatisticsBloc>()
+                          .add(const RefreshStatistics());
                     },
                   ),
                 ],
@@ -74,55 +85,84 @@ class _StatisticsPageState extends State<StatisticsPage> {
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () async {
-                  context.read<StatisticsBloc>().add(const RefreshStatistics());
+                  context
+                      .read<StatisticsBloc>()
+                      .add(const RefreshStatistics());
                 },
                 child: CustomScrollView(
                   slivers: [
-                    // 기간 선택 탭
+                    // 1. 기간 선택 탭
                     SliverToBoxAdapter(
                       child: _buildPeriodSelector(context, state),
                     ),
 
-                    // 생산성 점수 카드
+                    // 2. 생산성 점수 카드 (기간에 맞는 통계 표시)
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: ProductivityScoreCard(
-                          score: state.todayStats?.score ?? 0,
+                          score: state.displayStats?.score ?? 0,
                           scoreChange: state.scoreChange,
-                          title: '생산성 점수',
+                          title: l10n.productivityScore,
                         ),
                       ),
                     ),
 
-                    // 오늘의 하이라이트
+                    // 3. Completion Ring Row (3개 미니 링)
                     SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '오늘의 하이라이트',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            HighlightsSection(
-                              completedTasks: state.completedTasks,
-                              skippedTasks: state.skippedTasks,
-                              focusMinutes: state.focusMinutes,
-                              timeDifferenceMinutes: state.timeDifferenceMinutes,
-                              top3Completed:
-                                  state.dailySummary?.top3CompletedCount ?? 0,
-                            ),
-                          ],
-                        ),
+                      child: CompletionRingRow(
+                        taskRate:
+                            state.displayStats?.taskCompletionRate ?? 0,
+                        timeBlockRate:
+                            state.displayStats?.timeBlockCompletionRate ?? 0,
+                        timeAccuracy:
+                            state.displayStats?.timeAccuracy ?? 0,
                       ),
                     ),
 
-                    // 주간 트렌드 차트 (주간/월간 뷰에서만)
+                    // 4. Task Pipeline Funnel
+                    SliverToBoxAdapter(
+                      child: TaskPipelineFunnel(
+                        stats: state.pipelineStats ??
+                            TaskPipelineStats.empty,
+                      ),
+                    ),
+
+                    // 5. Plan vs Actual Chart
+                    if (state.timeComparisons.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: PlanVsActualChart(
+                          comparisons: state.timeComparisons,
+                        ),
+                      ),
+
+                    // 6. Priority Breakdown
+                    SliverToBoxAdapter(
+                      child: PriorityBreakdownCard(
+                        stats: state.priorityBreakdown ??
+                            PriorityBreakdownStats.empty,
+                      ),
+                    ),
+
+                    // 6.5. Task Completion Rankings
+                    if (state.topSuccessTasks.isNotEmpty ||
+                        state.topFailureTasks.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: TaskCompletionRankingCard(
+                          topSuccess: state.topSuccessTasks,
+                          topFailure: state.topFailureTasks,
+                        ),
+                      ),
+
+                    // 7. Focus Summary Card
+                    if (state.dailySummary != null)
+                      SliverToBoxAdapter(
+                        child: FocusSummaryCard(
+                          summary: state.dailySummary!,
+                        ),
+                      ),
+
+                    // 8. Trend Chart (주간/월간)
                     if (state.currentPeriod != StatsPeriod.daily &&
                         state.periodStats.isNotEmpty)
                       SliverToBoxAdapter(
@@ -132,7 +172,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         ),
                       ),
 
-                    // 태그별 분석 차트
+                    // 9. Tag Analysis
                     if (state.tagStats.isNotEmpty)
                       SliverToBoxAdapter(
                         child: Padding(
@@ -141,12 +181,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         ),
                       ),
 
-                    // 인사이트 섹션
+                    // 10. Top Insights (최대 3개)
                     if (state.insights.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: _buildInsightsSection(context, state),
+                        child: TopInsightsSection(
+                          insights: state.insights,
+                          getIcon: _getInsightIcon,
                         ),
                       ),
 
@@ -166,25 +206,26 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Widget _buildPeriodSelector(BuildContext context, StatisticsState state) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: SegmentedButton<StatsPeriod>(
-        segments: const [
+        segments: [
           ButtonSegment(
             value: StatsPeriod.daily,
-            label: Text('일간'),
-            icon: Icon(Icons.today, size: 18),
+            label: Text(l10n.daily),
+            icon: const Icon(Icons.today, size: 18),
           ),
           ButtonSegment(
             value: StatsPeriod.weekly,
-            label: Text('주간'),
-            icon: Icon(Icons.date_range, size: 18),
+            label: Text(l10n.weekly),
+            icon: const Icon(Icons.date_range, size: 18),
           ),
           ButtonSegment(
             value: StatsPeriod.monthly,
-            label: Text('월간'),
-            icon: Icon(Icons.calendar_month, size: 18),
+            label: Text(l10n.monthly),
+            icon: const Icon(Icons.calendar_month, size: 18),
           ),
         ],
         selected: {state.currentPeriod},
@@ -206,6 +247,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _buildTrendChart(BuildContext context, StatisticsState state) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return Card(
       elevation: 0,
@@ -221,7 +263,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '트렌드',
+              l10n.trend,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -237,7 +279,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                     horizontalInterval: 25,
                     getDrawingHorizontalLine: (value) {
                       return FlLine(
-                        color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                        color:
+                            theme.colorScheme.outline.withValues(alpha: 0.2),
                         strokeWidth: 1,
                       );
                     },
@@ -264,7 +307,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         reservedSize: 24,
                         getTitlesWidget: (value, meta) {
                           final index = value.toInt();
-                          if (index >= 0 && index < state.periodStats.length) {
+                          if (index >= 0 &&
+                              index < state.periodStats.length) {
                             final date = state.periodStats[index].date;
                             return Text(
                               '${date.day}',
@@ -291,7 +335,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   maxY: 100,
                   lineBarsData: [
                     LineChartBarData(
-                      spots: state.periodStats.asMap().entries.map((entry) {
+                      spots:
+                          state.periodStats.asMap().entries.map((entry) {
                         return FlSpot(
                           entry.key.toDouble(),
                           entry.value.score.toDouble(),
@@ -314,7 +359,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       ),
                       belowBarData: BarAreaData(
                         show: true,
-                        color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                        color: theme.colorScheme.primary
+                            .withValues(alpha: 0.1),
                       ),
                     ),
                   ],
@@ -330,6 +376,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _buildTagChart(BuildContext context, StatisticsState state) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     final colors = [
       AppColors.primaryLight,
@@ -353,7 +400,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '태그별 분석',
+              l10n.tagAnalysis,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -368,24 +415,30 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       PieChartData(
                         sectionsSpace: 2,
                         centerSpaceRadius: 40,
-                        sections: state.tagStats.asMap().entries.map((entry) {
+                        sections:
+                            state.tagStats.asMap().entries.map((entry) {
                           final index = entry.key;
                           final tag = entry.value;
                           final color = colors[index % colors.length];
                           final total = state.tagStats.fold<int>(
                             0,
-                            (sum, t) => sum + t.totalPlannedTime.inMinutes,
+                            (sum, t) =>
+                                sum + t.totalPlannedTime.inMinutes,
                           );
                           final percentage = total > 0
-                              ? (tag.totalPlannedTime.inMinutes / total) * 100
+                              ? (tag.totalPlannedTime.inMinutes / total) *
+                                  100
                               : 0.0;
 
                           return PieChartSectionData(
                             color: color,
-                            value: tag.totalPlannedTime.inMinutes.toDouble(),
-                            title: '${percentage.toStringAsFixed(0)}%',
+                            value:
+                                tag.totalPlannedTime.inMinutes.toDouble(),
+                            title:
+                                '${percentage.toStringAsFixed(0)}%',
                             radius: 50,
-                            titleStyle: theme.textTheme.bodySmall?.copyWith(
+                            titleStyle:
+                                theme.textTheme.bodySmall?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -398,13 +451,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: state.tagStats.asMap().entries.map((entry) {
+                    children:
+                        state.tagStats.asMap().entries.map((entry) {
                       final index = entry.key;
                       final tag = entry.value;
                       final color = colors[index % colors.length];
 
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: 4),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -413,7 +468,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               height: 12,
                               decoration: BoxDecoration(
                                 color: color,
-                                borderRadius: BorderRadius.circular(3),
+                                borderRadius:
+                                    BorderRadius.circular(3),
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -435,72 +491,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
   }
 
-  Widget _buildInsightsSection(BuildContext context, StatisticsState state) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '활동로그',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 12),
-        ...state.insights.map((insight) {
-          return Card(
-            elevation: 0,
-            margin: const EdgeInsets.only(bottom: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(
-                color: isDark ? AppColors.borderDark : AppColors.borderLight,
-              ),
-            ),
-            child: ListTile(
-              leading: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: (insight.isPositive
-                          ? AppColors.successLight
-                          : AppColors.warningLight)
-                      .withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  _getInsightIcon(insight.type),
-                  color: insight.isPositive
-                      ? AppColors.successLight
-                      : AppColors.warningLight,
-                  size: 22,
-                ),
-              ),
-              title: Text(
-                insight.title,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              subtitle: insight.description != null
-                  ? Text(
-                      insight.description!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.outline,
-                      ),
-                    )
-                  : null,
-            ),
-          );
-        }),
-      ],
-    );
-  }
-
   Widget _buildErrorState(BuildContext context, String? message) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Column(
@@ -513,7 +506,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            message ?? '오류가 발생했습니다',
+            message ?? l10n.errorGeneric,
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.outline,
             ),
@@ -522,10 +515,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: () {
-              context.read<StatisticsBloc>().add(const RefreshStatistics());
+              context
+                  .read<StatisticsBloc>()
+                  .add(const RefreshStatistics());
             },
             icon: const Icon(Icons.refresh),
-            label: const Text('다시 시도'),
+            label: Text(l10n.retry),
           ),
         ],
       ),
@@ -551,6 +546,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
         return Icons.check_circle_outline;
       case InsightType.timeSaved:
         return Icons.timer;
+      case InsightType.taskCompletion:
+        return Icons.task_alt;
+      case InsightType.focusEfficiency:
+        return Icons.psychology;
+      case InsightType.timeEstimation:
+        return Icons.analytics_outlined;
     }
   }
 }

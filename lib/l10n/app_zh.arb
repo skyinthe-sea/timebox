@@ -230,5 +230,32 @@
   "overlayPermissionRequired": "需要悬浮窗权限",
   "noActiveTimeBlock": "没有正在进行的时间块",
   "createTimeBlockFirst": "请先在日历中创建时间块",
-  "exitFocus": "退出"
+  "exitFocus": "退出",
+
+  "statsCompletionRates": "完成率",
+  "statsTaskPipeline": "任务流程",
+  "statsPlanVsActual": "计划 vs 实际",
+  "statsPriorityBreakdown": "优先级表现",
+  "statsFocusSummary": "专注分析",
+  "statsTopInsights": "洞察",
+  "statsScheduled": "已安排",
+  "statsCompleted": "已完成",
+  "statsRolledOver": "已顺延",
+  "statsEfficiency": "效率",
+  "statsNoData": "暂无数据",
+
+  "navTimeline": "时间线",
+  "navReport": "报告",
+
+  "suggestedTasks": "推荐任务",
+  "taskSuggestionsHint": "您之前做过的任务",
+  "topSuccessTasks": "完成率最高的任务",
+  "topFailureTasks": "最难完成的任务",
+  "completionCount": "完成次数",
+  "taskRankings": "任务排名",
+
+  "privacyPolicy": "隐私政策",
+  "termsOfService": "服务条款",
+  "privacyPolicyContent": "隐私政策\n\n最后更新：2026年1月1日\n\n1. 数据收集\n本应用处理用户输入的数据，如任务和时间记录。\n\n2. 数据存储\n所有数据仅存储在您的设备本地，不会传输到外部服务器。\n\n3. 第三方\n本应用使用Google AdMob进行广告展示。AdMob可能会收集广告标识符。详情请参阅Google隐私政策。\n\n4. 数据删除\n卸载应用时，设备上存储的所有数据将自动删除。\n\n5. 联系方式\n隐私相关咨询：myclick90@gmail.com",
+  "termsOfServiceContent": "服务条款\n\n最后更新：2026年1月1日\n\n1. 服务说明\nTimebox Planner是一款帮助您管理时间和规划日程的移动应用程序。\n\n2. 用户责任\n用户对输入到应用中的所有数据负责，且只能将应用用于合法目的。\n\n3. 免责声明\n本应用按\"原样\"提供。对于数据丢失、日程遗漏等问题造成的直接或间接损失，开发者不承担责任。\n\n4. 知识产权\n应用的设计、代码和内容的所有知识产权归开发者所有。\n\n5. 条款变更\n本条款可能会在事先通知后进行修改。变更将通过应用更新进行通知。"
 }

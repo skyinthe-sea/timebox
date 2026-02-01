@@ -85,6 +85,52 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  // 법적 정보 링크
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showLegalSheet(
+                          context,
+                          l10n.privacyPolicy,
+                          l10n.privacyPolicyContent,
+                        ),
+                        child: Text(
+                          l10n.privacyPolicy,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                            decoration: TextDecoration.underline,
+                            decorationColor: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: Text(
+                          '·',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => _showLegalSheet(
+                          context,
+                          l10n.termsOfService,
+                          l10n.termsOfServiceContent,
+                        ),
+                        child: Text(
+                          l10n.termsOfService,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                            decoration: TextDecoration.underline,
+                            decorationColor: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 24),
                 ],
               ),
@@ -650,6 +696,58 @@ class SettingsPage extends StatelessWidget {
             child: Text(l10n.confirm),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showLegalSheet(BuildContext context, String title, String content) {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.3,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: scrollController,
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                child: Text(
+                  content,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.6,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

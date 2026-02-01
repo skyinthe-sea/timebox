@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:dartz/dartz.dart' hide Task;
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/task.dart';
+import '../../domain/entities/task_suggestion.dart';
 import '../../domain/entities/subtask.dart';
 import '../../domain/repositories/task_repository.dart';
 import '../datasources/task_local_datasource.dart';
@@ -294,6 +297,83 @@ class TaskRepositoryImpl implements TaskRepository {
       );
       final savedModel = await localDataSource.saveTask(updatedModel);
       return Right(savedModel.toEntity());
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<TaskSuggestion>>> getTaskSuggestions(
+    String query,
+    DateTime currentTime,
+  ) async {
+    try {
+      final models = await localDataSource.getTasks();
+      final tasks = models.map((m) => m.toEntity()).toList();
+      final lowerQuery = query.toLowerCase().trim();
+
+      if (lowerQuery.isEmpty) return const Right([]);
+
+      // 정규화된 제목으로 그룹핑
+      final groups = <String, List<Task>>{};
+      for (final task in tasks) {
+        final normalized = task.title.toLowerCase().trim();
+        groups.putIfAbsent(normalized, () => []).add(task);
+      }
+
+      final suggestions = <TaskSuggestion>[];
+      final currentHour = currentTime.hour;
+
+      for (final entry in groups.entries) {
+        final normalized = entry.key;
+        if (!normalized.contains(lowerQuery)) continue;
+
+        final group = entry.value;
+        final frequency = group.length;
+
+        // 시간대 매칭: ±2h 이내에 생성된 Task 비율
+        final timeMatches = group.where((t) {
+          final diff = (t.createdAt.hour - currentHour).abs();
+          return diff <= 2 || diff >= 22; // 자정 넘김 고려
+        }).length;
+        final timeOfDayMatch = frequency > 0 ? timeMatches / frequency : 0.0;
+
+        // 최근 사용 보너스: 30일 이내 → 1.0~0.0 선형 감소
+        final lastUsed = group
+            .map((t) => t.createdAt)
+            .reduce((a, b) => a.isAfter(b) ? a : b);
+        final daysSinceLastUse =
+            currentTime.difference(lastUsed).inDays.clamp(0, 30);
+        final recencyBonus = 1.0 - (daysSinceLastUse / 30.0);
+
+        // 빈도 정규화 (최대 10회 기준)
+        final normalizedFreq = min(frequency / 10.0, 1.0);
+
+        final score = (normalizedFreq * 0.4) +
+            (timeOfDayMatch * 0.3) +
+            (recencyBonus * 0.3);
+
+        // 평균 예상 소요 시간
+        final totalMinutes = group.fold<int>(
+          0,
+          (sum, t) => sum + t.estimatedDuration.inMinutes,
+        );
+        final avgMinutes = totalMinutes ~/ frequency;
+
+        suggestions.add(TaskSuggestion(
+          title: group.first.title, // 원래 대소문자 유지
+          score: score,
+          frequency: frequency,
+          lastUsedAt: lastUsed,
+          avgEstimatedDuration: Duration(minutes: avgMinutes),
+        ));
+      }
+
+      // 점수 내림차순 정렬, 상위 5개
+      suggestions.sort((a, b) => b.score.compareTo(a.score));
+      return Right(suggestions.take(5).toList());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
     } catch (e) {

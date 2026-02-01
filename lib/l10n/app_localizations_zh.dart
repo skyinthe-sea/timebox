@@ -561,4 +561,75 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get exitFocus => '退出';
+
+  @override
+  String get statsCompletionRates => '完成率';
+
+  @override
+  String get statsTaskPipeline => '任务流程';
+
+  @override
+  String get statsPlanVsActual => '计划 vs 实际';
+
+  @override
+  String get statsPriorityBreakdown => '优先级表现';
+
+  @override
+  String get statsFocusSummary => '专注分析';
+
+  @override
+  String get statsTopInsights => '洞察';
+
+  @override
+  String get statsScheduled => '已安排';
+
+  @override
+  String get statsCompleted => '已完成';
+
+  @override
+  String get statsRolledOver => '已顺延';
+
+  @override
+  String get statsEfficiency => '效率';
+
+  @override
+  String get statsNoData => '暂无数据';
+
+  @override
+  String get navTimeline => '时间线';
+
+  @override
+  String get navReport => '报告';
+
+  @override
+  String get suggestedTasks => '推荐任务';
+
+  @override
+  String get taskSuggestionsHint => '您之前做过的任务';
+
+  @override
+  String get topSuccessTasks => '完成率最高的任务';
+
+  @override
+  String get topFailureTasks => '最难完成的任务';
+
+  @override
+  String get completionCount => '完成次数';
+
+  @override
+  String get taskRankings => '任务排名';
+
+  @override
+  String get privacyPolicy => '隐私政策';
+
+  @override
+  String get termsOfService => '服务条款';
+
+  @override
+  String get privacyPolicyContent =>
+      '隐私政策\n\n最后更新：2026年1月1日\n\n1. 数据收集\n本应用处理用户输入的数据，如任务和时间记录。\n\n2. 数据存储\n所有数据仅存储在您的设备本地，不会传输到外部服务器。\n\n3. 第三方\n本应用使用Google AdMob进行广告展示。AdMob可能会收集广告标识符。详情请参阅Google隐私政策。\n\n4. 数据删除\n卸载应用时，设备上存储的所有数据将自动删除。\n\n5. 联系方式\n隐私相关咨询：myclick90@gmail.com';
+
+  @override
+  String get termsOfServiceContent =>
+      '服务条款\n\n最后更新：2026年1月1日\n\n1. 服务说明\nTimebox Planner是一款帮助您管理时间和规划日程的移动应用程序。\n\n2. 用户责任\n用户对输入到应用中的所有数据负责，且只能将应用用于合法目的。\n\n3. 免责声明\n本应用按\"原样\"提供。对于数据丢失、日程遗漏等问题造成的直接或间接损失，开发者不承担责任。\n\n4. 知识产权\n应用的设计、代码和内容的所有知识产权归开发者所有。\n\n5. 条款变更\n本条款可能会在事先通知后进行修改。变更将通过应用更新进行通知。';
 }

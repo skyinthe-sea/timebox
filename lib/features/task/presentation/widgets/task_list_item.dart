@@ -10,14 +10,12 @@ import '../../domain/entities/task.dart';
 class TaskListItem extends StatelessWidget {
   final Task task;
   final VoidCallback? onTap;
-  final VoidCallback? onToggleComplete;
   final VoidCallback? onDelete;
 
   const TaskListItem({
     super.key,
     required this.task,
     this.onTap,
-    this.onToggleComplete,
     this.onDelete,
   });
 
@@ -29,53 +27,37 @@ class TaskListItem extends StatelessWidget {
 
     return Dismissible(
       key: Key(task.id),
-      direction: DismissDirection.horizontal,
+      direction: DismissDirection.endToStart,
       // 왼쪽 스와이프: 삭제
       background: Container(
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 20),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
         color: isDark ? AppColors.errorDark : AppColors.errorLight,
         child: const Icon(Icons.delete, color: Colors.white),
       ),
-      // 오른쪽 스와이프: 완료
-      secondaryBackground: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        color: isDark ? AppColors.successDark : AppColors.successLight,
-        child: const Icon(Icons.check, color: Colors.white),
-      ),
       confirmDismiss: (direction) async {
-        if (direction == DismissDirection.endToStart) {
-          // 완료 토글
-          onToggleComplete?.call();
-          return false; // 실제로 dismiss하지 않음
-        } else {
-          // 삭제 확인
-          return await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(l10n?.deleteTask ?? 'Delete Task'),
-                  content: Text(l10n?.deleteTaskConfirm ??
-                      'Are you sure you want to delete this task?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text(l10n?.cancel ?? 'Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: Text(l10n?.delete ?? 'Delete'),
-                    ),
-                  ],
-                ),
-              ) ??
-              false;
-        }
+        return await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(l10n?.deleteTask ?? 'Delete Task'),
+                content: Text(l10n?.deleteTaskConfirm ??
+                    'Are you sure you want to delete this task?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(l10n?.cancel ?? 'Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(l10n?.delete ?? 'Delete'),
+                  ),
+                ],
+              ),
+            ) ??
+            false;
       },
-      onDismissed: (direction) {
-        if (direction == DismissDirection.startToEnd) {
-          onDelete?.call();
-        }
+      onDismissed: (_) {
+        onDelete?.call();
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -86,17 +68,6 @@ class TaskListItem extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                // 체크박스
-                Transform.scale(
-                  scale: 1.1,
-                  child: Checkbox(
-                    value: task.isCompleted,
-                    onChanged: (_) => onToggleComplete?.call(),
-                    shape: const CircleBorder(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-
                 // 내용
                 Expanded(
                   child: Column(
@@ -105,12 +76,7 @@ class TaskListItem extends StatelessWidget {
                       // 제목
                       Text(
                         task.title,
-                        style: task.isCompleted
-                            ? theme.textTheme.bodyLarge?.copyWith(
-                                decoration: TextDecoration.lineThrough,
-                                color: theme.colorScheme.outline,
-                              )
-                            : theme.textTheme.bodyLarge,
+                        style: theme.textTheme.bodyLarge,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
