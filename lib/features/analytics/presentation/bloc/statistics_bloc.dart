@@ -113,7 +113,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       );
 
       // 인사이트 생성 (최대 3개로 제한)
-      final allInsights = await _generateInsights(
+      final allInsights = _generateInsights(
         date: event.date,
         period: event.period,
         todayStats: todayStats,
@@ -180,7 +180,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     RefreshInsights event,
     Emitter<StatisticsState> emit,
   ) async {
-    final insights = await _generateInsights(
+    final insights = _generateInsights(
       date: state.selectedDate,
       period: state.currentPeriod,
       todayStats: state.todayStats,
@@ -256,15 +256,21 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     return result.fold((failure) => [], (stats) => stats);
   }
 
-  /// 인사이트 생성
-  Future<List<Insight>> _generateInsights({
+  /// 요일 인덱스 → l10n 키
+  String _weekdayKey(int weekday) {
+    const keys = ['', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    return keys[weekday];
+  }
+
+  /// 인사이트 생성 (키 기반 — 하드코딩 문자열 없음)
+  List<Insight> _generateInsights({
     required DateTime date,
     required StatsPeriod period,
     ProductivityStats? todayStats,
     ProductivityStats? yesterdayStats,
     DailyStatsSummary? dailySummary,
     List<ProductivityStats> periodStats = const [],
-  }) async {
+  }) {
     final insights = <Insight>[];
     final now = DateTime.now();
 
@@ -277,12 +283,12 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         insights.add(Insight.productivityChange(
           id: 'insight_score_${now.millisecondsSinceEpoch}',
           scoreDiff: scoreDiff,
-          periodText: '어제',
+          periodKey: 'insightPeriodYesterday',
         ));
       }
     }
 
-    // 2. Task 완료율 (신규)
+    // 2. Task 완료율
     if (dailySummary != null && dailySummary.totalPlannedTasks > 0) {
       insights.add(Insight.taskCompletion(
         id: 'insight_taskcomp_${now.millisecondsSinceEpoch}',
@@ -291,28 +297,26 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       ));
     }
 
-    // 3. 시간 절약/초과 (버그 수정: 실제 데이터 있는 블록만)
+    // 3. 시간 절약/초과
     if (dailySummary != null &&
         dailySummary.totalActualDuration.inMinutes > 0) {
       final savedMinutes = dailySummary.timeDifferenceMinutes;
       if (savedMinutes >= 5) {
-        // 절약
         insights.add(Insight.timeSaved(
           id: 'insight_timesaved_${now.millisecondsSinceEpoch}',
           minutesSaved: savedMinutes,
-          periodText: '오늘',
+          periodKey: 'insightPeriodToday',
         ));
       } else if (savedMinutes <= -5) {
-        // 초과
         insights.add(Insight.timeOver(
           id: 'insight_timeover_${now.millisecondsSinceEpoch}',
           minutesOver: savedMinutes.abs(),
-          periodText: '오늘',
+          periodKey: 'insightPeriodToday',
         ));
       }
     }
 
-    // 4. 시간 예측 정확도 (신규)
+    // 4. 시간 예측 정확도
     if (dailySummary != null &&
         dailySummary.totalPlannedDuration.inMinutes > 0 &&
         dailySummary.totalActualDuration.inMinutes > 0) {
@@ -323,7 +327,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       ));
     }
 
-    // 5. 집중 효율 (신규)
+    // 5. 집중 효율
     if (dailySummary != null && dailySummary.focusSessionCount > 0) {
       final efficiency = dailySummary.focusEfficiency.round();
       insights.add(Insight.focusEfficiency(
@@ -333,7 +337,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       ));
     }
 
-    // 6. 이월 경고 (기존, 조건 완화: 2개 이상)
+    // 6. 이월 경고
     if (dailySummary != null && dailySummary.rolledOverTasks >= 2) {
       insights.add(Insight.rolloverWarning(
         id: 'insight_rollover_${now.millisecondsSinceEpoch}',
@@ -342,18 +346,18 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       ));
     }
 
-    // 7. Top 3 달성 (기존 개선)
+    // 7. Top 3 달성
     if (dailySummary != null && dailySummary.top3CompletedCount > 0) {
       if (dailySummary.top3CompletedCount == 3) {
         insights.add(Insight(
           id: 'insight_top3_${now.millisecondsSinceEpoch}',
           type: InsightType.completionRate,
           priority: InsightPriority.high,
-          title: 'Top 3 Task를 모두 완료했어요!',
-          description: '오늘의 가장 중요한 일을 모두 해냈어요.',
+          titleKey: 'insightTop3AllCompleteTitle',
+          descriptionKey: 'insightTop3AllCompleteDesc',
           value: 3,
-          unit: '개',
-          iconCodePoint: 0xe838, // Icons.star
+          unitKey: 'insightUnitCount',
+          iconCodePoint: 0xe838,
           isPositive: true,
           createdAt: now,
         ));
@@ -362,11 +366,15 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           id: 'insight_top3_${now.millisecondsSinceEpoch}',
           type: InsightType.completionRate,
           priority: InsightPriority.medium,
-          title: 'Top 3 중 ${dailySummary.top3CompletedCount}개를 완료했어요',
-          description: '${3 - dailySummary.top3CompletedCount}개가 남았어요. 마무리해볼까요?',
+          titleKey: 'insightTop3PartialTitle',
+          descriptionKey: 'insightTop3PartialDesc',
+          params: {
+            'completed': '${dailySummary.top3CompletedCount}',
+            'remaining': '${3 - dailySummary.top3CompletedCount}',
+          },
           value: dailySummary.top3CompletedCount.toDouble(),
-          unit: '개',
-          iconCodePoint: 0xe838, // Icons.star
+          unitKey: 'insightUnitCount',
+          iconCodePoint: 0xe838,
           isPositive: true,
           createdAt: now,
         ));
@@ -380,11 +388,12 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           id: 'insight_great_${now.millisecondsSinceEpoch}',
           type: InsightType.completionRate,
           priority: InsightPriority.low,
-          title: '오늘 생산성이 아주 높아요!',
-          description: '${todayStats.score}점을 달성했어요. 대단해요!',
+          titleKey: 'insightScoreGreatTitle',
+          descriptionKey: 'insightScoreGreatDesc',
+          params: {'score': '${todayStats.score}'},
           value: todayStats.score.toDouble(),
-          unit: '점',
-          iconCodePoint: 0xe838, // Icons.star
+          unitKey: 'insightUnitPoints',
+          iconCodePoint: 0xe838,
           isPositive: true,
           createdAt: now,
         ));
@@ -393,11 +402,12 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           id: 'insight_normal_${now.millisecondsSinceEpoch}',
           type: InsightType.completionRate,
           priority: InsightPriority.low,
-          title: '오늘도 꾸준히 진행 중이에요',
-          description: '현재 ${todayStats.score}점이에요. 조금만 더 힘내봐요!',
+          titleKey: 'insightScoreNormalTitle',
+          descriptionKey: 'insightScoreNormalDesc',
+          params: {'score': '${todayStats.score}'},
           value: todayStats.score.toDouble(),
-          unit: '점',
-          iconCodePoint: 0xe5cd, // Icons.check
+          unitKey: 'insightUnitPoints',
+          iconCodePoint: 0xe5cd,
           isPositive: true,
           createdAt: now,
         ));
@@ -417,13 +427,14 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           id: 'insight_weekavg_${now.millisecondsSinceEpoch}',
           type: InsightType.completionRate,
           priority: InsightPriority.medium,
-          title: '이번 주 평균 생산성 ${avgScore.round()}점',
-          description: avgScore >= 70
-              ? '잘하고 있어요! 이 페이스를 유지해보세요.'
-              : '조금씩 올려볼까요? 작은 개선이 모여 큰 변화가 돼요.',
+          titleKey: 'insightWeekAvgTitle',
+          descriptionKey: avgScore >= 70
+              ? 'insightWeekAvgHighDesc'
+              : 'insightWeekAvgLowDesc',
+          params: {'score': '${avgScore.round()}'},
           value: avgScore,
-          unit: '점',
-          iconCodePoint: 0xe1b1, // Icons.analytics_outlined
+          unitKey: 'insightUnitPoints',
+          iconCodePoint: 0xe1b1,
           isPositive: avgScore >= 50,
           createdAt: now,
         ));
@@ -432,11 +443,10 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         final best = validStats.reduce(
           (a, b) => a.score >= b.score ? a : b,
         );
-        const dayNames = ['', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
-        final dayName = dayNames[best.date.weekday];
+        final dayKey = _weekdayKey(best.date.weekday);
         insights.add(Insight.bestDay(
           id: 'insight_bestday_${now.millisecondsSinceEpoch}',
-          dayName: dayName,
+          dayKey: dayKey,
           avgScore: best.score.toDouble(),
         ));
 
@@ -458,7 +468,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
             insights.add(Insight.productivityChange(
               id: 'insight_weektrend_${now.millisecondsSinceEpoch}',
               scoreDiff: diff.round(),
-              periodText: '주 전반부',
+              periodKey: 'insightPeriodWeekFirstHalf',
             ));
           }
         }
@@ -478,13 +488,14 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           id: 'insight_monthavg_${now.millisecondsSinceEpoch}',
           type: InsightType.completionRate,
           priority: InsightPriority.medium,
-          title: '이번 달 평균 생산성 ${avgScore.round()}점',
-          description: avgScore >= 70
-              ? '높은 생산성을 유지하고 있어요!'
-              : '꾸준히 기록하는 것 자체가 큰 발전이에요.',
+          titleKey: 'insightMonthAvgTitle',
+          descriptionKey: avgScore >= 70
+              ? 'insightMonthAvgHighDesc'
+              : 'insightMonthAvgLowDesc',
+          params: {'score': '${avgScore.round()}'},
           value: avgScore,
-          unit: '점',
-          iconCodePoint: 0xe1b1, // Icons.analytics_outlined
+          unitKey: 'insightUnitPoints',
+          iconCodePoint: 0xe1b1,
           isPositive: avgScore >= 50,
           createdAt: now,
         ));
@@ -497,11 +508,16 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           id: 'insight_monthbest_${now.millisecondsSinceEpoch}',
           type: InsightType.bestDay,
           priority: InsightPriority.medium,
-          title: '${best.date.month}월 ${best.date.day}일이 가장 생산적이었어요',
-          description: '${best.score}점을 달성했어요.',
+          titleKey: 'insightMonthBestTitle',
+          descriptionKey: 'insightMonthBestDesc',
+          params: {
+            'month': '${best.date.month}',
+            'day': '${best.date.day}',
+            'score': '${best.score}',
+          },
           value: best.score.toDouble(),
-          unit: '점',
-          iconCodePoint: 0xe838, // Icons.star
+          unitKey: 'insightUnitPoints',
+          iconCodePoint: 0xe838,
           isPositive: true,
           createdAt: now,
         ));
@@ -514,9 +530,9 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         id: 'insight_default_${now.millisecondsSinceEpoch}',
         type: InsightType.completionRate,
         priority: InsightPriority.low,
-        title: '오늘의 첫 번째 Task를 시작해보세요!',
-        description: '작은 성취가 큰 변화를 만들어요.',
-        iconCodePoint: 0xe8b5, // Icons.lightbulb_outline
+        titleKey: 'insightTaskFirstTitle',
+        descriptionKey: 'insightTaskFirstDesc',
+        iconCodePoint: 0xe8b5,
         isPositive: true,
         createdAt: now,
       ));

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -16,20 +19,30 @@ import 'injection_container.dart' as di;
 /// 5. AdMob 초기화
 /// 6. 앱 실행
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Hive 초기화
-  await HiveService.init();
-  await HiveService.openBoxes();
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      debugPrint('FlutterError: ${details.exceptionAsString()}');
+    };
 
-  // 의존성 주입 초기화
-  await di.init();
+    // Hive 초기화
+    await HiveService.init();
+    await HiveService.openBoxes();
 
-  // 알림 서비스 초기화
-  await di.sl<NotificationService>().initialize();
+    // 의존성 주입 초기화
+    await di.init();
 
-  // AdMob 초기화
-  await MobileAds.instance.initialize();
+    // 알림 서비스 초기화
+    await di.sl<NotificationService>().initialize();
 
-  runApp(const TimeboxApp());
+    // AdMob 초기화
+    await MobileAds.instance.initialize();
+
+    runApp(const TimeboxApp());
+  }, (error, stackTrace) {
+    debugPrint('Unhandled error: $error');
+    debugPrint('Stack trace: $stackTrace');
+  });
 }

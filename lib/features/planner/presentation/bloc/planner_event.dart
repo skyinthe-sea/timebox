@@ -78,11 +78,13 @@ class CreateTimeBlockFromTask extends PlannerEvent {
 
 /// Quick Task 생성 (브레인 덤프)
 class QuickCreateTask extends PlannerEvent {
+  final String? taskId;
   final String title;
   final Duration estimatedDuration;
   final TaskPriority priority;
 
   const QuickCreateTask({
+    this.taskId,
     required this.title,
     this.estimatedDuration = const Duration(minutes: 30),
     this.priority = TaskPriority.medium,

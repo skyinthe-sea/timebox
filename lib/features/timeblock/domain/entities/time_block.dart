@@ -77,7 +77,35 @@ class TimeBlock {
   /// 완료되었는지 확인
   bool get isCompleted => status == TimeBlockStatus.completed;
 
-  // TODO: copyWith, props (Equatable), toJson/fromJson 구현
+  TimeBlock copyWith({
+    String? id,
+    String? taskId,
+    DateTime? startTime,
+    DateTime? endTime,
+    DateTime? actualStart,
+    DateTime? actualEnd,
+    bool? isExternal,
+    String? externalEventId,
+    String? externalProvider,
+    TimeBlockStatus? status,
+    int? colorValue,
+    String? title,
+  }) {
+    return TimeBlock(
+      id: id ?? this.id,
+      taskId: taskId ?? this.taskId,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      actualStart: actualStart ?? this.actualStart,
+      actualEnd: actualEnd ?? this.actualEnd,
+      isExternal: isExternal ?? this.isExternal,
+      externalEventId: externalEventId ?? this.externalEventId,
+      externalProvider: externalProvider ?? this.externalProvider,
+      status: status ?? this.status,
+      colorValue: colorValue ?? this.colorValue,
+      title: title ?? this.title,
+    );
+  }
 }
 
 /// 타임블록 실행 상태

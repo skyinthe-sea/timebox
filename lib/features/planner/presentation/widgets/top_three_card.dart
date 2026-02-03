@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../task/domain/entities/task.dart';
 
 /// Top 3 카드 위젯
@@ -79,7 +80,7 @@ class TopThreeCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        _formatDuration(task.estimatedDuration),
+                        _formatDuration(context, task.estimatedDuration),
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.outline,
                         ),
@@ -95,23 +96,25 @@ class TopThreeCard extends StatelessWidget {
     );
   }
 
-  String _formatDuration(Duration duration) {
+  String _formatDuration(BuildContext context, Duration duration) {
+    final l10n = AppLocalizations.of(context);
     final hours = duration.inHours;
     final minutes = duration.inMinutes % 60;
 
     if (hours > 0 && minutes > 0) {
-      return '${hours}h ${minutes}m';
+      return l10n?.durationFormat(hours, minutes) ?? '${hours}h ${minutes}m';
     } else if (hours > 0) {
-      return '${hours}h';
+      return l10n?.hoursShort(hours) ?? '${hours}h';
     } else {
-      return '${minutes}m';
+      return l10n?.minutesShort(minutes) ?? '${minutes}m';
     }
   }
 
   void _showRemoveConfirmation(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
-      builder: (context) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
@@ -120,16 +123,16 @@ class TopThreeCard extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.remove_circle_outline,
                     color: Colors.red),
-                title: const Text('Remove from Top 3'),
+                title: Text(l10n?.removeFromTop3 ?? 'Remove from Top 3'),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pop(sheetContext);
                   onRemove();
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.close),
-                title: const Text('Cancel'),
-                onTap: () => Navigator.pop(context),
+                title: Text(l10n?.cancel ?? 'Cancel'),
+                onTap: () => Navigator.pop(sheetContext),
               ),
             ],
           ),

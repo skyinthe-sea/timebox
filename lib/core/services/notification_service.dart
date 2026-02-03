@@ -30,9 +30,6 @@ class NotificationIdGenerator {
 /// flutter_local_notifications 래퍼
 /// 알림 스케줄링, 취소, 권한 관리
 class NotificationService {
-  static final NotificationService _instance = NotificationService._internal();
-  factory NotificationService() => _instance;
-  NotificationService._internal();
 
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();

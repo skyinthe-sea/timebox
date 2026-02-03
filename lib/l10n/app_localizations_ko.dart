@@ -632,4 +632,304 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get termsOfServiceContent =>
       '이용약관\n\n최종 수정일: 2026년 1월 1일\n\n1. 서비스 설명\nTimebox Planner는 시간 관리 및 일정 계획을 돕는 모바일 애플리케이션입니다.\n\n2. 사용자 책임\n사용자는 앱에 입력하는 모든 데이터에 대한 책임을 지며, 앱을 합법적인 목적으로만 사용해야 합니다.\n\n3. 면책 조항\n본 앱은 \"있는 그대로\" 제공됩니다. 데이터 손실, 일정 누락 등으로 인한 직간접적 손해에 대해 개발자는 책임을 지지 않습니다.\n\n4. 지적재산권\n본 앱의 디자인, 코드, 콘텐츠에 대한 모든 지적재산권은 개발자에게 귀속됩니다.\n\n5. 약관 변경\n본 약관은 사전 고지 후 변경될 수 있으며, 변경 사항은 앱 업데이트를 통해 공지됩니다.';
+
+  @override
+  String durationFormat(int hours, int minutes) {
+    return '$hours시간 $minutes분';
+  }
+
+  @override
+  String get previousDay => '이전 날';
+
+  @override
+  String get nextDay => '다음 날';
+
+  @override
+  String get noTitle => '제목 없음';
+
+  @override
+  String get incomplete => '미완료';
+
+  @override
+  String get revert => '되돌리기';
+
+  @override
+  String get statusChange => '상태 변경';
+
+  @override
+  String get timeBlockResult => '타임블록 결과';
+
+  @override
+  String get reverted => '되돌림 처리되었습니다';
+
+  @override
+  String get markedComplete => '완료 처리되었습니다';
+
+  @override
+  String get markedIncomplete => '미완료 처리되었습니다';
+
+  @override
+  String get deleteTimeBlock => '타임블록 삭제';
+
+  @override
+  String get deleteTimeBlockConfirm => '이 타임블록을 삭제하시겠습니까?';
+
+  @override
+  String get removeFromTop3 => 'Top 3에서 제거';
+
+  @override
+  String scoreUp(int change) {
+    return '어제보다 $change점 상승!';
+  }
+
+  @override
+  String scoreDown(int change) {
+    return '어제보다 $change점 하락';
+  }
+
+  @override
+  String get scoreSame => '어제와 동일';
+
+  @override
+  String get average => '평균';
+
+  @override
+  String get dailyReminderTitle => '오늘의 계획을 세워보세요!';
+
+  @override
+  String get dailyReminderBody => '목표 달성을 위한 첫 걸음입니다.';
+
+  @override
+  String get monday => '월요일';
+
+  @override
+  String get tuesday => '화요일';
+
+  @override
+  String get wednesday => '수요일';
+
+  @override
+  String get thursday => '목요일';
+
+  @override
+  String get friday => '금요일';
+
+  @override
+  String get saturday => '토요일';
+
+  @override
+  String get sunday => '일요일';
+
+  @override
+  String get insightPeriodYesterday => '어제';
+
+  @override
+  String get insightPeriodToday => '오늘';
+
+  @override
+  String get insightPeriodWeekFirstHalf => '이번 주 전반';
+
+  @override
+  String insightFocusTimeTitle(String dayName, String hour) {
+    return '$dayName $hour시에 가장 집중력이 높았어요';
+  }
+
+  @override
+  String get insightFocusTimeDesc => '이 시간대에 중요한 작업을 배치해보세요';
+
+  @override
+  String insightTagAccuracyFasterTitle(String tagName, String minutes) {
+    return '$tagName 태그 작업을 $minutes분 빠르게 완료했어요';
+  }
+
+  @override
+  String insightTagAccuracySlowerTitle(String tagName, String minutes) {
+    return '$tagName 태그 작업에 $minutes분 더 걸렸어요';
+  }
+
+  @override
+  String get insightTagAccuracyFasterDesc => '예상 시간 산정이 정확해지고 있어요';
+
+  @override
+  String get insightTagAccuracySlowerDesc => '이 유형의 작업에 더 넉넉한 시간을 배분해보세요';
+
+  @override
+  String insightRolloverTitle(String rolloverCount, String taskCount) {
+    return '이월 작업이 $rolloverCount건 중 $taskCount건이에요';
+  }
+
+  @override
+  String get insightRolloverDesc => '작업을 더 작게 나누거나 우선순위를 재조정해보세요';
+
+  @override
+  String insightStreakTitle(String days) {
+    return '$days일 연속으로 계획을 실행하고 있어요!';
+  }
+
+  @override
+  String get insightStreakDesc => '꾸준함이 성공의 열쇠입니다';
+
+  @override
+  String insightScoreUpTitle(String period, String scoreDiff) {
+    return '$period 대비 생산성이 $scoreDiff점 올랐어요';
+  }
+
+  @override
+  String get insightScoreUpDesc => '좋은 흐름을 유지하세요!';
+
+  @override
+  String insightScoreDownTitle(String period, String scoreDiff) {
+    return '$period 대비 생산성이 $scoreDiff점 떨어졌어요';
+  }
+
+  @override
+  String get insightScoreDownDesc => '계획을 조금 조정해보세요';
+
+  @override
+  String insightBestDayTitle(String dayName) {
+    return '$dayName이 가장 생산적인 요일이에요';
+  }
+
+  @override
+  String insightBestDayDesc(String score) {
+    return '평균 점수: $score점';
+  }
+
+  @override
+  String insightTimeSavedTitle(String period, String minutes) {
+    return '$period 계획보다 $minutes분 절약했어요';
+  }
+
+  @override
+  String get insightTimeSavedDesc => '효율적인 시간 관리를 하고 있어요';
+
+  @override
+  String insightTimeOverTitle(String period, String minutes) {
+    return '$period 계획보다 $minutes분 초과했어요';
+  }
+
+  @override
+  String get insightTimeOverDesc => '시간 예측을 조금 여유 있게 설정해보세요';
+
+  @override
+  String get insightTaskFirstTitle => '오늘 첫 번째 작업을 완료했어요!';
+
+  @override
+  String get insightTaskFirstDesc => '좋은 시작이에요';
+
+  @override
+  String get insightTaskAllCompleteTitle => '오늘의 모든 작업을 완료했어요!';
+
+  @override
+  String insightTaskAllCompleteDesc(String total) {
+    return '총 $total개의 작업을 해냈어요';
+  }
+
+  @override
+  String get insightTaskNoneTitle => '아직 완료한 작업이 없어요';
+
+  @override
+  String get insightTaskNoneDesc => '작은 것부터 시작해보세요';
+
+  @override
+  String insightTaskPartialTitle(String total, String completed) {
+    return '$total개 중 $completed개 작업 완료';
+  }
+
+  @override
+  String insightTaskPartialDesc(String remaining) {
+    return '$remaining개 남았어요, 힘내세요!';
+  }
+
+  @override
+  String insightFocusEffTitle(String percent) {
+    return '집중 효율 $percent%';
+  }
+
+  @override
+  String get insightFocusEffHighDesc => '높은 집중력을 유지하고 있어요';
+
+  @override
+  String get insightFocusEffMedDesc => '집중력이 보통 수준이에요';
+
+  @override
+  String get insightFocusEffLowDesc => '집중 환경을 개선해보세요';
+
+  @override
+  String insightTimeEstTitle(String percent) {
+    return '시간 예측 정확도 $percent%';
+  }
+
+  @override
+  String get insightTimeEstHighDesc => '시간 예측이 정확해요';
+
+  @override
+  String get insightTimeEstMedDesc => '시간 예측을 조금 조정해보세요';
+
+  @override
+  String get insightTimeEstLowDesc => '실제 소요 시간을 기록하여 예측을 개선해보세요';
+
+  @override
+  String get insightTop3AllCompleteTitle => 'Top 3를 모두 달성했어요!';
+
+  @override
+  String get insightTop3AllCompleteDesc => '가장 중요한 일에 집중했어요';
+
+  @override
+  String insightTop3PartialTitle(String completed) {
+    return 'Top 3 중 $completed개 달성';
+  }
+
+  @override
+  String insightTop3PartialDesc(String remaining) {
+    return '$remaining개 더 달성해보세요';
+  }
+
+  @override
+  String get insightScoreGreatTitle => '훌륭한 하루였어요!';
+
+  @override
+  String insightScoreGreatDesc(String score) {
+    return '생산성 점수 $score점';
+  }
+
+  @override
+  String get insightScoreNormalTitle => '오늘도 수고했어요';
+
+  @override
+  String insightScoreNormalDesc(String score) {
+    return '생산성 점수 $score점';
+  }
+
+  @override
+  String insightWeekAvgTitle(String score) {
+    return '이번 주 평균 점수: $score점';
+  }
+
+  @override
+  String get insightWeekAvgHighDesc => '일주일 내내 훌륭했어요';
+
+  @override
+  String get insightWeekAvgLowDesc => '다음 주는 더 나아질 거에요';
+
+  @override
+  String insightMonthAvgTitle(String score) {
+    return '이번 달 평균 점수: $score점';
+  }
+
+  @override
+  String get insightMonthAvgHighDesc => '한 달 동안 꾸준히 잘 해왔어요';
+
+  @override
+  String get insightMonthAvgLowDesc => '목표를 재설정하고 다시 시작해보세요';
+
+  @override
+  String insightMonthBestTitle(String month, String day) {
+    return '이번 달 최고의 날: $month월 $day일';
+  }
+
+  @override
+  String insightMonthBestDesc(String score) {
+    return '그날의 점수: $score점';
+  }
 }

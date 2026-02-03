@@ -323,6 +323,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
       // 애니메이션 후 ID 목록 클리어 (1초 후)
       await Future.delayed(const Duration(milliseconds: 1000));
+      if (isClosed) return;
       emit(state.copyWith(clearRecentlySkipped: true));
     }
   }

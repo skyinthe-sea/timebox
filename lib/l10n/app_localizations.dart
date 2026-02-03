@@ -1325,6 +1325,498 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'이용약관\n\n최종 수정일: 2026년 1월 1일\n\n1. 서비스 설명\nTimebox Planner는 시간 관리 및 일정 계획을 돕는 모바일 애플리케이션입니다.\n\n2. 사용자 책임\n사용자는 앱에 입력하는 모든 데이터에 대한 책임을 지며, 앱을 합법적인 목적으로만 사용해야 합니다.\n\n3. 면책 조항\n본 앱은 \"있는 그대로\" 제공됩니다. 데이터 손실, 일정 누락 등으로 인한 직간접적 손해에 대해 개발자는 책임을 지지 않습니다.\n\n4. 지적재산권\n본 앱의 디자인, 코드, 콘텐츠에 대한 모든 지적재산권은 개발자에게 귀속됩니다.\n\n5. 약관 변경\n본 약관은 사전 고지 후 변경될 수 있으며, 변경 사항은 앱 업데이트를 통해 공지됩니다.'**
   String get termsOfServiceContent;
+
+  /// No description provided for @durationFormat.
+  ///
+  /// In ko, this message translates to:
+  /// **'{hours}시간 {minutes}분'**
+  String durationFormat(int hours, int minutes);
+
+  /// No description provided for @previousDay.
+  ///
+  /// In ko, this message translates to:
+  /// **'이전 날'**
+  String get previousDay;
+
+  /// No description provided for @nextDay.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음 날'**
+  String get nextDay;
+
+  /// No description provided for @noTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'제목 없음'**
+  String get noTitle;
+
+  /// No description provided for @incomplete.
+  ///
+  /// In ko, this message translates to:
+  /// **'미완료'**
+  String get incomplete;
+
+  /// No description provided for @revert.
+  ///
+  /// In ko, this message translates to:
+  /// **'되돌리기'**
+  String get revert;
+
+  /// No description provided for @statusChange.
+  ///
+  /// In ko, this message translates to:
+  /// **'상태 변경'**
+  String get statusChange;
+
+  /// No description provided for @timeBlockResult.
+  ///
+  /// In ko, this message translates to:
+  /// **'타임블록 결과'**
+  String get timeBlockResult;
+
+  /// No description provided for @reverted.
+  ///
+  /// In ko, this message translates to:
+  /// **'되돌림 처리되었습니다'**
+  String get reverted;
+
+  /// No description provided for @markedComplete.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료 처리되었습니다'**
+  String get markedComplete;
+
+  /// No description provided for @markedIncomplete.
+  ///
+  /// In ko, this message translates to:
+  /// **'미완료 처리되었습니다'**
+  String get markedIncomplete;
+
+  /// No description provided for @deleteTimeBlock.
+  ///
+  /// In ko, this message translates to:
+  /// **'타임블록 삭제'**
+  String get deleteTimeBlock;
+
+  /// No description provided for @deleteTimeBlockConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 타임블록을 삭제하시겠습니까?'**
+  String get deleteTimeBlockConfirm;
+
+  /// No description provided for @removeFromTop3.
+  ///
+  /// In ko, this message translates to:
+  /// **'Top 3에서 제거'**
+  String get removeFromTop3;
+
+  /// No description provided for @scoreUp.
+  ///
+  /// In ko, this message translates to:
+  /// **'어제보다 {change}점 상승!'**
+  String scoreUp(int change);
+
+  /// No description provided for @scoreDown.
+  ///
+  /// In ko, this message translates to:
+  /// **'어제보다 {change}점 하락'**
+  String scoreDown(int change);
+
+  /// No description provided for @scoreSame.
+  ///
+  /// In ko, this message translates to:
+  /// **'어제와 동일'**
+  String get scoreSame;
+
+  /// No description provided for @average.
+  ///
+  /// In ko, this message translates to:
+  /// **'평균'**
+  String get average;
+
+  /// No description provided for @dailyReminderTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘의 계획을 세워보세요!'**
+  String get dailyReminderTitle;
+
+  /// No description provided for @dailyReminderBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'목표 달성을 위한 첫 걸음입니다.'**
+  String get dailyReminderBody;
+
+  /// No description provided for @monday.
+  ///
+  /// In ko, this message translates to:
+  /// **'월요일'**
+  String get monday;
+
+  /// No description provided for @tuesday.
+  ///
+  /// In ko, this message translates to:
+  /// **'화요일'**
+  String get tuesday;
+
+  /// No description provided for @wednesday.
+  ///
+  /// In ko, this message translates to:
+  /// **'수요일'**
+  String get wednesday;
+
+  /// No description provided for @thursday.
+  ///
+  /// In ko, this message translates to:
+  /// **'목요일'**
+  String get thursday;
+
+  /// No description provided for @friday.
+  ///
+  /// In ko, this message translates to:
+  /// **'금요일'**
+  String get friday;
+
+  /// No description provided for @saturday.
+  ///
+  /// In ko, this message translates to:
+  /// **'토요일'**
+  String get saturday;
+
+  /// No description provided for @sunday.
+  ///
+  /// In ko, this message translates to:
+  /// **'일요일'**
+  String get sunday;
+
+  /// No description provided for @insightPeriodYesterday.
+  ///
+  /// In ko, this message translates to:
+  /// **'어제'**
+  String get insightPeriodYesterday;
+
+  /// No description provided for @insightPeriodToday.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘'**
+  String get insightPeriodToday;
+
+  /// No description provided for @insightPeriodWeekFirstHalf.
+  ///
+  /// In ko, this message translates to:
+  /// **'이번 주 전반'**
+  String get insightPeriodWeekFirstHalf;
+
+  /// No description provided for @insightFocusTimeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dayName} {hour}시에 가장 집중력이 높았어요'**
+  String insightFocusTimeTitle(String dayName, String hour);
+
+  /// No description provided for @insightFocusTimeDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 시간대에 중요한 작업을 배치해보세요'**
+  String get insightFocusTimeDesc;
+
+  /// No description provided for @insightTagAccuracyFasterTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{tagName} 태그 작업을 {minutes}분 빠르게 완료했어요'**
+  String insightTagAccuracyFasterTitle(String tagName, String minutes);
+
+  /// No description provided for @insightTagAccuracySlowerTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{tagName} 태그 작업에 {minutes}분 더 걸렸어요'**
+  String insightTagAccuracySlowerTitle(String tagName, String minutes);
+
+  /// No description provided for @insightTagAccuracyFasterDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'예상 시간 산정이 정확해지고 있어요'**
+  String get insightTagAccuracyFasterDesc;
+
+  /// No description provided for @insightTagAccuracySlowerDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 유형의 작업에 더 넉넉한 시간을 배분해보세요'**
+  String get insightTagAccuracySlowerDesc;
+
+  /// No description provided for @insightRolloverTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이월 작업이 {rolloverCount}건 중 {taskCount}건이에요'**
+  String insightRolloverTitle(String rolloverCount, String taskCount);
+
+  /// No description provided for @insightRolloverDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'작업을 더 작게 나누거나 우선순위를 재조정해보세요'**
+  String get insightRolloverDesc;
+
+  /// No description provided for @insightStreakTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{days}일 연속으로 계획을 실행하고 있어요!'**
+  String insightStreakTitle(String days);
+
+  /// No description provided for @insightStreakDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'꾸준함이 성공의 열쇠입니다'**
+  String get insightStreakDesc;
+
+  /// No description provided for @insightScoreUpTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{period} 대비 생산성이 {scoreDiff}점 올랐어요'**
+  String insightScoreUpTitle(String period, String scoreDiff);
+
+  /// No description provided for @insightScoreUpDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'좋은 흐름을 유지하세요!'**
+  String get insightScoreUpDesc;
+
+  /// No description provided for @insightScoreDownTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{period} 대비 생산성이 {scoreDiff}점 떨어졌어요'**
+  String insightScoreDownTitle(String period, String scoreDiff);
+
+  /// No description provided for @insightScoreDownDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'계획을 조금 조정해보세요'**
+  String get insightScoreDownDesc;
+
+  /// No description provided for @insightBestDayTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{dayName}이 가장 생산적인 요일이에요'**
+  String insightBestDayTitle(String dayName);
+
+  /// No description provided for @insightBestDayDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'평균 점수: {score}점'**
+  String insightBestDayDesc(String score);
+
+  /// No description provided for @insightTimeSavedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{period} 계획보다 {minutes}분 절약했어요'**
+  String insightTimeSavedTitle(String period, String minutes);
+
+  /// No description provided for @insightTimeSavedDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'효율적인 시간 관리를 하고 있어요'**
+  String get insightTimeSavedDesc;
+
+  /// No description provided for @insightTimeOverTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{period} 계획보다 {minutes}분 초과했어요'**
+  String insightTimeOverTitle(String period, String minutes);
+
+  /// No description provided for @insightTimeOverDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'시간 예측을 조금 여유 있게 설정해보세요'**
+  String get insightTimeOverDesc;
+
+  /// No description provided for @insightTaskFirstTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘 첫 번째 작업을 완료했어요!'**
+  String get insightTaskFirstTitle;
+
+  /// No description provided for @insightTaskFirstDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'좋은 시작이에요'**
+  String get insightTaskFirstDesc;
+
+  /// No description provided for @insightTaskAllCompleteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘의 모든 작업을 완료했어요!'**
+  String get insightTaskAllCompleteTitle;
+
+  /// No description provided for @insightTaskAllCompleteDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'총 {total}개의 작업을 해냈어요'**
+  String insightTaskAllCompleteDesc(String total);
+
+  /// No description provided for @insightTaskNoneTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 완료한 작업이 없어요'**
+  String get insightTaskNoneTitle;
+
+  /// No description provided for @insightTaskNoneDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'작은 것부터 시작해보세요'**
+  String get insightTaskNoneDesc;
+
+  /// No description provided for @insightTaskPartialTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{total}개 중 {completed}개 작업 완료'**
+  String insightTaskPartialTitle(String total, String completed);
+
+  /// No description provided for @insightTaskPartialDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'{remaining}개 남았어요, 힘내세요!'**
+  String insightTaskPartialDesc(String remaining);
+
+  /// No description provided for @insightFocusEffTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 효율 {percent}%'**
+  String insightFocusEffTitle(String percent);
+
+  /// No description provided for @insightFocusEffHighDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'높은 집중력을 유지하고 있어요'**
+  String get insightFocusEffHighDesc;
+
+  /// No description provided for @insightFocusEffMedDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중력이 보통 수준이에요'**
+  String get insightFocusEffMedDesc;
+
+  /// No description provided for @insightFocusEffLowDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 환경을 개선해보세요'**
+  String get insightFocusEffLowDesc;
+
+  /// No description provided for @insightTimeEstTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'시간 예측 정확도 {percent}%'**
+  String insightTimeEstTitle(String percent);
+
+  /// No description provided for @insightTimeEstHighDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'시간 예측이 정확해요'**
+  String get insightTimeEstHighDesc;
+
+  /// No description provided for @insightTimeEstMedDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'시간 예측을 조금 조정해보세요'**
+  String get insightTimeEstMedDesc;
+
+  /// No description provided for @insightTimeEstLowDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'실제 소요 시간을 기록하여 예측을 개선해보세요'**
+  String get insightTimeEstLowDesc;
+
+  /// No description provided for @insightTop3AllCompleteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Top 3를 모두 달성했어요!'**
+  String get insightTop3AllCompleteTitle;
+
+  /// No description provided for @insightTop3AllCompleteDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 중요한 일에 집중했어요'**
+  String get insightTop3AllCompleteDesc;
+
+  /// No description provided for @insightTop3PartialTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Top 3 중 {completed}개 달성'**
+  String insightTop3PartialTitle(String completed);
+
+  /// No description provided for @insightTop3PartialDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'{remaining}개 더 달성해보세요'**
+  String insightTop3PartialDesc(String remaining);
+
+  /// No description provided for @insightScoreGreatTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'훌륭한 하루였어요!'**
+  String get insightScoreGreatTitle;
+
+  /// No description provided for @insightScoreGreatDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'생산성 점수 {score}점'**
+  String insightScoreGreatDesc(String score);
+
+  /// No description provided for @insightScoreNormalTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘도 수고했어요'**
+  String get insightScoreNormalTitle;
+
+  /// No description provided for @insightScoreNormalDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'생산성 점수 {score}점'**
+  String insightScoreNormalDesc(String score);
+
+  /// No description provided for @insightWeekAvgTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이번 주 평균 점수: {score}점'**
+  String insightWeekAvgTitle(String score);
+
+  /// No description provided for @insightWeekAvgHighDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'일주일 내내 훌륭했어요'**
+  String get insightWeekAvgHighDesc;
+
+  /// No description provided for @insightWeekAvgLowDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음 주는 더 나아질 거에요'**
+  String get insightWeekAvgLowDesc;
+
+  /// No description provided for @insightMonthAvgTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이번 달 평균 점수: {score}점'**
+  String insightMonthAvgTitle(String score);
+
+  /// No description provided for @insightMonthAvgHighDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'한 달 동안 꾸준히 잘 해왔어요'**
+  String get insightMonthAvgHighDesc;
+
+  /// No description provided for @insightMonthAvgLowDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'목표를 재설정하고 다시 시작해보세요'**
+  String get insightMonthAvgLowDesc;
+
+  /// No description provided for @insightMonthBestTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이번 달 최고의 날: {month}월 {day}일'**
+  String insightMonthBestTitle(String month, String day);
+
+  /// No description provided for @insightMonthBestDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'그날의 점수: {score}점'**
+  String insightMonthBestDesc(String score);
 }
 
 class _AppLocalizationsDelegate

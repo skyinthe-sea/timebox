@@ -124,6 +124,7 @@ class TimeBlockLocalDataSourceImpl implements TimeBlockLocalDataSource {
 
     controller.onCancel = () {
       subscription.cancel();
+      controller.close();
     };
 
     return controller.stream;

@@ -35,6 +35,8 @@ abstract class NotificationRepository {
   /// [hasTimeBlocksToday] 오늘 계획이 있는지 여부
   Future<Either<Failure, void>> scheduleDailyReminder({
     required bool hasTimeBlocksToday,
+    required String dailyReminderTitle,
+    required String dailyReminderBody,
   });
 
   /// 일일 리마인더 취소

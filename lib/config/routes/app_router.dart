@@ -31,7 +31,7 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: RouteNames.home,
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: false,
     routes: [
       // ShellRoute for bottom navigation
       ShellRoute(
@@ -78,31 +78,6 @@ class AppRouter {
         builder: (context, state) {
           return FocusModePage(
             timeBlockId: state.uri.queryParameters['timeBlockId'],
-          );
-        },
-      ),
-      // Task 상세 (모달 또는 풀스크린)
-      GoRoute(
-        path: '/task/:id',
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
-          final taskId = state.pathParameters['id']!;
-          // TODO: TaskDetailPage 구현 후 연결
-          return Scaffold(
-            appBar: AppBar(title: Text('Task: $taskId')),
-            body: Center(child: Text('Task Detail: $taskId')),
-          );
-        },
-      ),
-      // Task 생성
-      GoRoute(
-        path: RouteNames.taskCreate,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) {
-          // TODO: TaskCreatePage 구현 후 연결
-          return Scaffold(
-            appBar: AppBar(title: const Text('New Task')),
-            body: const Center(child: Text('Create Task')),
           );
         },
       ),

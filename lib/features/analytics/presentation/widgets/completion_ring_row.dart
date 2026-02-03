@@ -28,7 +28,7 @@ class CompletionRingRow extends StatelessWidget {
         children: [
           Expanded(
             child: _MiniRingCard(
-              label: 'Task',
+              label: l10n.task,
               value: taskRate,
               color: AppColors.successLight,
               darkColor: AppColors.successDark,

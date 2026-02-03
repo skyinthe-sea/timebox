@@ -271,5 +271,237 @@
   "privacyPolicy": "개인정보처리방침",
   "termsOfService": "이용약관",
   "privacyPolicyContent": "개인정보처리방침\n\n최종 수정일: 2026년 1월 1일\n\n1. 수집 항목\n본 앱은 할 일, 시간 기록 등 사용자가 직접 입력한 앱 사용 데이터를 처리합니다.\n\n2. 저장 방식\n모든 데이터는 사용자의 기기 내에 로컬로만 저장되며, 외부 서버로 전송되지 않습니다.\n\n3. 제3자 제공\n본 앱은 광고 표시를 위해 Google AdMob을 사용합니다. AdMob은 광고 식별자를 수집할 수 있습니다. 자세한 내용은 Google 개인정보처리방침을 참고하세요.\n\n4. 데이터 삭제\n앱을 삭제하면 기기에 저장된 모든 데이터가 자동으로 삭제됩니다.\n\n5. 문의\n개인정보 관련 문의: myclick90@gmail.com",
-  "termsOfServiceContent": "이용약관\n\n최종 수정일: 2026년 1월 1일\n\n1. 서비스 설명\nTimebox Planner는 시간 관리 및 일정 계획을 돕는 모바일 애플리케이션입니다.\n\n2. 사용자 책임\n사용자는 앱에 입력하는 모든 데이터에 대한 책임을 지며, 앱을 합법적인 목적으로만 사용해야 합니다.\n\n3. 면책 조항\n본 앱은 \"있는 그대로\" 제공됩니다. 데이터 손실, 일정 누락 등으로 인한 직간접적 손해에 대해 개발자는 책임을 지지 않습니다.\n\n4. 지적재산권\n본 앱의 디자인, 코드, 콘텐츠에 대한 모든 지적재산권은 개발자에게 귀속됩니다.\n\n5. 약관 변경\n본 약관은 사전 고지 후 변경될 수 있으며, 변경 사항은 앱 업데이트를 통해 공지됩니다."
+  "termsOfServiceContent": "이용약관\n\n최종 수정일: 2026년 1월 1일\n\n1. 서비스 설명\nTimebox Planner는 시간 관리 및 일정 계획을 돕는 모바일 애플리케이션입니다.\n\n2. 사용자 책임\n사용자는 앱에 입력하는 모든 데이터에 대한 책임을 지며, 앱을 합법적인 목적으로만 사용해야 합니다.\n\n3. 면책 조항\n본 앱은 \"있는 그대로\" 제공됩니다. 데이터 손실, 일정 누락 등으로 인한 직간접적 손해에 대해 개발자는 책임을 지지 않습니다.\n\n4. 지적재산권\n본 앱의 디자인, 코드, 콘텐츠에 대한 모든 지적재산권은 개발자에게 귀속됩니다.\n\n5. 약관 변경\n본 약관은 사전 고지 후 변경될 수 있으며, 변경 사항은 앱 업데이트를 통해 공지됩니다.",
+
+  "durationFormat": "{hours}시간 {minutes}분",
+  "@durationFormat": {
+    "placeholders": {
+      "hours": {"type": "int"},
+      "minutes": {"type": "int"}
+    }
+  },
+  "previousDay": "이전 날",
+  "nextDay": "다음 날",
+  "noTitle": "제목 없음",
+  "incomplete": "미완료",
+  "revert": "되돌리기",
+  "statusChange": "상태 변경",
+  "timeBlockResult": "타임블록 결과",
+  "reverted": "되돌림 처리되었습니다",
+  "markedComplete": "완료 처리되었습니다",
+  "markedIncomplete": "미완료 처리되었습니다",
+  "deleteTimeBlock": "타임블록 삭제",
+  "deleteTimeBlockConfirm": "이 타임블록을 삭제하시겠습니까?",
+  "removeFromTop3": "Top 3에서 제거",
+  "scoreUp": "어제보다 {change}점 상승!",
+  "@scoreUp": {
+    "placeholders": {
+      "change": {"type": "int"}
+    }
+  },
+  "scoreDown": "어제보다 {change}점 하락",
+  "@scoreDown": {
+    "placeholders": {
+      "change": {"type": "int"}
+    }
+  },
+  "scoreSame": "어제와 동일",
+  "average": "평균",
+  "dailyReminderTitle": "오늘의 계획을 세워보세요!",
+  "dailyReminderBody": "목표 달성을 위한 첫 걸음입니다.",
+
+  "monday": "월요일",
+  "tuesday": "화요일",
+  "wednesday": "수요일",
+  "thursday": "목요일",
+  "friday": "금요일",
+  "saturday": "토요일",
+  "sunday": "일요일",
+
+  "insightPeriodYesterday": "어제",
+  "insightPeriodToday": "오늘",
+  "insightPeriodWeekFirstHalf": "이번 주 전반",
+
+  "insightFocusTimeTitle": "{dayName} {hour}시에 가장 집중력이 높았어요",
+  "@insightFocusTimeTitle": {
+    "placeholders": {
+      "dayName": {"type": "String"},
+      "hour": {"type": "String"}
+    }
+  },
+  "insightFocusTimeDesc": "이 시간대에 중요한 작업을 배치해보세요",
+  "insightTagAccuracyFasterTitle": "{tagName} 태그 작업을 {minutes}분 빠르게 완료했어요",
+  "@insightTagAccuracyFasterTitle": {
+    "placeholders": {
+      "tagName": {"type": "String"},
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightTagAccuracySlowerTitle": "{tagName} 태그 작업에 {minutes}분 더 걸렸어요",
+  "@insightTagAccuracySlowerTitle": {
+    "placeholders": {
+      "tagName": {"type": "String"},
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightTagAccuracyFasterDesc": "예상 시간 산정이 정확해지고 있어요",
+  "insightTagAccuracySlowerDesc": "이 유형의 작업에 더 넉넉한 시간을 배분해보세요",
+  "insightRolloverTitle": "이월 작업이 {rolloverCount}건 중 {taskCount}건이에요",
+  "@insightRolloverTitle": {
+    "placeholders": {
+      "rolloverCount": {"type": "String"},
+      "taskCount": {"type": "String"}
+    }
+  },
+  "insightRolloverDesc": "작업을 더 작게 나누거나 우선순위를 재조정해보세요",
+  "insightStreakTitle": "{days}일 연속으로 계획을 실행하고 있어요!",
+  "@insightStreakTitle": {
+    "placeholders": {
+      "days": {"type": "String"}
+    }
+  },
+  "insightStreakDesc": "꾸준함이 성공의 열쇠입니다",
+  "insightScoreUpTitle": "{period} 대비 생산성이 {scoreDiff}점 올랐어요",
+  "@insightScoreUpTitle": {
+    "placeholders": {
+      "period": {"type": "String"},
+      "scoreDiff": {"type": "String"}
+    }
+  },
+  "insightScoreUpDesc": "좋은 흐름을 유지하세요!",
+  "insightScoreDownTitle": "{period} 대비 생산성이 {scoreDiff}점 떨어졌어요",
+  "@insightScoreDownTitle": {
+    "placeholders": {
+      "period": {"type": "String"},
+      "scoreDiff": {"type": "String"}
+    }
+  },
+  "insightScoreDownDesc": "계획을 조금 조정해보세요",
+  "insightBestDayTitle": "{dayName}이 가장 생산적인 요일이에요",
+  "@insightBestDayTitle": {
+    "placeholders": {
+      "dayName": {"type": "String"}
+    }
+  },
+  "insightBestDayDesc": "평균 점수: {score}점",
+  "@insightBestDayDesc": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightTimeSavedTitle": "{period} 계획보다 {minutes}분 절약했어요",
+  "@insightTimeSavedTitle": {
+    "placeholders": {
+      "period": {"type": "String"},
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightTimeSavedDesc": "효율적인 시간 관리를 하고 있어요",
+  "insightTimeOverTitle": "{period} 계획보다 {minutes}분 초과했어요",
+  "@insightTimeOverTitle": {
+    "placeholders": {
+      "period": {"type": "String"},
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightTimeOverDesc": "시간 예측을 조금 여유 있게 설정해보세요",
+  "insightTaskFirstTitle": "오늘 첫 번째 작업을 완료했어요!",
+  "insightTaskFirstDesc": "좋은 시작이에요",
+  "insightTaskAllCompleteTitle": "오늘의 모든 작업을 완료했어요!",
+  "insightTaskAllCompleteDesc": "총 {total}개의 작업을 해냈어요",
+  "@insightTaskAllCompleteDesc": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "insightTaskNoneTitle": "아직 완료한 작업이 없어요",
+  "insightTaskNoneDesc": "작은 것부터 시작해보세요",
+  "insightTaskPartialTitle": "{total}개 중 {completed}개 작업 완료",
+  "@insightTaskPartialTitle": {
+    "placeholders": {
+      "total": {"type": "String"},
+      "completed": {"type": "String"}
+    }
+  },
+  "insightTaskPartialDesc": "{remaining}개 남았어요, 힘내세요!",
+  "@insightTaskPartialDesc": {
+    "placeholders": {
+      "remaining": {"type": "String"}
+    }
+  },
+  "insightFocusEffTitle": "집중 효율 {percent}%",
+  "@insightFocusEffTitle": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "insightFocusEffHighDesc": "높은 집중력을 유지하고 있어요",
+  "insightFocusEffMedDesc": "집중력이 보통 수준이에요",
+  "insightFocusEffLowDesc": "집중 환경을 개선해보세요",
+  "insightTimeEstTitle": "시간 예측 정확도 {percent}%",
+  "@insightTimeEstTitle": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "insightTimeEstHighDesc": "시간 예측이 정확해요",
+  "insightTimeEstMedDesc": "시간 예측을 조금 조정해보세요",
+  "insightTimeEstLowDesc": "실제 소요 시간을 기록하여 예측을 개선해보세요",
+  "insightTop3AllCompleteTitle": "Top 3를 모두 달성했어요!",
+  "insightTop3AllCompleteDesc": "가장 중요한 일에 집중했어요",
+  "insightTop3PartialTitle": "Top 3 중 {completed}개 달성",
+  "@insightTop3PartialTitle": {
+    "placeholders": {
+      "completed": {"type": "String"}
+    }
+  },
+  "insightTop3PartialDesc": "{remaining}개 더 달성해보세요",
+  "@insightTop3PartialDesc": {
+    "placeholders": {
+      "remaining": {"type": "String"}
+    }
+  },
+  "insightScoreGreatTitle": "훌륭한 하루였어요!",
+  "insightScoreGreatDesc": "생산성 점수 {score}점",
+  "@insightScoreGreatDesc": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightScoreNormalTitle": "오늘도 수고했어요",
+  "insightScoreNormalDesc": "생산성 점수 {score}점",
+  "@insightScoreNormalDesc": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightWeekAvgTitle": "이번 주 평균 점수: {score}점",
+  "@insightWeekAvgTitle": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightWeekAvgHighDesc": "일주일 내내 훌륭했어요",
+  "insightWeekAvgLowDesc": "다음 주는 더 나아질 거에요",
+  "insightMonthAvgTitle": "이번 달 평균 점수: {score}점",
+  "@insightMonthAvgTitle": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightMonthAvgHighDesc": "한 달 동안 꾸준히 잘 해왔어요",
+  "insightMonthAvgLowDesc": "목표를 재설정하고 다시 시작해보세요",
+  "insightMonthBestTitle": "이번 달 최고의 날: {month}월 {day}일",
+  "@insightMonthBestTitle": {
+    "placeholders": {
+      "month": {"type": "String"},
+      "day": {"type": "String"}
+    }
+  },
+  "insightMonthBestDesc": "그날의 점수: {score}점",
+  "@insightMonthBestDesc": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  }
 }

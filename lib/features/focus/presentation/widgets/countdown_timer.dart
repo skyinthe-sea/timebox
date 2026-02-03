@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// 카운트다운 타이머 위젯
 ///
@@ -87,7 +88,7 @@ class CountdownTimer extends StatelessWidget {
               ),
               if (isPaused)
                 Text(
-                  '일시 정지', // TODO: l10n
+                  AppLocalizations.of(context)?.paused ?? 'Paused',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.outline,
                   ),

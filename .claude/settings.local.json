@@ -8,7 +8,11 @@
       "Bash(flutter analyze:*)",
       "Bash(flutter gen-l10n:*)",
       "Bash(flutter build:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(python3:*)",
+      "Bash(flutter:*)",
+      "Bash(dart run:*)"
     ]
   }
 }

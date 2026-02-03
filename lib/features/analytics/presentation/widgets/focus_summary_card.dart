@@ -132,7 +132,7 @@ class FocusSummaryCard extends StatelessWidget {
                           _StatLine(
                             icon: Icons.speed,
                             label: '$avgMinutes${l10n.minutes}',
-                            sublabel: 'avg',
+                            sublabel: l10n.average,
                           ),
                           const SizedBox(height: 8),
                           _StatLine(

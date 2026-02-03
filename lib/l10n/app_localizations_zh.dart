@@ -632,4 +632,304 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get termsOfServiceContent =>
       '服务条款\n\n最后更新：2026年1月1日\n\n1. 服务说明\nTimebox Planner是一款帮助您管理时间和规划日程的移动应用程序。\n\n2. 用户责任\n用户对输入到应用中的所有数据负责，且只能将应用用于合法目的。\n\n3. 免责声明\n本应用按\"原样\"提供。对于数据丢失、日程遗漏等问题造成的直接或间接损失，开发者不承担责任。\n\n4. 知识产权\n应用的设计、代码和内容的所有知识产权归开发者所有。\n\n5. 条款变更\n本条款可能会在事先通知后进行修改。变更将通过应用更新进行通知。';
+
+  @override
+  String durationFormat(int hours, int minutes) {
+    return '$hours时$minutes分';
+  }
+
+  @override
+  String get previousDay => '前一天';
+
+  @override
+  String get nextDay => '后一天';
+
+  @override
+  String get noTitle => '无标题';
+
+  @override
+  String get incomplete => '未完成';
+
+  @override
+  String get revert => '恢复';
+
+  @override
+  String get statusChange => '状态变更';
+
+  @override
+  String get timeBlockResult => '时间块结果';
+
+  @override
+  String get reverted => '已恢复';
+
+  @override
+  String get markedComplete => '已标记为完成';
+
+  @override
+  String get markedIncomplete => '已标记为未完成';
+
+  @override
+  String get deleteTimeBlock => '删除时间块';
+
+  @override
+  String get deleteTimeBlockConfirm => '确定要删除此时间块吗？';
+
+  @override
+  String get removeFromTop3 => '从Top 3中移除';
+
+  @override
+  String scoreUp(int change) {
+    return '比昨天提高$change分！';
+  }
+
+  @override
+  String scoreDown(int change) {
+    return '比昨天降低$change分';
+  }
+
+  @override
+  String get scoreSame => '与昨天持平';
+
+  @override
+  String get average => '平均';
+
+  @override
+  String get dailyReminderTitle => '来制定今天的计划吧！';
+
+  @override
+  String get dailyReminderBody => '实现目标的第一步。';
+
+  @override
+  String get monday => '星期一';
+
+  @override
+  String get tuesday => '星期二';
+
+  @override
+  String get wednesday => '星期三';
+
+  @override
+  String get thursday => '星期四';
+
+  @override
+  String get friday => '星期五';
+
+  @override
+  String get saturday => '星期六';
+
+  @override
+  String get sunday => '星期日';
+
+  @override
+  String get insightPeriodYesterday => '昨天';
+
+  @override
+  String get insightPeriodToday => '今天';
+
+  @override
+  String get insightPeriodWeekFirstHalf => '本周前半段';
+
+  @override
+  String insightFocusTimeTitle(String dayName, String hour) {
+    return '$dayName$hour点专注力最高';
+  }
+
+  @override
+  String get insightFocusTimeDesc => '尝试在这个时间段安排重要任务';
+
+  @override
+  String insightTagAccuracyFasterTitle(String tagName, String minutes) {
+    return '$tagName类任务提前$minutes分钟完成';
+  }
+
+  @override
+  String insightTagAccuracySlowerTitle(String tagName, String minutes) {
+    return '$tagName类任务多用了$minutes分钟';
+  }
+
+  @override
+  String get insightTagAccuracyFasterDesc => '你的时间估算越来越准确了';
+
+  @override
+  String get insightTagAccuracySlowerDesc => '尝试为这类任务分配更多时间';
+
+  @override
+  String insightRolloverTitle(String rolloverCount, String taskCount) {
+    return '$taskCount个任务中有$rolloverCount个被顺延';
+  }
+
+  @override
+  String get insightRolloverDesc => '尝试将任务拆分或重新排列优先级';
+
+  @override
+  String insightStreakTitle(String days) {
+    return '连续$days天执行计划！';
+  }
+
+  @override
+  String get insightStreakDesc => '坚持是成功的关键';
+
+  @override
+  String insightScoreUpTitle(String period, String scoreDiff) {
+    return '相比$period，生产力提高了$scoreDiff分';
+  }
+
+  @override
+  String get insightScoreUpDesc => '保持这个好势头！';
+
+  @override
+  String insightScoreDownTitle(String period, String scoreDiff) {
+    return '相比$period，生产力下降了$scoreDiff分';
+  }
+
+  @override
+  String get insightScoreDownDesc => '尝试调整一下计划';
+
+  @override
+  String insightBestDayTitle(String dayName) {
+    return '$dayName是你最高效的一天';
+  }
+
+  @override
+  String insightBestDayDesc(String score) {
+    return '平均得分：$score分';
+  }
+
+  @override
+  String insightTimeSavedTitle(String period, String minutes) {
+    return '比$period计划节省了$minutes分钟';
+  }
+
+  @override
+  String get insightTimeSavedDesc => '你的时间管理很高效';
+
+  @override
+  String insightTimeOverTitle(String period, String minutes) {
+    return '比$period计划超出$minutes分钟';
+  }
+
+  @override
+  String get insightTimeOverDesc => '尝试设置更宽裕的时间估算';
+
+  @override
+  String get insightTaskFirstTitle => '完成了今天的第一个任务！';
+
+  @override
+  String get insightTaskFirstDesc => '好的开始';
+
+  @override
+  String get insightTaskAllCompleteTitle => '今天所有任务都完成了！';
+
+  @override
+  String insightTaskAllCompleteDesc(String total) {
+    return '共完成$total个任务';
+  }
+
+  @override
+  String get insightTaskNoneTitle => '还没有完成的任务';
+
+  @override
+  String get insightTaskNoneDesc => '从小事做起';
+
+  @override
+  String insightTaskPartialTitle(String total, String completed) {
+    return '$total个中完成了$completed个任务';
+  }
+
+  @override
+  String insightTaskPartialDesc(String remaining) {
+    return '还剩$remaining个，加油！';
+  }
+
+  @override
+  String insightFocusEffTitle(String percent) {
+    return '专注效率 $percent%';
+  }
+
+  @override
+  String get insightFocusEffHighDesc => '保持着高度专注';
+
+  @override
+  String get insightFocusEffMedDesc => '专注力处于中等水平';
+
+  @override
+  String get insightFocusEffLowDesc => '尝试改善专注环境';
+
+  @override
+  String insightTimeEstTitle(String percent) {
+    return '时间估算准确度 $percent%';
+  }
+
+  @override
+  String get insightTimeEstHighDesc => '时间估算很准确';
+
+  @override
+  String get insightTimeEstMedDesc => '考虑调整时间估算';
+
+  @override
+  String get insightTimeEstLowDesc => '记录实际用时来改善估算';
+
+  @override
+  String get insightTop3AllCompleteTitle => 'Top 3全部达成！';
+
+  @override
+  String get insightTop3AllCompleteDesc => '专注于最重要的事情';
+
+  @override
+  String insightTop3PartialTitle(String completed) {
+    return 'Top 3中完成了$completed个';
+  }
+
+  @override
+  String insightTop3PartialDesc(String remaining) {
+    return '还有$remaining个待完成';
+  }
+
+  @override
+  String get insightScoreGreatTitle => '太棒了！';
+
+  @override
+  String insightScoreGreatDesc(String score) {
+    return '生产力得分 $score分';
+  }
+
+  @override
+  String get insightScoreNormalTitle => '今天辛苦了';
+
+  @override
+  String insightScoreNormalDesc(String score) {
+    return '生产力得分 $score分';
+  }
+
+  @override
+  String insightWeekAvgTitle(String score) {
+    return '本周平均：$score分';
+  }
+
+  @override
+  String get insightWeekAvgHighDesc => '整周表现出色';
+
+  @override
+  String get insightWeekAvgLowDesc => '下周会更好';
+
+  @override
+  String insightMonthAvgTitle(String score) {
+    return '本月平均：$score分';
+  }
+
+  @override
+  String get insightMonthAvgHighDesc => '一整个月都很稳定';
+
+  @override
+  String get insightMonthAvgLowDesc => '重新设定目标再出发';
+
+  @override
+  String insightMonthBestTitle(String month, String day) {
+    return '本月最佳日：$month月$day日';
+  }
+
+  @override
+  String insightMonthBestDesc(String score) {
+    return '当天得分：$score分';
+  }
 }

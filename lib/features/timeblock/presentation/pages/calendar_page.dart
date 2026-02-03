@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../config/routes/route_names.dart';
 import '../../../../core/widgets/loading_indicator.dart';
@@ -378,10 +379,13 @@ class _CalendarPageState extends State<CalendarPage> {
     required DateTime startTime,
     required DateTime endTime,
   }) {
+    final taskId = const Uuid().v4();
+
     // 새 태스크 생성 (PlannerBloc 통해)
     try {
       final duration = endTime.difference(startTime);
       context.read<PlannerBloc>().add(QuickCreateTask(
+            taskId: taskId,
             title: title,
             estimatedDuration: duration,
           ));
@@ -389,9 +393,10 @@ class _CalendarPageState extends State<CalendarPage> {
       // PlannerBloc이 없는 경우 무시
     }
 
-    // TimeBlock 생성 (title만 사용, taskId 없이)
+    // TimeBlock 생성 (taskId 연결)
     context.read<CalendarBloc>().add(
           CreateTimeBlockEvent(
+            taskId: taskId,
             title: title,
             startTime: startTime,
             endTime: endTime,
@@ -407,6 +412,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   void _showSuccessSnackBar(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(l10n?.taskAssigned ?? 'Task assigned'),
@@ -498,6 +504,7 @@ class _CalendarPageState extends State<CalendarPage> {
 
   /// 진행 중인 타임블록이 없을 때 안내 메시지 표시
   void _showNoTimeBlockMessage(BuildContext context, AppLocalizations? l10n) {
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Column(

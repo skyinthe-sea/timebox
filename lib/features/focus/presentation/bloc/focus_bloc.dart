@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../data/datasources/focus_session_local_datasource.dart';
 import '../../data/models/focus_session_model.dart';
@@ -17,6 +18,7 @@ part 'focus_state.dart';
 class FocusBloc extends Bloc<FocusEvent, FocusState> {
   Timer? _timer;
   final FocusSessionLocalDataSource? sessionDataSource;
+  static const _uuid = Uuid();
 
   FocusBloc({this.sessionDataSource}) : super(const FocusState()) {
     on<StartFocusSession>(_onStartSession);
@@ -36,7 +38,7 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
     Emitter<FocusState> emit,
   ) {
     final session = FocusSession(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _uuid.v4(),
       timeBlockId: event.timeBlockId,
       taskId: event.taskId,
       status: SessionStatus.inProgress,
@@ -124,13 +126,13 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
 
     if (remainingSeconds <= 0) {
       emit(state.copyWith(
-        errorMessage: '타임블록이 이미 종료되었습니다.',
+        errorMessage: 'timeBlockAlreadyEnded',
       ));
       return;
     }
 
     final session = FocusSession(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _uuid.v4(),
       timeBlockId: event.timeBlockId,
       taskId: event.taskId,
       status: SessionStatus.inProgress,

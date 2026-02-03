@@ -452,8 +452,9 @@ class _FocusModePageState extends State<FocusModePage> {
 
   Widget _buildDurationChip(
       BuildContext dialogContext, FocusBloc focusBloc, int minutes) {
+    final l10n = AppLocalizations.of(dialogContext);
     return ActionChip(
-      label: Text('$minutes min'),
+      label: Text(l10n?.minutesShort(minutes) ?? '$minutes min'),
       onPressed: () {
         Navigator.of(dialogContext).pop();
         focusBloc.add(StartFocusSession(

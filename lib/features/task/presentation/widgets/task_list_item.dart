@@ -94,7 +94,7 @@ class TaskListItem extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            _formatDuration(task.estimatedDuration),
+                            _formatDuration(context, task.estimatedDuration),
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.colorScheme.outline,
                             ),
@@ -166,16 +166,17 @@ class TaskListItem extends StatelessWidget {
     );
   }
 
-  String _formatDuration(Duration duration) {
+  String _formatDuration(BuildContext context, Duration duration) {
+    final l10n = AppLocalizations.of(context);
     final hours = duration.inHours;
     final minutes = duration.inMinutes % 60;
 
     if (hours > 0 && minutes > 0) {
-      return '$hours시간 $minutes분';
+      return l10n?.durationFormat(hours, minutes) ?? '${hours}h ${minutes}m';
     } else if (hours > 0) {
-      return '$hours시간';
+      return l10n?.hoursShort(hours) ?? '${hours}h';
     } else {
-      return '$minutes분';
+      return l10n?.minutesShort(minutes) ?? '${minutes}m';
     }
   }
 }

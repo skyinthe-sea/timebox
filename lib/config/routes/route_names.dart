@@ -9,10 +9,6 @@ abstract class RouteNames {
   static const String statistics = '/statistics';
   static const String settings = '/settings';
 
-  // Task 관련
-  static const String taskDetail = '/task/:id';
-  static const String taskCreate = '/task/create';
-
   // Settings 하위
   static const String profile = '/settings/profile';
   static const String notifications = '/settings/notifications';

@@ -30,6 +30,10 @@ class TimeboxApp extends StatefulWidget {
 }
 
 class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
+  // Cached notification strings (updated when locale is available)
+  String _dailyReminderTitle = 'Plan your day!';
+  String _dailyReminderBody = 'The first step to achieving your goals.';
+
   @override
   void initState() {
     super.initState();
@@ -70,8 +74,11 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
     );
 
     // 일일 리마인더 스케줄링 (오늘 계획이 있으면 알림 안 함)
+    // Note: notification strings use keys that are resolved at schedule time
     await notificationRepository.scheduleDailyReminder(
       hasTimeBlocksToday: hasTimeBlocksToday,
+      dailyReminderTitle: _dailyReminderTitle,
+      dailyReminderBody: _dailyReminderBody,
     );
   }
 
@@ -98,7 +105,14 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
       child: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, settingsState) {
           return MaterialApp.router(
-            title: 'Timebox Planner',
+            onGenerateTitle: (context) {
+              final l10n = AppLocalizations.of(context);
+              if (l10n != null) {
+                _dailyReminderTitle = l10n.dailyReminderTitle;
+                _dailyReminderBody = l10n.dailyReminderBody;
+              }
+              return l10n?.appName ?? 'Timebox Planner';
+            },
             debugShowCheckedModeBanner: false,
 
             // 테마 설정

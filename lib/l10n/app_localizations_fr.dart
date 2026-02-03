@@ -642,4 +642,313 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get termsOfServiceContent =>
       'Conditions d\'utilisation\n\nDernière mise à jour : 1er janvier 2026\n\n1. Description du service\nTimebox Planner est une application mobile qui vous aide à gérer votre temps et planifier votre emploi du temps.\n\n2. Responsabilités de l\'utilisateur\nLes utilisateurs sont responsables de toutes les données saisies dans l\'application et doivent utiliser l\'application uniquement à des fins légales.\n\n3. Clause de non-responsabilité\nCette application est fournie telle quelle. Le développeur n\'est pas responsable des dommages directs ou indirects causés par la perte de données, les rendez-vous manqués ou d\'autres problèmes.\n\n4. Propriété intellectuelle\nTous les droits de propriété intellectuelle relatifs au design, au code et au contenu de l\'application appartiennent au développeur.\n\n5. Modification des conditions\nCes conditions peuvent être modifiées avec un préavis. Les changements seront communiqués par le biais des mises à jour de l\'application.';
+
+  @override
+  String durationFormat(int hours, int minutes) {
+    return '${hours}h ${minutes}min';
+  }
+
+  @override
+  String get previousDay => 'Jour précédent';
+
+  @override
+  String get nextDay => 'Jour suivant';
+
+  @override
+  String get noTitle => 'Sans titre';
+
+  @override
+  String get incomplete => 'Incomplet';
+
+  @override
+  String get revert => 'Annuler';
+
+  @override
+  String get statusChange => 'Changement de statut';
+
+  @override
+  String get timeBlockResult => 'Résultat du bloc de temps';
+
+  @override
+  String get reverted => 'Annulé';
+
+  @override
+  String get markedComplete => 'Marqué comme terminé';
+
+  @override
+  String get markedIncomplete => 'Marqué comme incomplet';
+
+  @override
+  String get deleteTimeBlock => 'Supprimer le bloc de temps';
+
+  @override
+  String get deleteTimeBlockConfirm =>
+      'Voulez-vous supprimer ce bloc de temps ?';
+
+  @override
+  String get removeFromTop3 => 'Retirer du Top 3';
+
+  @override
+  String scoreUp(int change) {
+    return '+$change par rapport à hier !';
+  }
+
+  @override
+  String scoreDown(int change) {
+    return '-$change par rapport à hier';
+  }
+
+  @override
+  String get scoreSame => 'Identique à hier';
+
+  @override
+  String get average => 'moy';
+
+  @override
+  String get dailyReminderTitle => 'Planifiez votre journée !';
+
+  @override
+  String get dailyReminderBody => 'Le premier pas vers vos objectifs.';
+
+  @override
+  String get monday => 'Lundi';
+
+  @override
+  String get tuesday => 'Mardi';
+
+  @override
+  String get wednesday => 'Mercredi';
+
+  @override
+  String get thursday => 'Jeudi';
+
+  @override
+  String get friday => 'Vendredi';
+
+  @override
+  String get saturday => 'Samedi';
+
+  @override
+  String get sunday => 'Dimanche';
+
+  @override
+  String get insightPeriodYesterday => 'hier';
+
+  @override
+  String get insightPeriodToday => 'aujourd\'hui';
+
+  @override
+  String get insightPeriodWeekFirstHalf => 'la première moitié de la semaine';
+
+  @override
+  String insightFocusTimeTitle(String dayName, String hour) {
+    return 'Pic de concentration à ${hour}h le $dayName';
+  }
+
+  @override
+  String get insightFocusTimeDesc =>
+      'Planifiez les tâches importantes pendant ce créneau';
+
+  @override
+  String insightTagAccuracyFasterTitle(String tagName, String minutes) {
+    return 'Tâches $tagName terminées ${minutes}min plus vite';
+  }
+
+  @override
+  String insightTagAccuracySlowerTitle(String tagName, String minutes) {
+    return 'Tâches $tagName ont pris ${minutes}min de plus';
+  }
+
+  @override
+  String get insightTagAccuracyFasterDesc =>
+      'Vos estimations de temps deviennent plus précises';
+
+  @override
+  String get insightTagAccuracySlowerDesc =>
+      'Essayez d\'allouer plus de temps pour ce type de tâche';
+
+  @override
+  String insightRolloverTitle(String rolloverCount, String taskCount) {
+    return '$rolloverCount sur $taskCount tâches reportées';
+  }
+
+  @override
+  String get insightRolloverDesc =>
+      'Essayez de diviser les tâches ou de reprioriser';
+
+  @override
+  String insightStreakTitle(String days) {
+    return '$days jours consécutifs de planification !';
+  }
+
+  @override
+  String get insightStreakDesc => 'La régularité est la clé du succès';
+
+  @override
+  String insightScoreUpTitle(String period, String scoreDiff) {
+    return 'Productivité en hausse de $scoreDiff pts vs $period';
+  }
+
+  @override
+  String get insightScoreUpDesc => 'Continuez sur cette lancée !';
+
+  @override
+  String insightScoreDownTitle(String period, String scoreDiff) {
+    return 'Productivité en baisse de $scoreDiff pts vs $period';
+  }
+
+  @override
+  String get insightScoreDownDesc => 'Essayez d\'ajuster votre planning';
+
+  @override
+  String insightBestDayTitle(String dayName) {
+    return '$dayName est votre jour le plus productif';
+  }
+
+  @override
+  String insightBestDayDesc(String score) {
+    return 'Score moyen : $score pts';
+  }
+
+  @override
+  String insightTimeSavedTitle(String period, String minutes) {
+    return '${minutes}min économisées vs plan $period';
+  }
+
+  @override
+  String get insightTimeSavedDesc => 'Votre gestion du temps est efficace';
+
+  @override
+  String insightTimeOverTitle(String period, String minutes) {
+    return '${minutes}min de dépassement vs plan $period';
+  }
+
+  @override
+  String get insightTimeOverDesc =>
+      'Essayez des estimations de temps plus généreuses';
+
+  @override
+  String get insightTaskFirstTitle => 'Première tâche du jour terminée !';
+
+  @override
+  String get insightTaskFirstDesc => 'Bon début';
+
+  @override
+  String get insightTaskAllCompleteTitle => 'Toutes les tâches terminées !';
+
+  @override
+  String insightTaskAllCompleteDesc(String total) {
+    return '$total tâches accomplies';
+  }
+
+  @override
+  String get insightTaskNoneTitle => 'Aucune tâche terminée';
+
+  @override
+  String get insightTaskNoneDesc => 'Commencez par quelque chose de simple';
+
+  @override
+  String insightTaskPartialTitle(String total, String completed) {
+    return '$completed sur $total tâches terminées';
+  }
+
+  @override
+  String insightTaskPartialDesc(String remaining) {
+    return 'Plus que $remaining, courage !';
+  }
+
+  @override
+  String insightFocusEffTitle(String percent) {
+    return 'Efficacité de concentration : $percent%';
+  }
+
+  @override
+  String get insightFocusEffHighDesc => 'Concentration élevée maintenue';
+
+  @override
+  String get insightFocusEffMedDesc => 'Niveau de concentration moyen';
+
+  @override
+  String get insightFocusEffLowDesc =>
+      'Améliorez votre environnement de concentration';
+
+  @override
+  String insightTimeEstTitle(String percent) {
+    return 'Précision des estimations : $percent%';
+  }
+
+  @override
+  String get insightTimeEstHighDesc => 'Vos estimations sont précises';
+
+  @override
+  String get insightTimeEstMedDesc => 'Ajustez vos estimations de temps';
+
+  @override
+  String get insightTimeEstLowDesc =>
+      'Notez le temps réel pour améliorer les estimations';
+
+  @override
+  String get insightTop3AllCompleteTitle => 'Top 3 atteint !';
+
+  @override
+  String get insightTop3AllCompleteDesc => 'Concentré sur l\'essentiel';
+
+  @override
+  String insightTop3PartialTitle(String completed) {
+    return '$completed du Top 3 atteints';
+  }
+
+  @override
+  String insightTop3PartialDesc(String remaining) {
+    return 'Encore $remaining à atteindre';
+  }
+
+  @override
+  String get insightScoreGreatTitle => 'Quelle journée !';
+
+  @override
+  String insightScoreGreatDesc(String score) {
+    return 'Score de productivité : $score';
+  }
+
+  @override
+  String get insightScoreNormalTitle => 'Bon travail aujourd\'hui';
+
+  @override
+  String insightScoreNormalDesc(String score) {
+    return 'Score de productivité : $score';
+  }
+
+  @override
+  String insightWeekAvgTitle(String score) {
+    return 'Moyenne hebdo : $score pts';
+  }
+
+  @override
+  String get insightWeekAvgHighDesc =>
+      'Excellente performance toute la semaine';
+
+  @override
+  String get insightWeekAvgLowDesc => 'La semaine prochaine sera meilleure';
+
+  @override
+  String insightMonthAvgTitle(String score) {
+    return 'Moyenne mensuelle : $score pts';
+  }
+
+  @override
+  String get insightMonthAvgHighDesc => 'Performance régulière tout le mois';
+
+  @override
+  String get insightMonthAvgLowDesc => 'Redéfinissez vos objectifs et repartez';
+
+  @override
+  String insightMonthBestTitle(String month, String day) {
+    return 'Meilleur jour du mois : $month/$day';
+  }
+
+  @override
+  String insightMonthBestDesc(String score) {
+    return 'Score ce jour-là : $score pts';
+  }
 }

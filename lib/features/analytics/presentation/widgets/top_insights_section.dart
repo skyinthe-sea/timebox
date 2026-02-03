@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../config/themes/app_colors.dart';
-import '../../domain/entities/insight.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/entities/insight.dart';
+import '../utils/insight_localizer.dart';
 
 /// 컴팩트 인사이트 섹션 (최대 3개)
 ///
@@ -148,13 +149,18 @@ class _CompactInsightCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          insight.title,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        child: Builder(
+                          builder: (context) {
+                            final localizer = InsightLocalizer(AppLocalizations.of(context)!);
+                            return Text(
+                              localizer.localizeTitle(insight),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          },
                         ),
                       ),
                     ],

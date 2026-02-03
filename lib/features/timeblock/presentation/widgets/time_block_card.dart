@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../config/themes/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../task/domain/entities/task.dart';
 import '../../domain/entities/time_block.dart';
 
@@ -89,6 +90,8 @@ class _TimeBlockCardState extends State<TimeBlockCard>
   AnimationController? _priorityAnimationController;
   Animation<double>? _priorityScaleAnimation;
 
+  bool _isFirstBuild = true;
+
   @override
   void initState() {
     super.initState();
@@ -96,10 +99,19 @@ class _TimeBlockCardState extends State<TimeBlockCard>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    _previousColor = _getStatusColor(widget.timeBlock.status);
-    _colorAnimation = AlwaysStoppedAnimation(_previousColor);
+    _colorAnimation = const AlwaysStoppedAnimation(null);
 
     _setupPriorityAnimation();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isFirstBuild) {
+      _isFirstBuild = false;
+      _previousColor = _getStatusColor(widget.timeBlock.status);
+      _colorAnimation = AlwaysStoppedAnimation(_previousColor);
+    }
   }
 
   void _setupPriorityAnimation() {
@@ -171,7 +183,8 @@ class _TimeBlockCardState extends State<TimeBlockCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final title = widget.taskTitle ?? widget.timeBlock.title ?? '제목 없음';
+    final l10n = AppLocalizations.of(context);
+    final title = widget.taskTitle ?? widget.timeBlock.title ?? (l10n?.noTitle ?? 'Untitled');
 
     return AnimatedBuilder(
       animation: _animationController,
@@ -229,26 +242,18 @@ class _TimeBlockCardState extends State<TimeBlockCard>
   }
 
   Widget _buildCardContent(ThemeData theme, String title, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final l10n = AppLocalizations.of(context);
+    return Stack(
       children: [
-        // 리사이즈 핸들 (상단)
-        _buildResizeHandle(
-          onUpdate: widget.onResizeTop,
-          onStart: widget.onResizeTopStart,
-          onEnd: widget.onResizeTopEnd,
-          isTop: true,
-        ),
-
-        // 내용
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 제목 (우선순위 배지 포함)
-                Row(
+        // 메인 콘텐츠 (전체 영역 사용)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 제목 (우선순위 배지 포함)
+              Flexible(
+                child: Row(
                   children: [
                     if (widget.priority != null) _buildPriorityBadge(widget.priority!),
                     Expanded(
@@ -263,51 +268,83 @@ class _TimeBlockCardState extends State<TimeBlockCard>
                     ),
                   ],
                 ),
-                // 시간
-                Text(
+              ),
+              // 시간
+              Flexible(
+                child: Text(
                   _formatTimeRange(),
                   style: theme.textTheme.bodySmall,
                 ),
-                // 상태 표시
-                if (widget.timeBlock.status == TimeBlockStatus.completed)
-                  Row(
+              ),
+              // 상태 표시
+              if (widget.timeBlock.status == TimeBlockStatus.completed)
+                Flexible(
+                  child: Row(
                     children: [
                       Icon(Icons.check_circle,
-                          size: 12, color: AppColors.successLight),
+                          size: 12,
+                          color: theme.brightness == Brightness.dark
+                              ? AppColors.successDark
+                              : AppColors.successLight),
                       const SizedBox(width: 4),
                       Text(
-                        '완료',
+                        l10n?.complete ?? 'Complete',
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppColors.successLight,
-                        ),
-                      ),
-                    ],
-                  )
-                else if (widget.timeBlock.status == TimeBlockStatus.skipped)
-                  Row(
-                    children: [
-                      Icon(Icons.cancel,
-                          size: 12, color: AppColors.errorLight),
-                      const SizedBox(width: 4),
-                      Text(
-                        '미완료',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: AppColors.errorLight,
+                          color: theme.brightness == Brightness.dark
+                              ? AppColors.successDark
+                              : AppColors.successLight,
                         ),
                       ),
                     ],
                   ),
-              ],
-            ),
+                )
+              else if (widget.timeBlock.status == TimeBlockStatus.skipped)
+                Flexible(
+                  child: Row(
+                    children: [
+                      Icon(Icons.cancel,
+                          size: 12,
+                          color: theme.brightness == Brightness.dark
+                              ? AppColors.errorDark
+                              : AppColors.errorLight),
+                      const SizedBox(width: 4),
+                      Text(
+                        l10n?.incomplete ?? 'Incomplete',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.brightness == Brightness.dark
+                              ? AppColors.errorDark
+                              : AppColors.errorLight,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           ),
         ),
-
-        // 리사이즈 핸들 (하단)
-        _buildResizeHandle(
-          onUpdate: widget.onResizeBottom,
-          onStart: widget.onResizeBottomStart,
-          onEnd: widget.onResizeBottomEnd,
-          isTop: false,
+        // 리사이즈 핸들 (상단) - 오버레이
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: _buildResizeHandle(
+            onUpdate: widget.onResizeTop,
+            onStart: widget.onResizeTopStart,
+            onEnd: widget.onResizeTopEnd,
+            isTop: true,
+          ),
+        ),
+        // 리사이즈 핸들 (하단) - 오버레이
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: _buildResizeHandle(
+            onUpdate: widget.onResizeBottom,
+            onStart: widget.onResizeBottomStart,
+            onEnd: widget.onResizeBottomEnd,
+            isTop: false,
+          ),
         ),
       ],
     );
@@ -400,12 +437,13 @@ class _TimeBlockCardState extends State<TimeBlockCard>
   }
 
   Color _getStatusColor(TimeBlockStatus status) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return switch (status) {
-      TimeBlockStatus.pending => const Color(0xFF6B7280),
-      TimeBlockStatus.inProgress => const Color(0xFF3B82F6),
-      TimeBlockStatus.completed => AppColors.successLight,
-      TimeBlockStatus.delayed => const Color(0xFFF59E0B),
-      TimeBlockStatus.skipped => AppColors.errorLight,
+      TimeBlockStatus.pending => isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+      TimeBlockStatus.inProgress => isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6),
+      TimeBlockStatus.completed => isDark ? AppColors.successDark : AppColors.successLight,
+      TimeBlockStatus.delayed => isDark ? AppColors.warningDark : AppColors.warningLight,
+      TimeBlockStatus.skipped => isDark ? AppColors.errorDark : AppColors.errorLight,
     };
   }
 

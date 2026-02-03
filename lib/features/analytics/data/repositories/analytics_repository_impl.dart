@@ -649,7 +649,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         insights.add(Insight.productivityChange(
           id: 'insight_${now.millisecondsSinceEpoch}_1',
           scoreDiff: scoreDiff,
-          periodText: '어제',
+          periodKey: 'yesterday',
         ));
       }
 
@@ -692,7 +692,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
           insights.add(Insight.timeSaved(
             id: 'insight_${now.millisecondsSinceEpoch}_4',
             minutesSaved: savedMinutes,
-            periodText: '오늘',
+            periodKey: 'today',
           ));
         }
       }

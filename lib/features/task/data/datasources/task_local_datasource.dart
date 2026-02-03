@@ -104,6 +104,7 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
 
     controller.onCancel = () {
       subscription.cancel();
+      controller.close();
     };
 
     return controller.stream;
@@ -154,6 +155,7 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
 
     controller.onCancel = () {
       subscription.cancel();
+      controller.close();
     };
 
     return controller.stream;

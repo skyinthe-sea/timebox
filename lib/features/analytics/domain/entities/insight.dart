@@ -46,7 +46,7 @@ enum InsightPriority {
 /// Insight 엔티티
 ///
 /// 사용자에게 보여줄 인사이트 데이터
-/// AI 코칭 스타일 + 통계 스타일 혼합
+/// 키 기반 설계: titleKey + params로 프레젠테이션 레이어에서 번역
 class Insight extends Equatable {
   /// 고유 ID
   final String id;
@@ -57,17 +57,20 @@ class Insight extends Equatable {
   /// 우선순위
   final InsightPriority priority;
 
-  /// 제목 (AI 코칭 스타일)
-  final String title;
+  /// 제목 키 (l10n용)
+  final String titleKey;
 
-  /// 상세 설명 (옵션)
-  final String? description;
+  /// 설명 키 (l10n용, 옵션)
+  final String? descriptionKey;
+
+  /// 키 파라미터 (번역 시 치환용)
+  final Map<String, String> params;
 
   /// 관련 수치 값
   final double? value;
 
-  /// 수치 단위 (예: "분", "%", "회")
-  final String? unit;
+  /// 수치 단위 키 (l10n용)
+  final String? unitKey;
 
   /// 아이콘 코드 포인트
   final int iconCodePoint;
@@ -88,10 +91,11 @@ class Insight extends Equatable {
     required this.id,
     required this.type,
     required this.priority,
-    required this.title,
-    this.description,
+    required this.titleKey,
+    this.descriptionKey,
+    this.params = const {},
     this.value,
-    this.unit,
+    this.unitKey,
     required this.iconCodePoint,
     required this.isPositive,
     this.relatedDate,
@@ -109,9 +113,10 @@ class Insight extends Equatable {
       id: id,
       type: InsightType.focusTime,
       priority: InsightPriority.high,
-      title: '$dayName ${hour}시에 가장 집중력이 높아요!',
-      description: '이 시간대에 중요한 작업을 배치해보세요.',
-      iconCodePoint: 0xe8b5, // Icons.lightbulb_outline
+      titleKey: 'insightFocusTimeTitle',
+      descriptionKey: 'insightFocusTimeDesc',
+      params: {'dayName': dayName, 'hour': '$hour'},
+      iconCodePoint: 0xe8b5,
       isPositive: true,
       createdAt: DateTime.now(),
     );
@@ -124,16 +129,16 @@ class Insight extends Equatable {
     required int minutesDiff,
     required bool isFaster,
   }) {
-    final diffText = isFaster ? '빨리' : '늦게';
     return Insight(
       id: id,
       type: InsightType.tagAccuracy,
       priority: InsightPriority.medium,
-      title: '$tagName Task는 예상보다 평균 ${minutesDiff.abs()}분 $diffText 끝나요',
-      description: isFaster ? '예상 시간을 조금 줄여도 괜찮아요.' : '여유 시간을 더 두는 게 좋겠어요.',
+      titleKey: isFaster ? 'insightTagAccuracyFasterTitle' : 'insightTagAccuracySlowerTitle',
+      descriptionKey: isFaster ? 'insightTagAccuracyFasterDesc' : 'insightTagAccuracySlowerDesc',
+      params: {'tagName': tagName, 'minutes': '${minutesDiff.abs()}'},
       value: minutesDiff.toDouble(),
-      unit: '분',
-      iconCodePoint: 0xe8b8, // Icons.schedule
+      unitKey: 'minutes',
+      iconCodePoint: 0xe8b8,
       isPositive: isFaster,
       relatedTag: tagName,
       createdAt: DateTime.now(),
@@ -150,11 +155,12 @@ class Insight extends Equatable {
       id: id,
       type: InsightType.rolloverWarning,
       priority: InsightPriority.high,
-      title: '${rolloverCount}번 이상 이월된 Task가 ${taskCount}개 있어요',
-      description: '작게 쪼개거나 우선순위를 조정해보세요.',
+      titleKey: 'insightRolloverTitle',
+      descriptionKey: 'insightRolloverDesc',
+      params: {'rolloverCount': '$rolloverCount', 'taskCount': '$taskCount'},
       value: taskCount.toDouble(),
-      unit: '개',
-      iconCodePoint: 0xe002, // Icons.warning_amber
+      unitKey: 'insightUnitCount',
+      iconCodePoint: 0xe002,
       isPositive: false,
       createdAt: DateTime.now(),
     );
@@ -169,11 +175,12 @@ class Insight extends Equatable {
       id: id,
       type: InsightType.streak,
       priority: InsightPriority.high,
-      title: '연속 $days일 목표를 달성했어요!',
-      description: '대단해요! 이 기세를 유지해보세요.',
+      titleKey: 'insightStreakTitle',
+      descriptionKey: 'insightStreakDesc',
+      params: {'days': '$days'},
       value: days.toDouble(),
-      unit: '일',
-      iconCodePoint: 0xf06bb, // Icons.local_fire_department
+      unitKey: 'insightUnitDays',
+      iconCodePoint: 0xf06bb,
       isPositive: true,
       createdAt: DateTime.now(),
     );
@@ -183,19 +190,19 @@ class Insight extends Equatable {
   factory Insight.productivityChange({
     required String id,
     required int scoreDiff,
-    required String periodText,
+    required String periodKey,
   }) {
     final isImproved = scoreDiff > 0;
-    final changeText = isImproved ? '상승' : '하락';
     return Insight(
       id: id,
       type: InsightType.productivityChange,
       priority: InsightPriority.medium,
-      title: '$periodText 대비 ${scoreDiff.abs()}점 $changeText했어요',
-      description: isImproved ? '좋은 흐름이에요!' : '조금 더 집중해볼까요?',
+      titleKey: isImproved ? 'insightScoreUpTitle' : 'insightScoreDownTitle',
+      descriptionKey: isImproved ? 'insightScoreUpDesc' : 'insightScoreDownDesc',
+      params: {'scoreDiff': '${scoreDiff.abs()}', 'period': periodKey},
       value: scoreDiff.toDouble(),
-      unit: '점',
-      iconCodePoint: isImproved ? 0xe5d8 : 0xe5db, // Icons.trending_up/down
+      unitKey: 'insightUnitPoints',
+      iconCodePoint: isImproved ? 0xe5d8 : 0xe5db,
       isPositive: isImproved,
       createdAt: DateTime.now(),
     );
@@ -204,18 +211,19 @@ class Insight extends Equatable {
   /// 가장 생산적인 요일 인사이트 생성
   factory Insight.bestDay({
     required String id,
-    required String dayName,
+    required String dayKey,
     required double avgScore,
   }) {
     return Insight(
       id: id,
       type: InsightType.bestDay,
       priority: InsightPriority.medium,
-      title: '${dayName}이 가장 생산적인 요일이에요',
-      description: '평균 생산성 점수 ${avgScore.toStringAsFixed(0)}점',
+      titleKey: 'insightBestDayTitle',
+      descriptionKey: 'insightBestDayDesc',
+      params: {'dayName': dayKey, 'score': avgScore.toStringAsFixed(0)},
       value: avgScore,
-      unit: '점',
-      iconCodePoint: 0xe838, // Icons.star
+      unitKey: 'insightUnitPoints',
+      iconCodePoint: 0xe838,
       isPositive: true,
       createdAt: DateTime.now(),
     );
@@ -225,17 +233,18 @@ class Insight extends Equatable {
   factory Insight.timeSaved({
     required String id,
     required int minutesSaved,
-    required String periodText,
+    required String periodKey,
   }) {
     return Insight(
       id: id,
       type: InsightType.timeSaved,
       priority: InsightPriority.medium,
-      title: '$periodText 예상보다 $minutesSaved분 빨리 끝났어요',
-      description: '완료한 작업 기준으로 효율적으로 일하고 있네요!',
+      titleKey: 'insightTimeSavedTitle',
+      descriptionKey: 'insightTimeSavedDesc',
+      params: {'minutes': '$minutesSaved', 'period': periodKey},
       value: minutesSaved.toDouble(),
-      unit: '분',
-      iconCodePoint: 0xe425, // Icons.timer
+      unitKey: 'minutes',
+      iconCodePoint: 0xe425,
       isPositive: true,
       createdAt: DateTime.now(),
     );
@@ -245,17 +254,18 @@ class Insight extends Equatable {
   factory Insight.timeOver({
     required String id,
     required int minutesOver,
-    required String periodText,
+    required String periodKey,
   }) {
     return Insight(
       id: id,
       type: InsightType.timeSaved,
       priority: InsightPriority.medium,
-      title: '$periodText 예상보다 $minutesOver분 더 걸렸어요',
-      description: '시간 배분을 조금 더 여유롭게 해보세요.',
+      titleKey: 'insightTimeOverTitle',
+      descriptionKey: 'insightTimeOverDesc',
+      params: {'minutes': '$minutesOver', 'period': periodKey},
       value: minutesOver.toDouble(),
-      unit: '분',
-      iconCodePoint: 0xe425, // Icons.timer
+      unitKey: 'minutes',
+      iconCodePoint: 0xe425,
       isPositive: false,
       createdAt: DateTime.now(),
     );
@@ -267,25 +277,25 @@ class Insight extends Equatable {
     required int completed,
     required int total,
   }) {
-    final String title;
-    final String description;
+    final String titleKey;
+    final String descKey;
     final bool isPositive;
 
     if (total == 0) {
-      title = '오늘의 첫 번째 Task를 시작해보세요!';
-      description = '작은 성취가 큰 변화를 만들어요.';
+      titleKey = 'insightTaskFirstTitle';
+      descKey = 'insightTaskFirstDesc';
       isPositive = true;
     } else if (completed == total) {
-      title = '오늘 모든 Task를 완료했어요! 완벽해요!';
-      description = '$total개의 Task를 모두 해냈어요.';
+      titleKey = 'insightTaskAllCompleteTitle';
+      descKey = 'insightTaskAllCompleteDesc';
       isPositive = true;
     } else if (completed == 0) {
-      title = '아직 완료한 Task가 없어요';
-      description = '하나씩 시작해보세요. 할 수 있어요!';
+      titleKey = 'insightTaskNoneTitle';
+      descKey = 'insightTaskNoneDesc';
       isPositive = false;
     } else {
-      title = '오늘 ${total}개 중 ${completed}개를 완료했어요';
-      description = '${total - completed}개가 남았어요. 조금만 더 힘내봐요!';
+      titleKey = 'insightTaskPartialTitle';
+      descKey = 'insightTaskPartialDesc';
       isPositive = completed >= total / 2;
     }
 
@@ -293,11 +303,16 @@ class Insight extends Equatable {
       id: id,
       type: InsightType.taskCompletion,
       priority: InsightPriority.high,
-      title: title,
-      description: description,
+      titleKey: titleKey,
+      descriptionKey: descKey,
+      params: {
+        'completed': '$completed',
+        'total': '$total',
+        'remaining': '${total - completed}',
+      },
       value: total > 0 ? (completed / total * 100) : 0,
-      unit: '%',
-      iconCodePoint: 0xef6b, // Icons.task_alt
+      unitKey: 'insightUnitPercent',
+      iconCodePoint: 0xef6b,
       isPositive: isPositive,
       createdAt: DateTime.now(),
     );
@@ -309,24 +324,25 @@ class Insight extends Equatable {
     required int efficiencyPercent,
     required int focusMinutes,
   }) {
-    final String description;
+    final String descKey;
     if (efficiencyPercent >= 90) {
-      description = '매우 높은 집중력을 보여주고 있어요!';
+      descKey = 'insightFocusEffHighDesc';
     } else if (efficiencyPercent >= 70) {
-      description = '좋은 집중력이에요. 꾸준히 유지해보세요.';
+      descKey = 'insightFocusEffMedDesc';
     } else {
-      description = '일시정지를 줄이면 효율이 올라갈 거예요.';
+      descKey = 'insightFocusEffLowDesc';
     }
 
     return Insight(
       id: id,
       type: InsightType.focusEfficiency,
       priority: InsightPriority.medium,
-      title: '집중 시간의 $efficiencyPercent%를 실제 작업에 사용했어요',
-      description: description,
+      titleKey: 'insightFocusEffTitle',
+      descriptionKey: descKey,
+      params: {'percent': '$efficiencyPercent'},
       value: efficiencyPercent.toDouble(),
-      unit: '%',
-      iconCodePoint: 0xe4a2, // Icons.psychology
+      unitKey: 'insightUnitPercent',
+      iconCodePoint: 0xe4a2,
       isPositive: efficiencyPercent >= 70,
       createdAt: DateTime.now(),
     );
@@ -337,24 +353,25 @@ class Insight extends Equatable {
     required String id,
     required int accuracyPercent,
   }) {
-    final String description;
+    final String descKey;
     if (accuracyPercent >= 90) {
-      description = '정확하게 예측하고 있어요!';
+      descKey = 'insightTimeEstHighDesc';
     } else if (accuracyPercent >= 70) {
-      description = '꽤 정확해요. 조금만 더 조절해보세요.';
+      descKey = 'insightTimeEstMedDesc';
     } else {
-      description = '예상 시간을 조금 더 넉넉하게 잡아보세요.';
+      descKey = 'insightTimeEstLowDesc';
     }
 
     return Insight(
       id: id,
       type: InsightType.timeEstimation,
       priority: InsightPriority.medium,
-      title: '시간 예측 정확도가 $accuracyPercent%에요',
-      description: description,
+      titleKey: 'insightTimeEstTitle',
+      descriptionKey: descKey,
+      params: {'percent': '$accuracyPercent'},
       value: accuracyPercent.toDouble(),
-      unit: '%',
-      iconCodePoint: 0xe1b1, // Icons.analytics_outlined
+      unitKey: 'insightUnitPercent',
+      iconCodePoint: 0xe1b1,
       isPositive: accuracyPercent >= 70,
       createdAt: DateTime.now(),
     );
@@ -365,10 +382,11 @@ class Insight extends Equatable {
         id,
         type,
         priority,
-        title,
-        description,
+        titleKey,
+        descriptionKey,
+        params,
         value,
-        unit,
+        unitKey,
         iconCodePoint,
         isPositive,
         relatedDate,

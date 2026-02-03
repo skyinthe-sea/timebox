@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// 타이머 컨트롤 위젯
 ///
 /// 포커스 모드의 시작/일시정지/완료/건너뛰기 버튼
@@ -38,6 +40,8 @@ class TimerControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -45,7 +49,7 @@ class TimerControls extends StatelessWidget {
         _buildSecondaryButton(
           icon: Icons.skip_next,
           onPressed: onSkip,
-          tooltip: '건너뛰기', // TODO: l10n
+          tooltip: l10n?.skip ?? 'Skip',
         ),
 
         const SizedBox(width: 24),
@@ -59,7 +63,7 @@ class TimerControls extends StatelessWidget {
         _buildSecondaryButton(
           icon: Icons.check,
           onPressed: onComplete,
-          tooltip: '완료', // TODO: l10n
+          tooltip: l10n?.complete ?? 'Complete',
         ),
       ],
     );
@@ -67,6 +71,7 @@ class TimerControls extends StatelessWidget {
 
   Widget _buildMainButton(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
 
     // 아이콘 결정
     IconData icon;
@@ -76,15 +81,17 @@ class TimerControls extends StatelessWidget {
     if (!isRunning || isPaused) {
       icon = Icons.play_arrow;
       onPressed = onStart;
-      tooltip = isPaused ? '재개' : '시작';
+      tooltip = isPaused
+          ? (l10n?.resumeFocus ?? 'Resume')
+          : (l10n?.startFocus ?? 'Start');
     } else {
       icon = Icons.pause;
       onPressed = onPause;
-      tooltip = '일시 정지';
+      tooltip = l10n?.pauseFocus ?? 'Pause';
     }
 
     return Tooltip(
-      message: tooltip, // TODO: l10n
+      message: tooltip,
       child: FilledButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(

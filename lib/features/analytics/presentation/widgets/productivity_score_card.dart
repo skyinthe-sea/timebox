@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../config/themes/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'animated_counter.dart';
 
 /// 생산성 점수 카드
@@ -14,7 +15,7 @@ class ProductivityScoreCard extends StatefulWidget {
   final int? scoreChange;
 
   /// 제목
-  final String title;
+  final String? title;
 
   /// 부제목 (변화 텍스트)
   final String? subtitle;
@@ -23,7 +24,7 @@ class ProductivityScoreCard extends StatefulWidget {
     super.key,
     required this.score,
     this.scoreChange,
-    this.title = '생산성 점수',
+    this.title,
     this.subtitle,
   });
 
@@ -89,8 +90,10 @@ class _ProductivityScoreCardState extends State<ProductivityScoreCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final scoreColor = _getScoreColor(widget.score);
+    final displayTitle = widget.title ?? l10n?.productivityScore ?? 'Productivity Score';
 
     return Card(
       elevation: 0,
@@ -160,7 +163,7 @@ class _ProductivityScoreCardState extends State<ProductivityScoreCard>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.title,
+                    displayTitle,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -184,6 +187,7 @@ class _ProductivityScoreCardState extends State<ProductivityScoreCard>
   }
 
   Widget _buildChangeText(ThemeData theme) {
+    final l10n = AppLocalizations.of(context);
     final change = widget.scoreChange!;
     final isPositive = change > 0;
     final isNegative = change < 0;
@@ -200,10 +204,10 @@ class _ProductivityScoreCardState extends State<ProductivityScoreCard>
             : Icons.trending_flat;
 
     final text = isPositive
-        ? '어제보다 $change점 상승!'
+        ? l10n?.scoreUp(change) ?? '+$change from yesterday'
         : isNegative
-            ? '어제보다 ${change.abs()}점 하락'
-            : '어제와 동일';
+            ? l10n?.scoreDown(change.abs()) ?? '-${change.abs()} from yesterday'
+            : l10n?.scoreSame ?? 'Same as yesterday';
 
     return Row(
       children: [

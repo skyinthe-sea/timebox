@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../config/themes/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'animated_counter.dart';
 
 /// 통계 카드 위젯
@@ -140,6 +141,8 @@ class HighlightsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Column(
       children: [
         Row(
@@ -148,8 +151,8 @@ class HighlightsSection extends StatelessWidget {
               child: StatCard(
                 icon: Icons.check_circle_outline,
                 value: completedTasks,
-                label: '완료',
-                suffix: totalTasks > 0 ? '/$totalTasks' : '개',
+                label: l10n?.statsCompleted ?? 'Completed',
+                suffix: totalTasks > 0 ? '/$totalTasks' : '',
                 color: AppColors.successLight,
               ),
             ),
@@ -158,8 +161,7 @@ class HighlightsSection extends StatelessWidget {
               child: StatCard(
                 icon: Icons.cancel_outlined,
                 value: skippedTasks,
-                label: '미완료',
-                suffix: '개',
+                label: l10n?.incomplete ?? 'Incomplete',
                 color: AppColors.errorLight,
               ),
             ),
@@ -172,7 +174,7 @@ class HighlightsSection extends StatelessWidget {
               child: StatCard(
                 icon: Icons.timer_outlined,
                 value: focusMinutes,
-                label: '집중 시간',
+                label: l10n?.focusTimeMinutes ?? 'Focus Time',
                 isTime: true,
                 color: AppColors.primaryLight,
               ),
@@ -182,7 +184,7 @@ class HighlightsSection extends StatelessWidget {
               child: StatCard(
                 icon: Icons.stars_outlined,
                 value: top3Completed,
-                label: 'Top 3 달성',
+                label: l10n?.top3Achievement ?? 'Top 3',
                 suffix: '/3',
                 color: AppColors.rank1,
               ),

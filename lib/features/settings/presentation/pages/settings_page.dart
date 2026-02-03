@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/settings_cubit.dart';
 
@@ -62,10 +63,6 @@ class SettingsPage extends StatelessWidget {
                     _buildDailyReminderSection(context, state, l10n, theme),
                   ],
                   const Divider(),
-                  // 캘린더 섹션
-                  _buildSectionHeader(theme, l10n.calendarSync),
-                  _buildCalendarSyncTile(context, l10n),
-                  const Divider(),
                   // 시간 설정 섹션
                   _buildSectionHeader(theme, l10n.timeSettings),
                   _buildDayTimeTile(context, state, l10n),
@@ -73,13 +70,12 @@ class SettingsPage extends StatelessWidget {
                   const Divider(),
                   // 데이터 섹션
                   _buildSectionHeader(theme, l10n.data),
-                  _buildExportTile(context, l10n),
                   _buildResetTile(context, l10n),
                   const SizedBox(height: 24),
                   // 앱 정보
                   Center(
                     child: Text(
-                      'Timebox Planner v1.0.0',
+                      'Timebox Planner v${AppConstants.appVersion}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.outline,
                       ),
@@ -492,21 +488,6 @@ class SettingsPage extends StatelessWidget {
     }
   }
 
-  Widget _buildCalendarSyncTile(BuildContext context, AppLocalizations l10n) {
-    return ListTile(
-      leading: const Icon(Icons.calendar_month_outlined),
-      title: Text(l10n.calendarSync),
-      subtitle: Text(l10n.noCalendarConnected),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        // TODO: 캘린더 설정 페이지로 이동
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.comingSoon)),
-        );
-      },
-    );
-  }
-
   Widget _buildDayTimeTile(
     BuildContext context,
     SettingsState state,
@@ -638,20 +619,6 @@ class SettingsPage extends StatelessWidget {
           );
         }).toList(),
       ),
-    );
-  }
-
-  Widget _buildExportTile(BuildContext context, AppLocalizations l10n) {
-    return ListTile(
-      leading: const Icon(Icons.download_outlined),
-      title: Text(l10n.exportData),
-      subtitle: Text(l10n.exportDataDescription),
-      onTap: () {
-        // TODO: 내보내기 처리
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.comingSoon)),
-        );
-      },
     );
   }
 

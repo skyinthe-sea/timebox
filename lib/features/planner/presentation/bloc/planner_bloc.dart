@@ -260,7 +260,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     QuickCreateTask event,
     Emitter<PlannerState> emit,
   ) async {
-    final taskId = _uuid.v4();
+    final taskId = event.taskId ?? _uuid.v4();
     final task = Task(
       id: taskId,
       title: event.title,

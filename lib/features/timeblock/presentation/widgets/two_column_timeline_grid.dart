@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/utils/date_time_utils.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../task/domain/entities/task.dart';
 import '../../domain/entities/time_block.dart';
 import '../bloc/calendar_bloc.dart';
@@ -444,12 +445,14 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     final IconData rightSwipeIcon;
     final Color rightSwipeColor;
 
+    final l10n = AppLocalizations.of(context)!;
+
     if (isFinished) {
-      rightSwipeLabel = '되돌리기';
+      rightSwipeLabel = l10n.revert;
       rightSwipeIcon = Icons.undo;
       rightSwipeColor = AppColors.warningLight;
     } else {
-      rightSwipeLabel = '완료';
+      rightSwipeLabel = l10n.complete;
       rightSwipeIcon = Icons.check_circle_outline;
       rightSwipeColor = AppColors.successLight;
     }
@@ -473,7 +476,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
           alignment: Alignment.centerRight,
           color: AppColors.errorLight,
           icon: Icons.delete_outline,
-          label: '삭제',
+          label: l10n.delete,
         ),
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.endToStart) {
@@ -566,24 +569,25 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     BuildContext context,
     TimeBlock timeBlock,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('타임블록 삭제'),
+        title: Text(l10n.deleteTimeBlock),
         content: Text(
-          '${timeBlock.title ?? "이 타임블록"}을(를) 삭제하시겠습니까?',
+          l10n.deleteTimeBlockConfirm,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('취소'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: FilledButton.styleFrom(
               backgroundColor: AppColors.errorLight,
             ),
-            child: const Text('삭제'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -598,6 +602,8 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
     final currentStatus = timeBlock.status;
     final isCompleted = currentStatus == TimeBlockStatus.completed;
     final isSkipped = currentStatus == TimeBlockStatus.skipped;
+
+    final l10n = AppLocalizations.of(context)!;
 
     await showModalBottomSheet(
       context: context,
@@ -625,14 +631,14 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                 const SizedBox(height: 20),
                 // 제목
                 Text(
-                  isCompleted || isSkipped ? '상태 변경' : '타임블록 결과',
+                  isCompleted || isSkipped ? l10n.statusChange : l10n.timeBlockResult,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  timeBlock.title ?? '제목 없음',
+                  timeBlock.title ?? l10n.noTitle,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.outline,
                       ),
@@ -640,7 +646,6 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                 const SizedBox(height: 24),
                 // 상태별 버튼들
                 if (isCompleted) ...[
-                  // 완료 → 미완료 또는 되돌리기(pending)
                   Row(
                     children: [
                       Expanded(
@@ -651,10 +656,10 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                               status: TimeBlockStatus.pending,
                             ));
                             Navigator.pop(ctx);
-                            _showResultSnackBar(context, null, '되돌림 처리되었습니다');
+                            _showResultSnackBar(context, null, l10n.reverted);
                           },
                           icon: const Icon(Icons.undo),
-                          label: const Text('되돌리기'),
+                          label: Text(l10n.revert),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.warningLight,
                             side: BorderSide(color: AppColors.warningLight),
@@ -674,7 +679,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                             _showResultSnackBar(context, false, null);
                           },
                           icon: const Icon(Icons.cancel_outlined),
-                          label: const Text('미완료'),
+                          label: Text(l10n.incomplete),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.errorLight,
                             side: BorderSide(color: AppColors.errorLight),
@@ -685,7 +690,6 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                     ],
                   ),
                 ] else if (isSkipped) ...[
-                  // 미완료 → 완료 또는 되돌리기(pending)
                   Row(
                     children: [
                       Expanded(
@@ -696,10 +700,10 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                               status: TimeBlockStatus.pending,
                             ));
                             Navigator.pop(ctx);
-                            _showResultSnackBar(context, null, '되돌림 처리되었습니다');
+                            _showResultSnackBar(context, null, l10n.reverted);
                           },
                           icon: const Icon(Icons.undo),
-                          label: const Text('되돌리기'),
+                          label: Text(l10n.revert),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.warningLight,
                             side: BorderSide(color: AppColors.warningLight),
@@ -719,7 +723,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                             _showResultSnackBar(context, true, null);
                           },
                           icon: const Icon(Icons.check_circle_outline),
-                          label: const Text('완료'),
+                          label: Text(l10n.complete),
                           style: FilledButton.styleFrom(
                             backgroundColor: AppColors.successLight,
                             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -729,7 +733,6 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                     ],
                   ),
                 ] else ...[
-                  // pending → 완료/미완료 (기존 로직)
                   Row(
                     children: [
                       Expanded(
@@ -743,7 +746,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                             _showResultSnackBar(context, false, null);
                           },
                           icon: const Icon(Icons.cancel_outlined),
-                          label: const Text('미완료'),
+                          label: Text(l10n.incomplete),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.errorLight,
                             side: BorderSide(color: AppColors.errorLight),
@@ -763,7 +766,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
                             _showResultSnackBar(context, true, null);
                           },
                           icon: const Icon(Icons.check_circle_outline),
-                          label: const Text('완료'),
+                          label: Text(l10n.complete),
                           style: FilledButton.styleFrom(
                             backgroundColor: AppColors.successLight,
                             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -782,6 +785,7 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
   }
 
   void _showResultSnackBar(BuildContext context, bool? isCompleted, String? customMessage) {
+    final l10n = AppLocalizations.of(context)!;
     final String message;
     final Color backgroundColor;
     final IconData icon;
@@ -791,15 +795,16 @@ class _TwoColumnTimelineGridState extends State<TwoColumnTimelineGrid> {
       backgroundColor = AppColors.warningLight;
       icon = Icons.undo;
     } else if (isCompleted == true) {
-      message = '완료 처리되었습니다';
+      message = l10n.markedComplete;
       backgroundColor = AppColors.successLight;
       icon = Icons.check_circle;
     } else {
-      message = '미완료 처리되었습니다';
+      message = l10n.markedIncomplete;
       backgroundColor = AppColors.errorLight;
       icon = Icons.cancel;
     }
 
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(

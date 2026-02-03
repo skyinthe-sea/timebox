@@ -82,7 +82,7 @@ class _PlannerPageState extends State<PlannerPage> {
       context: context,
       initialDate: currentDate,
       firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+      lastDate: DateTime(2099),
     );
 
     if (pickedDate != null && mounted) {
@@ -125,7 +125,7 @@ class _DateHeader extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.chevron_left),
             onPressed: onPrevious,
-            tooltip: 'Previous day',
+            tooltip: l10n?.previousDay ?? 'Previous day',
           ),
 
           // 날짜 표시
@@ -171,7 +171,7 @@ class _DateHeader extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.chevron_right),
             onPressed: onNext,
-            tooltip: 'Next day',
+            tooltip: l10n?.nextDay ?? 'Next day',
           ),
         ],
       ),

@@ -61,7 +61,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       }
 
       final now = DateTime.now();
-      final title = taskTitle ?? timeBlock.title ?? '타임블록';
+      final title = taskTitle ?? timeBlock.title ?? 'Timebox';
 
       // 시작 알림 스케줄링
       if (settings.startAlarmEnabled) {
@@ -148,6 +148,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
   @override
   Future<Either<Failure, void>> scheduleDailyReminder({
     required bool hasTimeBlocksToday,
+    required String dailyReminderTitle,
+    required String dailyReminderBody,
   }) async {
     try {
       final settings = _localDataSource.getSettings();
@@ -207,8 +209,8 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       await _notificationService.scheduleNotification(
         id: NotificationIdGenerator.dailyEngagement,
-        title: '오늘의 계획을 세워보세요!',
-        body: '목표 달성을 위한 첫 걸음입니다.',
+        title: dailyReminderTitle,
+        body: dailyReminderBody,
         scheduledTime: scheduledTime,
         payload: jsonEncode({'type': 'daily_engagement'}),
       );
@@ -264,23 +266,25 @@ class NotificationRepositoryImpl implements NotificationRepository {
   // 알림 메시지 포맷팅 헬퍼 메서드
   String _formatStartTitle(String title, int minutes) {
     if (minutes >= 60) {
-      return '$title 시작 ${minutes ~/ 60}시간 전';
+      final hours = minutes ~/ 60;
+      return '$title - ${hours}h before start';
     }
-    return '$title 시작 $minutes분 전';
+    return '$title - ${minutes}m before start';
   }
 
   String _formatStartBody(String title) {
-    return '곧 시작합니다. 준비하세요!';
+    return 'Starting soon. Get ready!';
   }
 
   String _formatEndTitle(String title, int minutes) {
     if (minutes >= 60) {
-      return '$title 종료 ${minutes ~/ 60}시간 전';
+      final hours = minutes ~/ 60;
+      return '$title - ${hours}h before end';
     }
-    return '$title 종료 $minutes분 전';
+    return '$title - ${minutes}m before end';
   }
 
   String _formatEndBody(String title) {
-    return '마무리할 시간입니다.';
+    return 'Time to wrap up.';
   }
 }
