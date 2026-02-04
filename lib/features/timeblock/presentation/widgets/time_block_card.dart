@@ -4,6 +4,18 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../task/domain/entities/task.dart';
 import '../../domain/entities/time_block.dart';
 
+/// 블록 높이에 따른 레이아웃 모드
+enum _TimeBlockLayoutMode {
+  /// < 25dp (~15분): 색상바만 표시
+  minimal,
+  /// 25-40dp (~30분): 제목만
+  small,
+  /// 40-55dp (~45분): 제목 + 시간
+  medium,
+  /// > 55dp (1시간+): 제목 + 시간 + 상태
+  large,
+}
+
 /// 타임블록 카드 위젯
 ///
 /// 타임라인에 표시되는 개별 시간 블록
@@ -241,87 +253,26 @@ class _TimeBlockCardState extends State<TimeBlockCard>
     );
   }
 
+  /// 블록 높이에 따른 레이아웃 모드 결정
+  _TimeBlockLayoutMode _getLayoutMode() {
+    if (widget.height < 25) return _TimeBlockLayoutMode.minimal;
+    if (widget.height < 40) return _TimeBlockLayoutMode.small;
+    if (widget.height < 55) return _TimeBlockLayoutMode.medium;
+    return _TimeBlockLayoutMode.large;
+  }
+
   Widget _buildCardContent(ThemeData theme, String title, Color color) {
-    final l10n = AppLocalizations.of(context);
+    final layoutMode = _getLayoutMode();
+
     return Stack(
       children: [
-        // 메인 콘텐츠 (전체 영역 사용)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 제목 (우선순위 배지 포함)
-              Flexible(
-                child: Row(
-                  children: [
-                    if (widget.priority != null) _buildPriorityBadge(widget.priority!),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // 시간
-              Flexible(
-                child: Text(
-                  _formatTimeRange(),
-                  style: theme.textTheme.bodySmall,
-                ),
-              ),
-              // 상태 표시
-              if (widget.timeBlock.status == TimeBlockStatus.completed)
-                Flexible(
-                  child: Row(
-                    children: [
-                      Icon(Icons.check_circle,
-                          size: 12,
-                          color: theme.brightness == Brightness.dark
-                              ? AppColors.successDark
-                              : AppColors.successLight),
-                      const SizedBox(width: 4),
-                      Text(
-                        l10n?.complete ?? 'Complete',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.brightness == Brightness.dark
-                              ? AppColors.successDark
-                              : AppColors.successLight,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              else if (widget.timeBlock.status == TimeBlockStatus.skipped)
-                Flexible(
-                  child: Row(
-                    children: [
-                      Icon(Icons.cancel,
-                          size: 12,
-                          color: theme.brightness == Brightness.dark
-                              ? AppColors.errorDark
-                              : AppColors.errorLight),
-                      const SizedBox(width: 4),
-                      Text(
-                        l10n?.incomplete ?? 'Incomplete',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.brightness == Brightness.dark
-                              ? AppColors.errorDark
-                              : AppColors.errorLight,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        ),
+        // 메인 콘텐츠 (레이아웃 모드에 따라 다르게 빌드)
+        switch (layoutMode) {
+          _TimeBlockLayoutMode.minimal => _buildMinimalContent(),
+          _TimeBlockLayoutMode.small => _buildSmallContent(theme, title),
+          _TimeBlockLayoutMode.medium => _buildMediumContent(theme, title),
+          _TimeBlockLayoutMode.large => _buildLargeContent(theme, title),
+        },
         // 리사이즈 핸들 (상단) - 오버레이
         Positioned(
           top: 0,
@@ -350,6 +301,160 @@ class _TimeBlockCardState extends State<TimeBlockCard>
     );
   }
 
+  /// Minimal 레이아웃 (< 25dp): 색상바로만 식별
+  Widget _buildMinimalContent() {
+    return const Padding(
+      padding: EdgeInsets.all(2),
+      child: SizedBox.shrink(),
+    );
+  }
+
+  /// Small 레이아웃 (25-40dp): 제목만 표시
+  Widget _buildSmallContent(ThemeData theme, String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      child: Center(
+        child: Row(
+          children: [
+            if (widget.priority != null) _buildCompactPriorityBadge(widget.priority!),
+            Expanded(
+              child: Text(
+                title,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Medium 레이아웃 (40-55dp): 제목 + 시간
+  Widget _buildMediumContent(ThemeData theme, String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // 제목 (우선순위 배지 포함)
+          Flexible(
+            child: Row(
+              children: [
+                if (widget.priority != null) _buildPriorityBadge(widget.priority!),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 2),
+          // 시간
+          Flexible(
+            child: Text(
+              _formatTimeRange(),
+              style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Large 레이아웃 (> 55dp): 제목 + 시간 + 상태
+  Widget _buildLargeContent(ThemeData theme, String title) {
+    final l10n = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 제목 (우선순위 배지 포함)
+          Flexible(
+            child: Row(
+              children: [
+                if (widget.priority != null) _buildPriorityBadge(widget.priority!),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // 시간
+          Flexible(
+            child: Text(
+              _formatTimeRange(),
+              style: theme.textTheme.bodySmall,
+            ),
+          ),
+          // 상태 표시
+          if (widget.timeBlock.status == TimeBlockStatus.completed)
+            Flexible(
+              child: Row(
+                children: [
+                  Icon(Icons.check_circle,
+                      size: 12,
+                      color: theme.brightness == Brightness.dark
+                          ? AppColors.successDark
+                          : AppColors.successLight),
+                  const SizedBox(width: 4),
+                  Text(
+                    l10n?.complete ?? 'Complete',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.brightness == Brightness.dark
+                          ? AppColors.successDark
+                          : AppColors.successLight,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else if (widget.timeBlock.status == TimeBlockStatus.skipped)
+            Flexible(
+              child: Row(
+                children: [
+                  Icon(Icons.cancel,
+                      size: 12,
+                      color: theme.brightness == Brightness.dark
+                          ? AppColors.errorDark
+                          : AppColors.errorLight),
+                  const SizedBox(width: 4),
+                  Text(
+                    l10n?.incomplete ?? 'Incomplete',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.brightness == Brightness.dark
+                          ? AppColors.errorDark
+                          : AppColors.errorLight,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   /// 우선순위 P1/P2/P3 배지 (스케일 펄스 애니메이션 적용)
   Widget _buildPriorityBadge(TaskPriority priority) {
     final priorityColor = _getPriorityColor(priority);
@@ -371,6 +476,44 @@ class _TimeBlockCardState extends State<TimeBlockCard>
         'P$rank',
         style: TextStyle(
           fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: priorityColor,
+        ),
+      ),
+    );
+
+    // 스케일 애니메이션이 있으면 적용
+    if (_priorityScaleAnimation != null) {
+      return ScaleTransition(
+        scale: _priorityScaleAnimation!,
+        child: badge,
+      );
+    }
+
+    return badge;
+  }
+
+  /// 컴팩트 우선순위 배지 (small 레이아웃용)
+  Widget _buildCompactPriorityBadge(TaskPriority priority) {
+    final priorityColor = _getPriorityColor(priority);
+    final rank = switch (priority) {
+      TaskPriority.high => 1,
+      TaskPriority.medium => 2,
+      TaskPriority.low => 3,
+    };
+
+    final badge = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      margin: const EdgeInsets.only(right: 4),
+      decoration: BoxDecoration(
+        color: priorityColor.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(3),
+        border: Border.all(color: priorityColor, width: 1),
+      ),
+      child: Text(
+        'P$rank',
+        style: TextStyle(
+          fontSize: 9,
           fontWeight: FontWeight.bold,
           color: priorityColor,
         ),
