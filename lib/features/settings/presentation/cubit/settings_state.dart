@@ -9,6 +9,7 @@ const supportedLocales = [
   Locale('zh'), // 중국어
   Locale('fr'), // 프랑스어
   Locale('de'), // 독일어
+  Locale('ru'), // 러시아어
 ];
 
 /// Settings 상태
@@ -77,6 +78,8 @@ class SettingsState extends Equatable {
         return 'Français';
       case 'de':
         return 'Deutsch';
+      case 'ru':
+        return 'Русский';
       default:
         return locale.languageCode;
     }

@@ -271,6 +271,8 @@ class SettingsPage extends StatelessWidget {
         return 'Français';
       case 'de':
         return 'Deutsch';
+      case 'ru':
+        return 'Русский';
       default:
         return locale.languageCode;
     }

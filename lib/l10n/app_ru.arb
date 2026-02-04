@@ -1,0 +1,507 @@
+{
+  "@@locale": "ru",
+  "@@last_modified": "2026-02-04",
+
+  "appName": "Таймбокс Планнер",
+  "@appName": {
+    "description": "Название приложения"
+  },
+
+  "inbox": "Входящие",
+  "calendar": "Календарь",
+  "focus": "Фокус",
+  "analytics": "Аналитика",
+  "settings": "Настройки",
+
+  "task": "Задача",
+  "tasks": "Задачи",
+  "addTask": "Добавить задачу",
+  "editTask": "Редактировать задачу",
+  "deleteTask": "Удалить задачу",
+  "taskTitle": "Название",
+  "taskNote": "Заметка",
+  "estimatedDuration": "Ожидаемая длительность",
+  "subtasks": "Подзадачи",
+  "addSubtask": "Добавить подзадачу",
+
+  "priority": "Приоритет",
+  "priorityHigh": "Высокий",
+  "priorityMedium": "Средний",
+  "priorityLow": "Низкий",
+
+  "status": "Статус",
+  "statusTodo": "К выполнению",
+  "statusInProgress": "В процессе",
+  "statusCompleted": "Завершено",
+  "statusDelayed": "Отложено",
+  "statusSkipped": "Пропущено",
+
+  "tag": "Тег",
+  "tags": "Теги",
+  "addTag": "Добавить тег",
+
+  "timeBlock": "Таймблок",
+  "createTimeBlock": "Создать таймблок",
+  "moveTimeBlock": "Переместить таймблок",
+  "resizeTimeBlock": "Изменить размер таймблока",
+  "conflictDetected": "Обнаружен конфликт расписания",
+
+  "focusMode": "Режим фокуса",
+  "startFocus": "Начать фокус",
+  "pauseFocus": "Пауза",
+  "resumeFocus": "Продолжить",
+  "completeFocus": "Завершить",
+  "skipFocus": "Пропустить",
+  "timeRemaining": "Осталось времени",
+
+  "today": "Сегодня",
+  "tomorrow": "Завтра",
+  "thisWeek": "На этой неделе",
+
+  "minutes": "минут",
+  "hours": "часов",
+  "minutesShort": "{count} мин",
+  "@minutesShort": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "hoursShort": "{count} ч",
+  "@hoursShort": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "productivityScore": "Показатель продуктивности",
+  "plannedVsActual": "План vs Факт",
+  "completionRate": "Процент выполнения",
+  "rolloverTasks": "Перенесённые задачи",
+
+  "darkMode": "Тёмный режим",
+  "language": "Язык",
+  "notifications": "Уведомления",
+  "calendarSync": "Синхронизация календаря",
+  "profile": "Профиль",
+  "logout": "Выход",
+
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "delete": "Удалить",
+  "confirm": "Подтвердить",
+  "edit": "Редактировать",
+  "done": "Готово",
+
+  "emptyInbox": "Входящие пусты",
+  "emptyInboxDescription": "Добавьте новую задачу",
+  "emptyCalendar": "Нет событий на сегодня",
+  "emptyCalendarDescription": "Перетащите задачу для создания расписания",
+
+  "error": "Ошибка",
+  "errorGeneric": "Что-то пошло не так",
+  "errorNetwork": "Проверьте подключение к сети",
+  "retry": "Повторить",
+
+  "noActiveSession": "Нет активной сессии",
+  "startFocusDescription": "Начните сессию фокуса для повышения продуктивности",
+  "quickStart": "Быстрый старт",
+  "paused": "На паузе",
+  "skip": "Пропустить",
+  "complete": "Завершить",
+  "sessionCompleted": "Сессия завершена!",
+  "selectDuration": "Выберите длительность",
+
+  "filter": "Фильтр",
+  "all": "Все",
+  "statusDone": "Выполнено",
+  "emptyInboxTitle": "Входящие пусты",
+  "toDo": "К выполнению",
+  "completed": "Завершено",
+  "deleteTaskConfirm": "Удалить эту задачу?",
+  "taskTitleHint": "Что нужно сделать?",
+  "lessOptions": "Скрыть опции",
+  "moreOptions": "Больше опций",
+  "taskNoteHint": "Добавить заметку...",
+
+  "title": "Название",
+  "timeBlockTitleHint": "Введите название блока",
+  "startTime": "Начало",
+  "endTime": "Окончание",
+  "add": "Добавить",
+
+  "top3": "Топ 3 приоритета",
+  "rank1": "1-й",
+  "rank2": "2-й",
+  "rank3": "3-й",
+  "brainDump": "Быстрая запись",
+  "timeline": "Таймлайн",
+  "dragToSchedule": "Перетащите для планирования",
+  "emptyTop3Slot": "Нажмите или перетащите для добавления",
+  "dayStartTime": "Начало дня",
+  "dayEndTime": "Конец дня",
+  "planner": "Таймбокс",
+  "copyToTomorrow": "Повторить завтра",
+  "copiedToTomorrow": "Скопировано на завтра",
+  "rolloverBadge": "Перенос: {count}",
+  "@rolloverBadge": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+
+  "appearance": "Внешний вид",
+  "theme": "Тема",
+  "themeSystem": "Системная",
+  "themeLight": "Светлая",
+  "themeDark": "Тёмная",
+  "notificationDescription": "Получать уведомления о таймблоках",
+  "notificationTiming": "Время уведомления",
+  "minutesBefore": "За {count} мин",
+  "@minutesBefore": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "noCalendarConnected": "Календарь не подключён",
+  "comingSoon": "Скоро",
+  "timeSettings": "Настройки времени",
+  "dayTimeRange": "Диапазон дня",
+  "defaultTimeBlockDuration": "Длительность таймблока по умолчанию",
+  "data": "Данные",
+  "exportData": "Экспорт данных",
+  "exportDataDescription": "Экспорт в CSV файл",
+  "resetSettings": "Сбросить настройки",
+  "resetSettingsConfirm": "Сбросить все настройки?",
+  "settingsReset": "Настройки сброшены",
+
+  "longPressToSelect": "Долгое нажатие для выбора диапазона",
+  "selectTask": "Выберите задачу",
+  "noUnscheduledTasks": "Нет незапланированных задач",
+  "addNewTask": "Добавить новую задачу",
+  "addNewTaskHint": "Введите название задачи...",
+  "timeRangeLabel": "{start} - {end}",
+  "@timeRangeLabel": {
+    "placeholders": {
+      "start": {"type": "String"},
+      "end": {"type": "String"}
+    }
+  },
+  "assignToTimeBlock": "Назначить в таймблок",
+  "mergeBlocks": "Объединить блоки",
+  "overlapWarning": "Внимание: таймблоки перекрываются",
+  "taskAssigned": "Задача назначена",
+  "tapToCancel": "Нажмите снаружи для отмены",
+
+  "statistics": "Статистика",
+  "todayHighlights": "Итоги дня",
+  "completedTasksCount": "Выполнено задач",
+  "focusTimeMinutes": "Время фокуса",
+  "timeSavedMinutes": "Сэкономлено времени",
+  "top3Achievement": "Топ 3 достижения",
+  "trend": "Тренд",
+  "tagAnalysis": "Анализ по тегам",
+  "insights": "Инсайты",
+  "daily": "День",
+  "weekly": "Неделя",
+  "monthly": "Месяц",
+  "focusModeTooltip": "Режим фокуса",
+
+  "startAlarm": "Уведомление о начале",
+  "endAlarm": "Уведомление об окончании",
+  "notifyBeforeStart": "Уведомить до начала",
+  "notifyBeforeEnd": "Уведомить до окончания",
+  "selectMultipleTimings": "Можно выбрать несколько",
+  "dailyReminder": "Ежедневное напоминание",
+  "dailyReminderDesc": "Напоминание в дни без активности",
+  "dailyReminderTime": "Время напоминания",
+  "notificationPermissionRequired": "Требуется разрешение на уведомления",
+  "notificationPermissionDesc": "Разрешите уведомления для получения напоминаний о таймблоках",
+  "openSettings": "Открыть настройки",
+  "permissionGranted": "Разрешение получено",
+  "permissionDenied": "Разрешение отклонено",
+  "requestPermission": "Запросить разрешение",
+  "hourBefore": "За {count} ч",
+  "@hourBefore": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "alarmSettings": "Настройки уведомлений",
+  "alarmTimingNote": "Множественный выбор",
+  "noonTime": "Полдень (12:00)",
+
+  "mathChallenge": "Математическая задача",
+  "mathChallengeProgress": "{current} / {total}",
+  "@mathChallengeProgress": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "enterAnswer": "Введите ответ",
+  "wrongAnswer": "Неправильно. Попробуйте снова.",
+  "focusLockEnabled": "Блокировка экрана включена",
+  "overlayPermissionRequired": "Требуется разрешение на оверлей",
+  "noActiveTimeBlock": "Нет активного таймблока",
+  "createTimeBlockFirst": "Сначала создайте таймблок в календаре",
+  "exitFocus": "Выход",
+
+  "statsCompletionRates": "Процент выполнения",
+  "statsTaskPipeline": "Поток задач",
+  "statsPlanVsActual": "План vs Факт",
+  "statsPriorityBreakdown": "По приоритетам",
+  "statsFocusSummary": "Анализ фокуса",
+  "statsTopInsights": "Инсайты",
+  "statsScheduled": "Запланировано",
+  "statsCompleted": "Выполнено",
+  "statsRolledOver": "Перенесено",
+  "statsEfficiency": "Эффективность",
+  "statsNoData": "Пока нет данных",
+
+  "navTimeline": "Таймлайн",
+  "navReport": "Отчёт",
+
+  "suggestedTasks": "Рекомендуемые задачи",
+  "taskSuggestionsHint": "Задачи, которые вы часто выполняли",
+  "topSuccessTasks": "Самые успешные задачи",
+  "topFailureTasks": "Сложные задачи",
+  "completionCount": "Выполнено раз",
+  "taskRankings": "Рейтинг задач",
+
+  "privacyPolicy": "Политика конфиденциальности",
+  "termsOfService": "Условия использования",
+  "privacyPolicyContent": "Политика конфиденциальности\n\nПоследнее обновление: 1 января 2026\n\n1. Собираемые данные\nПриложение обрабатывает данные о задачах и времени, которые вы вводите.\n\n2. Хранение данных\nВсе данные хранятся локально на вашем устройстве и не передаются на внешние серверы.\n\n3. Третьи стороны\nПриложение использует Google AdMob для показа рекламы. AdMob может собирать рекламные идентификаторы. Подробнее см. политику конфиденциальности Google.\n\n4. Удаление данных\nПри удалении приложения все данные автоматически удаляются.\n\n5. Контакты\nПо вопросам конфиденциальности: myclick90@gmail.com",
+  "termsOfServiceContent": "Условия использования\n\nПоследнее обновление: 1 января 2026\n\n1. Описание сервиса\nTimebox Planner — мобильное приложение для управления временем и планирования.\n\n2. Ответственность пользователя\nВы несёте ответственность за все данные, которые вводите, и должны использовать приложение в законных целях.\n\n3. Ограничение ответственности\nПриложение предоставляется «как есть». Разработчик не несёт ответственности за потерю данных или пропущенные события.\n\n4. Интеллектуальная собственность\nВсе права на дизайн, код и контент принадлежат разработчику.\n\n5. Изменения условий\nУсловия могут быть изменены с предварительным уведомлением через обновление приложения.",
+
+  "durationFormat": "{hours} ч {minutes} мин",
+  "@durationFormat": {
+    "placeholders": {
+      "hours": {"type": "int"},
+      "minutes": {"type": "int"}
+    }
+  },
+  "previousDay": "Предыдущий день",
+  "nextDay": "Следующий день",
+  "noTitle": "Без названия",
+  "incomplete": "Не завершено",
+  "revert": "Отменить",
+  "statusChange": "Изменить статус",
+  "timeBlockResult": "Результат таймблока",
+  "reverted": "Отменено",
+  "markedComplete": "Отмечено как выполнено",
+  "markedIncomplete": "Отмечено как не выполнено",
+  "deleteTimeBlock": "Удалить таймблок",
+  "deleteTimeBlockConfirm": "Удалить этот таймблок?",
+  "removeFromTop3": "Убрать из Топ 3",
+  "scoreUp": "На {change} баллов выше вчерашнего!",
+  "@scoreUp": {
+    "placeholders": {
+      "change": {"type": "int"}
+    }
+  },
+  "scoreDown": "На {change} баллов ниже вчерашнего",
+  "@scoreDown": {
+    "placeholders": {
+      "change": {"type": "int"}
+    }
+  },
+  "scoreSame": "Как вчера",
+  "average": "Среднее",
+  "dailyReminderTitle": "Составьте план на сегодня!",
+  "dailyReminderBody": "Первый шаг к достижению цели.",
+
+  "monday": "Понедельник",
+  "tuesday": "Вторник",
+  "wednesday": "Среда",
+  "thursday": "Четверг",
+  "friday": "Пятница",
+  "saturday": "Суббота",
+  "sunday": "Воскресенье",
+
+  "insightPeriodYesterday": "Вчера",
+  "insightPeriodToday": "Сегодня",
+  "insightPeriodWeekFirstHalf": "Начало недели",
+
+  "insightFocusTimeTitle": "Максимальная концентрация в {dayName} в {hour}:00",
+  "@insightFocusTimeTitle": {
+    "placeholders": {
+      "dayName": {"type": "String"},
+      "hour": {"type": "String"}
+    }
+  },
+  "insightFocusTimeDesc": "Планируйте важные задачи на это время",
+  "insightTagAccuracyFasterTitle": "Задачи с тегом {tagName} выполнены на {minutes} мин быстрее",
+  "@insightTagAccuracyFasterTitle": {
+    "placeholders": {
+      "tagName": {"type": "String"},
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightTagAccuracySlowerTitle": "Задачи с тегом {tagName} заняли на {minutes} мин больше",
+  "@insightTagAccuracySlowerTitle": {
+    "placeholders": {
+      "tagName": {"type": "String"},
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightTagAccuracyFasterDesc": "Ваши оценки времени становятся точнее",
+  "insightTagAccuracySlowerDesc": "Выделяйте больше времени на такие задачи",
+  "insightRolloverTitle": "Перенесённых задач: {taskCount} из {rolloverCount}",
+  "@insightRolloverTitle": {
+    "placeholders": {
+      "rolloverCount": {"type": "String"},
+      "taskCount": {"type": "String"}
+    }
+  },
+  "insightRolloverDesc": "Разбивайте задачи на меньшие или пересмотрите приоритеты",
+  "insightStreakTitle": "{days} дней подряд выполняете план!",
+  "@insightStreakTitle": {
+    "placeholders": {
+      "days": {"type": "String"}
+    }
+  },
+  "insightStreakDesc": "Постоянство — ключ к успеху",
+  "insightScoreUpTitle": "Продуктивность выросла на {scoreDiff} баллов по сравнению с {period}",
+  "@insightScoreUpTitle": {
+    "placeholders": {
+      "period": {"type": "String"},
+      "scoreDiff": {"type": "String"}
+    }
+  },
+  "insightScoreUpDesc": "Продолжайте в том же духе!",
+  "insightScoreDownTitle": "Продуктивность снизилась на {scoreDiff} баллов по сравнению с {period}",
+  "@insightScoreDownTitle": {
+    "placeholders": {
+      "period": {"type": "String"},
+      "scoreDiff": {"type": "String"}
+    }
+  },
+  "insightScoreDownDesc": "Немного скорректируйте план",
+  "insightBestDayTitle": "{dayName} — ваш самый продуктивный день",
+  "@insightBestDayTitle": {
+    "placeholders": {
+      "dayName": {"type": "String"}
+    }
+  },
+  "insightBestDayDesc": "Средний балл: {score}",
+  "@insightBestDayDesc": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightTimeSavedTitle": "Сэкономлено {minutes} мин за {period}",
+  "@insightTimeSavedTitle": {
+    "placeholders": {
+      "period": {"type": "String"},
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightTimeSavedDesc": "Отличное управление временем",
+  "insightTimeOverTitle": "Превышение на {minutes} мин за {period}",
+  "@insightTimeOverTitle": {
+    "placeholders": {
+      "period": {"type": "String"},
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightTimeOverDesc": "Закладывайте немного больше времени",
+  "insightTaskFirstTitle": "Первая задача дня выполнена!",
+  "insightTaskFirstDesc": "Хорошее начало",
+  "insightTaskAllCompleteTitle": "Все задачи на сегодня выполнены!",
+  "insightTaskAllCompleteDesc": "Выполнено задач: {total}",
+  "@insightTaskAllCompleteDesc": {
+    "placeholders": {
+      "total": {"type": "String"}
+    }
+  },
+  "insightTaskNoneTitle": "Пока нет выполненных задач",
+  "insightTaskNoneDesc": "Начните с малого",
+  "insightTaskPartialTitle": "Выполнено {completed} из {total} задач",
+  "@insightTaskPartialTitle": {
+    "placeholders": {
+      "total": {"type": "String"},
+      "completed": {"type": "String"}
+    }
+  },
+  "insightTaskPartialDesc": "Осталось {remaining}, вы справитесь!",
+  "@insightTaskPartialDesc": {
+    "placeholders": {
+      "remaining": {"type": "String"}
+    }
+  },
+  "insightFocusEffTitle": "Эффективность фокуса: {percent}%",
+  "@insightFocusEffTitle": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "insightFocusEffHighDesc": "Отличная концентрация",
+  "insightFocusEffMedDesc": "Средний уровень концентрации",
+  "insightFocusEffLowDesc": "Улучшите условия для фокуса",
+  "insightTimeEstTitle": "Точность оценки времени: {percent}%",
+  "@insightTimeEstTitle": {
+    "placeholders": {
+      "percent": {"type": "String"}
+    }
+  },
+  "insightTimeEstHighDesc": "Точные оценки времени",
+  "insightTimeEstMedDesc": "Немного скорректируйте оценки",
+  "insightTimeEstLowDesc": "Записывайте фактическое время для улучшения оценок",
+  "insightTop3AllCompleteTitle": "Все Топ 3 выполнены!",
+  "insightTop3AllCompleteDesc": "Вы сфокусировались на главном",
+  "insightTop3PartialTitle": "Выполнено {completed} из Топ 3",
+  "@insightTop3PartialTitle": {
+    "placeholders": {
+      "completed": {"type": "String"}
+    }
+  },
+  "insightTop3PartialDesc": "Осталось ещё {remaining}",
+  "@insightTop3PartialDesc": {
+    "placeholders": {
+      "remaining": {"type": "String"}
+    }
+  },
+  "insightScoreGreatTitle": "Отличный день!",
+  "insightScoreGreatDesc": "Балл продуктивности: {score}",
+  "@insightScoreGreatDesc": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightScoreNormalTitle": "Хорошая работа сегодня",
+  "insightScoreNormalDesc": "Балл продуктивности: {score}",
+  "@insightScoreNormalDesc": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightWeekAvgTitle": "Средний балл за неделю: {score}",
+  "@insightWeekAvgTitle": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightWeekAvgHighDesc": "Отличная неделя",
+  "insightWeekAvgLowDesc": "Следующая неделя будет лучше",
+  "insightMonthAvgTitle": "Средний балл за месяц: {score}",
+  "@insightMonthAvgTitle": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  },
+  "insightMonthAvgHighDesc": "Стабильно хороший месяц",
+  "insightMonthAvgLowDesc": "Пересмотрите цели и начните заново",
+  "insightMonthBestTitle": "Лучший день месяца: {day}.{month}",
+  "@insightMonthBestTitle": {
+    "placeholders": {
+      "month": {"type": "String"},
+      "day": {"type": "String"}
+    }
+  },
+  "insightMonthBestDesc": "Балл того дня: {score}",
+  "@insightMonthBestDesc": {
+    "placeholders": {
+      "score": {"type": "String"}
+    }
+  }
+}
