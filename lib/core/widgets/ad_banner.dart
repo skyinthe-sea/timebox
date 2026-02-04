@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -25,7 +26,10 @@ class _AdBannerState extends State<AdBanner> {
   @override
   void initState() {
     super.initState();
-    _loadAd();
+    // 릴리즈 모드에서만 광고 로드
+    if (kReleaseMode) {
+      _loadAd();
+    }
   }
 
   void _loadAd() {
@@ -60,6 +64,11 @@ class _AdBannerState extends State<AdBanner> {
 
   @override
   Widget build(BuildContext context) {
+    // 디버그 모드에서는 광고 숨김 (스크린샷 캡쳐용)
+    if (kDebugMode) {
+      return const SizedBox.shrink();
+    }
+
     if (!_isLoaded || _bannerAd == null) {
       return const SizedBox.shrink();
     }
