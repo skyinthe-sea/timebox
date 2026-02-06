@@ -96,6 +96,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get addTag => 'Добавить тег';
 
   @override
+  String get tagWork => 'Работа';
+
+  @override
+  String get tagPersonal => 'Личное';
+
+  @override
+  String get tagHealth => 'Здоровье';
+
+  @override
+  String get tagStudy => 'Учёба';
+
+  @override
+  String get selectTag => 'Выберите тег';
+
+  @override
+  String get newTag => 'Новый тег';
+
+  @override
+  String get tagNameHint => 'Название тега';
+
+  @override
+  String get selectColor => 'Выберите цвет';
+
+  @override
   String get timeBlock => 'Таймблок';
 
   @override
@@ -459,7 +483,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get top3Achievement => 'Топ 3 достижения';
 
   @override
-  String get trend => 'Тренд';
+  String get trend => 'Тренд продуктивности';
 
   @override
   String get tagAnalysis => 'Анализ по тегам';
@@ -598,6 +622,24 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get statsNoData => 'Пока нет данных';
+
+  @override
+  String get statsTop3Performance => 'Достижение Top 3';
+
+  @override
+  String get statsTop3Completed => 'Выполнено';
+
+  @override
+  String get statsTop3Days => 'Дней с Top 3';
+
+  @override
+  String get statsTop3PerfectDays => 'Идеальных дней';
+
+  @override
+  String get statsTop3Daily => 'Ежедневный прогресс';
+
+  @override
+  String get days => ' дней';
 
   @override
   String get navTimeline => 'Таймлайн';
@@ -940,4 +982,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String insightMonthBestDesc(String score) {
     return 'Балл того дня: $score';
   }
+
+  @override
+  String get demoMode => 'Демо режим';
+
+  @override
+  String get demoModeDescription => 'Образцы данных для скриншотов App Store';
+
+  @override
+  String get demoModeEnable => 'Включить демо режим';
+
+  @override
+  String get demoModeDisable => 'Отключить демо режим';
+
+  @override
+  String get demoModeEnabled => 'Демо режим включён';
+
+  @override
+  String get demoModeDisabled => 'Демо режим отключён';
+
+  @override
+  String get demoModeGenerating => 'Генерация образцов данных...';
+
+  @override
+  String get demoModeClearing => 'Удаление демо данных...';
 }

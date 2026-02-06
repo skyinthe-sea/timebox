@@ -205,7 +205,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         status: CalendarStateStatus.failure,
         errorMessage: failure.message,
       )),
-      (_) => {},
+      (_) {},
     );
   }
 
@@ -222,7 +222,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         status: CalendarStateStatus.failure,
         errorMessage: failure.message,
       )),
-      (_) => {},
+      (_) {},
     );
   }
 

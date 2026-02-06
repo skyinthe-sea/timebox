@@ -58,3 +58,16 @@ class SelectDate extends StatisticsEvent {
 class RefreshInsights extends StatisticsEvent {
   const RefreshInsights();
 }
+
+/// 통계 데이터 백그라운드 프리로드
+///
+/// CalendarPage에서 호출하여 통계 데이터를 미리 로드
+/// 상태 emit 최소화하여 UI 깜빡임 방지
+class PreloadStatistics extends StatisticsEvent {
+  final DateTime date;
+
+  const PreloadStatistics(this.date);
+
+  @override
+  List<Object?> get props => [date];
+}

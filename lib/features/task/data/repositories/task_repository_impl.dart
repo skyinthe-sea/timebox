@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart' hide Task;
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
+import '../../../analytics/data/datasources/analytics_local_datasource.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/entities/task_suggestion.dart';
 import '../../domain/entities/subtask.dart';
@@ -17,8 +18,12 @@ import '../models/subtask_model.dart';
 /// TaskLocalDataSource를 사용하여 데이터 접근
 class TaskRepositoryImpl implements TaskRepository {
   final TaskLocalDataSource localDataSource;
+  final AnalyticsLocalDataSource? analyticsDataSource;
 
-  TaskRepositoryImpl({required this.localDataSource});
+  TaskRepositoryImpl({
+    required this.localDataSource,
+    this.analyticsDataSource,
+  });
 
   @override
   Future<Either<Failure, List<Task>>> getTasks() async {
@@ -93,7 +98,24 @@ class TaskRepositoryImpl implements TaskRepository {
   @override
   Future<Either<Failure, void>> deleteTask(String id) async {
     try {
+      // 삭제 전 날짜 정보 먼저 조회
+      final model = await localDataSource.getTaskById(id);
+
       await localDataSource.deleteTask(id);
+
+      // 통계 캐시 무효화
+      if (model != null &&
+          model.targetDate != null &&
+          analyticsDataSource != null) {
+        final date = DateTime(
+          model.targetDate!.year,
+          model.targetDate!.month,
+          model.targetDate!.day,
+        );
+        await analyticsDataSource!.deleteDailyStatsSummary(date);
+        await analyticsDataSource!.invalidateCachesForDate(date);
+      }
+
       return const Right(null);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -135,6 +157,18 @@ class TaskRepositoryImpl implements TaskRepository {
         completedAt: status == TaskStatus.done ? DateTime.now() : null,
       );
       final savedModel = await localDataSource.saveTask(updatedModel);
+
+      // 통계 캐시 무효화 (Task 완료 시)
+      if (analyticsDataSource != null && savedModel.targetDate != null) {
+        final date = DateTime(
+          savedModel.targetDate!.year,
+          savedModel.targetDate!.month,
+          savedModel.targetDate!.day,
+        );
+        await analyticsDataSource!.deleteDailyStatsSummary(date);
+        await analyticsDataSource!.invalidateCachesForDate(date);
+      }
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

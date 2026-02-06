@@ -35,6 +35,14 @@
   "tag": "タグ",
   "tags": "タグ一覧",
   "addTag": "タグを追加",
+  "tagWork": "仕事",
+  "tagPersonal": "個人",
+  "tagHealth": "健康",
+  "tagStudy": "学習",
+  "selectTag": "タグを選択",
+  "newTag": "新規タグ",
+  "tagNameHint": "タグ名",
+  "selectColor": "色を選択",
 
   "timeBlock": "タイムブロック",
   "createTimeBlock": "タイムブロックを作成",
@@ -184,7 +192,7 @@
   "focusTimeMinutes": "集中時間",
   "timeSavedMinutes": "節約した時間",
   "top3Achievement": "Top 3達成",
-  "trend": "トレンド",
+  "trend": "生産性トレンド",
   "tagAnalysis": "タグ別分析",
   "insights": "インサイト",
   "daily": "日次",
@@ -243,6 +251,12 @@
   "statsRolledOver": "繰り越し",
   "statsEfficiency": "効率",
   "statsNoData": "まだデータがありません",
+  "statsTop3Performance": "Top 3 達成状況",
+  "statsTop3Completed": "完了",
+  "statsTop3Days": "Top 3 設定日数",
+  "statsTop3PerfectDays": "全達成日",
+  "statsTop3Daily": "日別達成状況",
+  "days": "日",
 
   "navTimeline": "タイムライン",
   "navReport": "レポート",
@@ -367,5 +381,14 @@
   "insightMonthBestTitle": "今月のベストデー: {month}月{day}日",
   "@insightMonthBestTitle": { "placeholders": { "month": {"type": "String"}, "day": {"type": "String"} } },
   "insightMonthBestDesc": "その日のスコア: {score}ポイント",
-  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } }
+  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } },
+
+  "demoMode": "デモモード",
+  "demoModeDescription": "App Storeスクリーンショット用サンプルデータ",
+  "demoModeEnable": "デモモードを有効にする",
+  "demoModeDisable": "デモモードを無効にする",
+  "demoModeEnabled": "デモモードが有効になりました",
+  "demoModeDisabled": "デモモードが無効になりました",
+  "demoModeGenerating": "サンプルデータを生成中...",
+  "demoModeClearing": "デモデータを削除中..."
 }

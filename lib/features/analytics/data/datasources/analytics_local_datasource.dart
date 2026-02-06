@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/hive_service.dart';
 import '../models/daily_stats_summary_model.dart';
+import '../models/period_cache_model.dart';
 
 /// Analytics 로컬 데이터 소스 인터페이스
 abstract class AnalyticsLocalDataSource {
@@ -35,11 +37,29 @@ abstract class AnalyticsLocalDataSource {
 
   /// 가장 최근 통계 날짜
   Future<DateTime?> getLatestStatsDate();
+
+  // === Period Cache Methods ===
+
+  /// 기간별 캐시 조회
+  Future<PeriodCacheModel?> getPeriodCache(String cacheKey);
+
+  /// 기간별 캐시 저장
+  Future<void> savePeriodCache(PeriodCacheModel cache);
+
+  /// 기간별 캐시 삭제
+  Future<void> deletePeriodCache(String cacheKey);
+
+  /// 특정 날짜가 포함된 주간/월간 캐시 무효화
+  Future<void> invalidateCachesForDate(DateTime date);
+
+  /// 모든 기간별 캐시 삭제
+  Future<void> clearAllPeriodCaches();
 }
 
 /// Analytics 로컬 데이터 소스 구현 (Hive)
 class AnalyticsLocalDataSourceImpl implements AnalyticsLocalDataSource {
   Box<Map> get _statsBox => HiveService.getDailyStatsSummaryBox();
+  Box<Map> get _periodCacheBox => HiveService.getPeriodCacheBox();
 
   /// 날짜를 키로 변환 (yyyy-MM-dd)
   String _dateToKey(DateTime date) {
@@ -183,6 +203,97 @@ class AnalyticsLocalDataSourceImpl implements AnalyticsLocalDataSource {
       return latest;
     } catch (e) {
       throw CacheException(message: 'Failed to get latest stats date: $e');
+    }
+  }
+
+  // === Period Cache Methods ===
+
+  /// Hive Map을 JSON 호환 Map으로 깊은 변환
+  Map<String, dynamic> _deepConvertMap(Map map) {
+    return map.map((key, value) {
+      final stringKey = key.toString();
+      if (value is Map) {
+        return MapEntry(stringKey, _deepConvertMap(value));
+      } else if (value is List) {
+        return MapEntry(stringKey, _deepConvertList(value));
+      }
+      return MapEntry(stringKey, value);
+    });
+  }
+
+  /// Hive List를 JSON 호환 List로 깊은 변환
+  List<dynamic> _deepConvertList(List list) {
+    return list.map((item) {
+      if (item is Map) {
+        return _deepConvertMap(item);
+      } else if (item is List) {
+        return _deepConvertList(item);
+      }
+      return item;
+    }).toList();
+  }
+
+  @override
+  Future<PeriodCacheModel?> getPeriodCache(String cacheKey) async {
+    try {
+      final data = _periodCacheBox.get(cacheKey);
+      if (data == null) return null;
+      debugPrint('[AnalyticsLocalDataSource] Cache hit for: $cacheKey');
+      final convertedData = _deepConvertMap(data);
+      return PeriodCacheModel.fromJson(convertedData);
+    } catch (e) {
+      debugPrint('[AnalyticsLocalDataSource] Error getting period cache: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> savePeriodCache(PeriodCacheModel cache) async {
+    try {
+      await _periodCacheBox.put(cache.cacheKey, cache.toJson());
+      debugPrint('[AnalyticsLocalDataSource] Cache saved: ${cache.cacheKey}');
+    } catch (e) {
+      debugPrint('[AnalyticsLocalDataSource] Error saving period cache: $e');
+    }
+  }
+
+  @override
+  Future<void> deletePeriodCache(String cacheKey) async {
+    try {
+      await _periodCacheBox.delete(cacheKey);
+      debugPrint('[AnalyticsLocalDataSource] Cache deleted: $cacheKey');
+    } catch (e) {
+      debugPrint('[AnalyticsLocalDataSource] Error deleting period cache: $e');
+    }
+  }
+
+  @override
+  Future<void> invalidateCachesForDate(DateTime date) async {
+    try {
+      // 해당 날짜가 포함된 주간 캐시 키
+      final weeklyKey = PeriodCacheModel.weeklyKey(date);
+      // 해당 날짜가 포함된 월간 캐시 키
+      final monthlyKey = PeriodCacheModel.monthlyKey(date);
+
+      await Future.wait([
+        deletePeriodCache(weeklyKey),
+        deletePeriodCache(monthlyKey),
+      ]);
+
+      debugPrint(
+          '[AnalyticsLocalDataSource] Invalidated caches for date: $date');
+    } catch (e) {
+      debugPrint('[AnalyticsLocalDataSource] Error invalidating caches: $e');
+    }
+  }
+
+  @override
+  Future<void> clearAllPeriodCaches() async {
+    try {
+      await _periodCacheBox.clear();
+      debugPrint('[AnalyticsLocalDataSource] All period caches cleared');
+    } catch (e) {
+      debugPrint('[AnalyticsLocalDataSource] Error clearing period caches: $e');
     }
   }
 }

@@ -68,6 +68,18 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
     try {
       final model = TimeBlockModel.fromEntity(timeBlock);
       final savedModel = await localDataSource.saveTimeBlock(model);
+
+      // 통계 캐시 무효화 (일간, 주간, 월간)
+      if (analyticsDataSource != null) {
+        final date = DateTime(
+          savedModel.startTime.year,
+          savedModel.startTime.month,
+          savedModel.startTime.day,
+        );
+        await analyticsDataSource!.deleteDailyStatsSummary(date);
+        await analyticsDataSource!.invalidateCachesForDate(date);
+      }
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -82,6 +94,18 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
     try {
       final model = TimeBlockModel.fromEntity(timeBlock);
       final savedModel = await localDataSource.saveTimeBlock(model);
+
+      // 통계 캐시 무효화 (일간, 주간, 월간)
+      if (analyticsDataSource != null) {
+        final date = DateTime(
+          savedModel.startTime.year,
+          savedModel.startTime.month,
+          savedModel.startTime.day,
+        );
+        await analyticsDataSource!.deleteDailyStatsSummary(date);
+        await analyticsDataSource!.invalidateCachesForDate(date);
+      }
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -98,7 +122,7 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
 
       await localDataSource.deleteTimeBlock(id);
 
-      // 통계 캐시 무효화
+      // 통계 캐시 무효화 (일간, 주간, 월간)
       if (model != null && analyticsDataSource != null) {
         final date = DateTime(
           model.startTime.year,
@@ -106,6 +130,7 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
           model.startTime.day,
         );
         await analyticsDataSource!.deleteDailyStatsSummary(date);
+        await analyticsDataSource!.invalidateCachesForDate(date);
       }
 
       return const Right(null);
@@ -209,7 +234,7 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
       final updatedModel = model.copyWith(status: status.name);
       final savedModel = await localDataSource.saveTimeBlock(updatedModel);
 
-      // 통계 캐시 무효화
+      // 통계 캐시 무효화 (일간, 주간, 월간)
       if (analyticsDataSource != null) {
         final date = DateTime(
           savedModel.startTime.year,
@@ -217,6 +242,7 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
           savedModel.startTime.day,
         );
         await analyticsDataSource!.deleteDailyStatsSummary(date);
+        await analyticsDataSource!.invalidateCachesForDate(date);
       }
 
       return Right(savedModel.toEntity());

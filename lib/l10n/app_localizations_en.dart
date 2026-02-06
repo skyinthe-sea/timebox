@@ -96,6 +96,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addTag => 'Add Tag';
 
   @override
+  String get tagWork => 'Work';
+
+  @override
+  String get tagPersonal => 'Personal';
+
+  @override
+  String get tagHealth => 'Health';
+
+  @override
+  String get tagStudy => 'Study';
+
+  @override
+  String get selectTag => 'Select Tag';
+
+  @override
+  String get newTag => 'New Tag';
+
+  @override
+  String get tagNameHint => 'Tag name';
+
+  @override
+  String get selectColor => 'Select color';
+
+  @override
   String get timeBlock => 'Time Block';
 
   @override
@@ -458,7 +482,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get top3Achievement => 'Top 3 Achievement';
 
   @override
-  String get trend => 'Trend';
+  String get trend => 'Productivity Trend';
 
   @override
   String get tagAnalysis => 'Tag Analysis';
@@ -599,6 +623,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statsNoData => 'No data yet';
+
+  @override
+  String get statsTop3Performance => 'Top 3 Achievement';
+
+  @override
+  String get statsTop3Completed => 'Completed';
+
+  @override
+  String get statsTop3Days => 'Days with Top 3';
+
+  @override
+  String get statsTop3PerfectDays => 'Perfect days';
+
+  @override
+  String get statsTop3Daily => 'Daily progress';
+
+  @override
+  String get days => ' days';
 
   @override
   String get navTimeline => 'Timeline';
@@ -943,4 +985,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String insightMonthBestDesc(String score) {
     return 'Score that day: $score points';
   }
+
+  @override
+  String get demoMode => 'Demo Mode';
+
+  @override
+  String get demoModeDescription => 'Sample data for App Store screenshots';
+
+  @override
+  String get demoModeEnable => 'Enable Demo Mode';
+
+  @override
+  String get demoModeDisable => 'Disable Demo Mode';
+
+  @override
+  String get demoModeEnabled => 'Demo mode enabled';
+
+  @override
+  String get demoModeDisabled => 'Demo mode disabled';
+
+  @override
+  String get demoModeGenerating => 'Generating sample data...';
+
+  @override
+  String get demoModeClearing => 'Clearing demo data...';
 }

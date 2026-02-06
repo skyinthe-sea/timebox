@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../analytics/data/datasources/analytics_local_datasource.dart';
 import '../../data/datasources/focus_session_local_datasource.dart';
 import '../../data/models/focus_session_model.dart';
 import '../../domain/entities/focus_session.dart';
@@ -18,9 +20,13 @@ part 'focus_state.dart';
 class FocusBloc extends Bloc<FocusEvent, FocusState> {
   Timer? _timer;
   final FocusSessionLocalDataSource? sessionDataSource;
+  final AnalyticsLocalDataSource? analyticsDataSource;
   static const _uuid = Uuid();
 
-  FocusBloc({this.sessionDataSource}) : super(const FocusState()) {
+  FocusBloc({
+    this.sessionDataSource,
+    this.analyticsDataSource,
+  }) : super(const FocusState()) {
     on<StartFocusSession>(_onStartSession);
     on<StartTimeBlockFocusSession>(_onStartTimeBlockSession);
     on<PauseFocusSession>(_onPauseSession);
@@ -194,8 +200,22 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
         await sessionDataSource!.saveSession(
           FocusSessionModel.fromEntity(session),
         );
+
+        // 세션 완료 시 통계 캐시 무효화
+        if (session.status == SessionStatus.completed &&
+            analyticsDataSource != null) {
+          final date = DateTime(
+            session.plannedStartTime.year,
+            session.plannedStartTime.month,
+            session.plannedStartTime.day,
+          );
+          await analyticsDataSource!.deleteDailyStatsSummary(date);
+          await analyticsDataSource!.invalidateCachesForDate(date);
+          debugPrint('[FocusBloc] Statistics cache invalidated for: $date');
+        }
       } catch (e) {
         // 저장 실패 시 로그만 남김
+        debugPrint('[FocusBloc] Failed to save session: $e');
       }
     }
   }

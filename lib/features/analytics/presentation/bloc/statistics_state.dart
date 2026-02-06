@@ -65,8 +65,18 @@ class StatisticsState extends Equatable {
   /// Top 5 실패 Task 랭킹
   final List<TaskCompletionRanking> topFailureTasks;
 
+  /// 기간 내 일별 요약 목록 (Top 3 통계용)
+  final List<DailyStatsSummary> periodSummaries;
+
   /// 에러 메시지
   final String? errorMessage;
+
+  // === 기간별 캐시 (탭 전환 시 즉시 표시) ===
+  /// 주간 데이터 캐시
+  final PeriodCache? weeklyCache;
+
+  /// 월간 데이터 캐시
+  final PeriodCache? monthlyCache;
 
   const StatisticsState({
     this.currentPeriod = StatsPeriod.daily,
@@ -84,7 +94,10 @@ class StatisticsState extends Equatable {
     this.timeComparisons = const [],
     this.topSuccessTasks = const [],
     this.topFailureTasks = const [],
+    this.periodSummaries = const [],
     this.errorMessage,
+    this.weeklyCache,
+    this.monthlyCache,
   });
 
   /// 초기 상태
@@ -200,7 +213,10 @@ class StatisticsState extends Equatable {
     List<TimeComparison>? timeComparisons,
     List<TaskCompletionRanking>? topSuccessTasks,
     List<TaskCompletionRanking>? topFailureTasks,
+    List<DailyStatsSummary>? periodSummaries,
     String? errorMessage,
+    PeriodCache? weeklyCache,
+    PeriodCache? monthlyCache,
   }) {
     return StatisticsState(
       currentPeriod: currentPeriod ?? this.currentPeriod,
@@ -218,7 +234,10 @@ class StatisticsState extends Equatable {
       timeComparisons: timeComparisons ?? this.timeComparisons,
       topSuccessTasks: topSuccessTasks ?? this.topSuccessTasks,
       topFailureTasks: topFailureTasks ?? this.topFailureTasks,
+      periodSummaries: periodSummaries ?? this.periodSummaries,
       errorMessage: errorMessage ?? this.errorMessage,
+      weeklyCache: weeklyCache ?? this.weeklyCache,
+      monthlyCache: monthlyCache ?? this.monthlyCache,
     );
   }
 
@@ -239,6 +258,41 @@ class StatisticsState extends Equatable {
         timeComparisons,
         topSuccessTasks,
         topFailureTasks,
+        periodSummaries,
         errorMessage,
+        weeklyCache,
+        monthlyCache,
+      ];
+}
+
+/// 기간별 캐시 데이터
+class PeriodCache extends Equatable {
+  final List<ProductivityStats> periodStats;
+  final List<TagTimeComparison> tagStats;
+  final TaskPipelineStats? pipelineStats;
+  final List<DailyStatsSummary> periodSummaries;
+  final List<TimeComparison> timeComparisons;
+  final List<TaskCompletionRanking> topSuccessTasks;
+  final List<TaskCompletionRanking> topFailureTasks;
+
+  const PeriodCache({
+    required this.periodStats,
+    required this.tagStats,
+    this.pipelineStats,
+    required this.periodSummaries,
+    required this.timeComparisons,
+    required this.topSuccessTasks,
+    required this.topFailureTasks,
+  });
+
+  @override
+  List<Object?> get props => [
+        periodStats,
+        tagStats,
+        pipelineStats,
+        periodSummaries,
+        timeComparisons,
+        topSuccessTasks,
+        topFailureTasks,
       ];
 }

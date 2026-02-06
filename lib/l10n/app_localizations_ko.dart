@@ -96,6 +96,30 @@ class AppLocalizationsKo extends AppLocalizations {
   String get addTag => '태그 추가';
 
   @override
+  String get tagWork => '업무';
+
+  @override
+  String get tagPersonal => '개인';
+
+  @override
+  String get tagHealth => '건강';
+
+  @override
+  String get tagStudy => '학습';
+
+  @override
+  String get selectTag => '태그 선택';
+
+  @override
+  String get newTag => '새 태그';
+
+  @override
+  String get tagNameHint => '태그 이름';
+
+  @override
+  String get selectColor => '색상 선택';
+
+  @override
   String get timeBlock => '타임 블록';
 
   @override
@@ -457,7 +481,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get top3Achievement => 'Top 3 달성';
 
   @override
-  String get trend => '트렌드';
+  String get trend => '생산성 트렌드';
 
   @override
   String get tagAnalysis => '태그별 분석';
@@ -594,6 +618,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get statsNoData => '아직 데이터가 없어요';
+
+  @override
+  String get statsTop3Performance => '가장 중요한 3가지 달성';
+
+  @override
+  String get statsTop3Completed => '완료';
+
+  @override
+  String get statsTop3Days => 'Top 3 설정일';
+
+  @override
+  String get statsTop3PerfectDays => '전부 완료한 날';
+
+  @override
+  String get statsTop3Daily => '일별 달성 현황';
+
+  @override
+  String get days => '일';
 
   @override
   String get navTimeline => '타임라인';
@@ -932,4 +974,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String insightMonthBestDesc(String score) {
     return '그날의 점수: $score점';
   }
+
+  @override
+  String get demoMode => '데모 모드';
+
+  @override
+  String get demoModeDescription => '앱스토어 스크린샷용 샘플 데이터';
+
+  @override
+  String get demoModeEnable => '데모 모드 활성화';
+
+  @override
+  String get demoModeDisable => '데모 모드 비활성화';
+
+  @override
+  String get demoModeEnabled => '데모 모드가 활성화되었습니다';
+
+  @override
+  String get demoModeDisabled => '데모 모드가 비활성화되었습니다';
+
+  @override
+  String get demoModeGenerating => '샘플 데이터 생성 중...';
+
+  @override
+  String get demoModeClearing => '데모 데이터 삭제 중...';
 }

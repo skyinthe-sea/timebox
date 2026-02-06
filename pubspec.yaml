@@ -85,7 +85,6 @@ flutter:
   uses-material-design: true
   generate: true
 
-  # Assets (추후 추가)
-  # assets:
-  #   - assets/images/
-  #   - assets/icons/
+  assets:
+    - assets/sample_data/
+    - assets/icon/

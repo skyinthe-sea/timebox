@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/datasources/analytics_local_datasource.dart';
+import '../../data/models/period_cache_model.dart';
 import '../../domain/entities/daily_stats_summary.dart';
 import '../../domain/entities/insight.dart';
 import '../../domain/entities/productivity_stats.dart';
@@ -14,16 +17,20 @@ import 'statistics_state.dart';
 /// 통계 페이지의 상태 관리
 class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   final AnalyticsRepository _analyticsRepository;
+  final AnalyticsLocalDataSource _localDataSource;
 
   StatisticsBloc({
     required AnalyticsRepository analyticsRepository,
+    required AnalyticsLocalDataSource localDataSource,
   })  : _analyticsRepository = analyticsRepository,
+        _localDataSource = localDataSource,
         super(StatisticsState.initial()) {
     on<LoadStatistics>(_onLoadStatistics);
     on<RefreshStatistics>(_onRefreshStatistics);
     on<ChangePeriod>(_onChangePeriod);
     on<SelectDate>(_onSelectDate);
     on<RefreshInsights>(_onRefreshInsights);
+    on<PreloadStatistics>(_onPreloadStatistics);
   }
 
   Future<void> _onLoadStatistics(
@@ -34,110 +41,71 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       status: StatisticsStatus.loading,
       selectedDate: event.date,
       currentPeriod: event.period,
+      // 새 날짜 선택 시 캐시 클리어
+      weeklyCache: null,
+      monthlyCache: null,
     ));
 
     try {
-      // 오늘 통계 로드
-      final todayResult = await _analyticsRepository.getDailyStats(event.date);
-      final todayStats = todayResult.fold(
-        (failure) => null,
-        (stats) => stats,
-      );
-
-      // 어제 통계 로드 (비교용)
       final yesterday = event.date.subtract(const Duration(days: 1));
-      final yesterdayResult = await _analyticsRepository.getDailyStats(yesterday);
-      final yesterdayStats = yesterdayResult.fold(
+      final dailyRange = _getDateRange(event.date, StatsPeriod.daily);
+
+      // 일간 기본 데이터 + 최소 필요 데이터만 빠르게 로드 (5개 쿼리)
+      final results = await Future.wait([
+        _analyticsRepository.getDailyStats(event.date),
+        _analyticsRepository.getDailyStats(yesterday),
+        _analyticsRepository.getDailyStatsSummary(event.date),
+        _loadTagStats(event.date, StatsPeriod.daily),
+        _analyticsRepository.getTaskPipelineStats(dailyRange.$1, dailyRange.$2),
+      ]);
+
+      final todayStats = (results[0] as dynamic).fold(
         (failure) => null,
         (stats) => stats,
       );
-
-      // 기간별 통계 로드
-      final periodStats = await _loadPeriodStats(event.date, event.period);
-
-      // 태그별 통계 로드
-      final tagStats = await _loadTagStats(event.date, event.period);
-
-      // 기간 범위 계산
-      final dateRange = _getDateRange(event.date, event.period);
-
-      // 일간 요약 로드 (Top3 달성 등)
-      final summaryResult = await _analyticsRepository.getDailyStatsSummary(event.date);
-      final dailySummary = summaryResult.fold(
+      final yesterdayStats = (results[1] as dynamic).fold(
+        (failure) => null,
+        (stats) => stats,
+      );
+      final dailySummary = (results[2] as dynamic).fold(
         (failure) => null,
         (summary) => summary,
       );
-
-      // Task Pipeline 통계 로드
-      final pipelineResult = await _analyticsRepository.getTaskPipelineStats(
-        dateRange.$1,
-        dateRange.$2,
-      );
-      final pipelineStats = pipelineResult.fold(
+      final tagStats = results[3] as List<TagTimeComparison>;
+      final pipelineStats = (results[4] as dynamic).fold(
         (failure) => null,
         (stats) => stats,
       );
 
-      // 우선순위별 통계 로드
-      final priorityResult = await _analyticsRepository.getPriorityBreakdownStats(
-        dateRange.$1,
-        dateRange.$2,
-      );
-      final priorityBreakdown = priorityResult.fold(
-        (failure) => null,
-        (stats) => stats,
-      );
-
-      // 계획 vs 실제 시간 비교 로드
-      final timeCompResult = await _analyticsRepository.getTimeComparisons(
-        dateRange.$1,
-        dateRange.$2,
-      );
-      final timeComparisons = timeCompResult.fold(
-        (failure) => <TimeComparison>[],
-        (comparisons) => comparisons,
-      );
-
-      // Task 완료 랭킹 로드
-      final rankingsResult = await _analyticsRepository.getTaskCompletionRankings(
-        dateRange.$1,
-        dateRange.$2,
-      );
-      final topSuccessTasks = rankingsResult.fold(
-        (failure) => <TaskCompletionRanking>[],
-        (rankings) => rankings.topSuccess,
-      );
-      final topFailureTasks = rankingsResult.fold(
-        (failure) => <TaskCompletionRanking>[],
-        (rankings) => rankings.topFailure,
-      );
-
-      // 인사이트 생성 (최대 3개로 제한)
+      // 인사이트 생성
       final allInsights = _generateInsights(
         date: event.date,
         period: event.period,
         todayStats: todayStats,
         yesterdayStats: yesterdayStats,
         dailySummary: dailySummary,
-        periodStats: periodStats,
+        periodStats: const [],
       );
       final insights = allInsights.take(3).toList();
 
+      // 즉시 UI 표시 (최소 데이터로)
       emit(state.copyWith(
         status: StatisticsStatus.loaded,
         todayStats: todayStats,
         yesterdayStats: yesterdayStats,
-        periodStats: periodStats,
-        tagStats: tagStats,
         dailySummary: dailySummary,
+        periodStats: const [],
+        tagStats: tagStats,
         pipelineStats: pipelineStats,
-        priorityBreakdown: priorityBreakdown,
-        timeComparisons: timeComparisons,
-        topSuccessTasks: topSuccessTasks,
-        topFailureTasks: topFailureTasks,
+        periodSummaries: const [],
+        timeComparisons: const [],
+        topSuccessTasks: const [],
+        topFailureTasks: const [],
         insights: insights,
         errorMessage: null,
       ));
+
+      // 프리로드 제거 - 사용자가 탭 전환 시에만 해당 기간 데이터 로드
     } catch (e) {
       emit(state.copyWith(
         status: StatisticsStatus.error,
@@ -150,6 +118,11 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     RefreshStatistics event,
     Emitter<StatisticsState> emit,
   ) async {
+    // 새로고침 시 캐시 클리어
+    emit(state.copyWith(
+      weeklyCache: null,
+      monthlyCache: null,
+    ));
     add(LoadStatistics(
       date: state.selectedDate,
       period: state.currentPeriod,
@@ -160,10 +133,126 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     ChangePeriod event,
     Emitter<StatisticsState> emit,
   ) async {
-    add(LoadStatistics(
-      date: state.selectedDate,
-      period: event.period,
+    // 같은 기간이면 무시
+    if (event.period == state.currentPeriod) return;
+
+    // 1단계: 메모리 캐시 확인
+    var cache = event.period == StatsPeriod.weekly
+        ? state.weeklyCache
+        : event.period == StatsPeriod.monthly
+            ? state.monthlyCache
+            : null;
+
+    // 2단계: 메모리 캐시 미스 시 Hive 영구 캐시 확인
+    if (cache == null && event.period != StatsPeriod.daily) {
+      final cacheKey = event.period == StatsPeriod.weekly
+          ? PeriodCacheModel.weeklyKey(state.selectedDate)
+          : PeriodCacheModel.monthlyKey(state.selectedDate);
+
+      final hiveCacheModel = await _localDataSource.getPeriodCache(cacheKey);
+      if (hiveCacheModel != null) {
+        debugPrint('[StatisticsBloc] Hive cache hit for: $cacheKey');
+        cache = hiveCacheModel.toEntity();
+
+        // 메모리 캐시에도 저장
+        if (event.period == StatsPeriod.weekly) {
+          emit(state.copyWith(weeklyCache: cache));
+        } else {
+          emit(state.copyWith(monthlyCache: cache));
+        }
+      }
+    }
+
+    if (cache != null) {
+      // 캐시 히트: 즉시 전환 (로딩 없음)
+      final allInsights = _generateInsights(
+        date: state.selectedDate,
+        period: event.period,
+        todayStats: state.todayStats,
+        yesterdayStats: state.yesterdayStats,
+        dailySummary: state.dailySummary,
+        periodStats: cache.periodStats,
+      );
+      final insights = allInsights.take(3).toList();
+
+      emit(state.copyWith(
+        currentPeriod: event.period,
+        periodStats: cache.periodStats,
+        tagStats: cache.tagStats,
+        pipelineStats: cache.pipelineStats,
+        periodSummaries: cache.periodSummaries,
+        timeComparisons: cache.timeComparisons,
+        topSuccessTasks: cache.topSuccessTasks,
+        topFailureTasks: cache.topFailureTasks,
+        insights: insights,
+      ));
+      return;
+    }
+
+    // 캐시 미스: 로딩 표시 후 데이터 로드
+    debugPrint('[StatisticsBloc] Cache miss for ${event.period}, loading data...');
+    emit(state.copyWith(
+      status: StatisticsStatus.loading,
+      currentPeriod: event.period,
     ));
+
+    try {
+      final periodData = await _loadPeriodData(state.selectedDate, event.period);
+
+      final allInsights = _generateInsights(
+        date: state.selectedDate,
+        period: event.period,
+        todayStats: state.todayStats,
+        yesterdayStats: state.yesterdayStats,
+        dailySummary: state.dailySummary,
+        periodStats: periodData.periodStats,
+      );
+      final insights = allInsights.take(3).toList();
+
+      // 메모리 캐시에 저장
+      final newCache = PeriodCache(
+        periodStats: periodData.periodStats,
+        tagStats: periodData.tagStats,
+        pipelineStats: periodData.pipelineStats,
+        periodSummaries: periodData.periodSummaries,
+        timeComparisons: periodData.timeComparisons,
+        topSuccessTasks: periodData.topSuccessTasks,
+        topFailureTasks: periodData.topFailureTasks,
+      );
+
+      // Hive 영구 캐시에도 저장
+      if (event.period == StatsPeriod.weekly || event.period == StatsPeriod.monthly) {
+        final cacheKey = event.period == StatsPeriod.weekly
+            ? PeriodCacheModel.weeklyKey(state.selectedDate)
+            : PeriodCacheModel.monthlyKey(state.selectedDate);
+
+        final cacheModel = PeriodCacheModel.fromEntity(
+          cacheKey: cacheKey,
+          cache: newCache,
+        );
+        await _localDataSource.savePeriodCache(cacheModel);
+      }
+
+      emit(state.copyWith(
+        status: StatisticsStatus.loaded,
+        periodStats: periodData.periodStats,
+        tagStats: periodData.tagStats,
+        pipelineStats: periodData.pipelineStats,
+        periodSummaries: periodData.periodSummaries,
+        timeComparisons: periodData.timeComparisons,
+        topSuccessTasks: periodData.topSuccessTasks,
+        topFailureTasks: periodData.topFailureTasks,
+        insights: insights,
+        weeklyCache: event.period == StatsPeriod.weekly ? newCache : state.weeklyCache,
+        monthlyCache: event.period == StatsPeriod.monthly ? newCache : state.monthlyCache,
+        errorMessage: null,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: StatisticsStatus.error,
+        errorMessage: e.toString(),
+      ));
+    }
   }
 
   Future<void> _onSelectDate(
@@ -189,6 +278,239 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       periodStats: state.periodStats,
     );
     emit(state.copyWith(insights: insights));
+  }
+
+  /// 통계 데이터 백그라운드 프리로드
+  ///
+  /// CalendarPage에서 호출되어 통계 데이터를 미리 로드
+  /// - 이미 로드된 상태면 스킵
+  /// - 일간 데이터 로드 후 주간/월간 캐시 프리로드
+  Future<void> _onPreloadStatistics(
+    PreloadStatistics event,
+    Emitter<StatisticsState> emit,
+  ) async {
+    // 이미 로드된 상태면 캐시만 프리로드
+    if (state.status == StatisticsStatus.loaded) {
+      await _preloadPeriodCaches(event.date, emit);
+      return;
+    }
+
+    // 일간 데이터 먼저 로드 (UI 표시용이 아니므로 로딩 상태 없음)
+    try {
+      final yesterday = event.date.subtract(const Duration(days: 1));
+      final dailyRange = _getDateRange(event.date, StatsPeriod.daily);
+
+      final results = await Future.wait([
+        _analyticsRepository.getDailyStats(event.date),
+        _analyticsRepository.getDailyStats(yesterday),
+        _analyticsRepository.getDailyStatsSummary(event.date),
+        _loadTagStats(event.date, StatsPeriod.daily),
+        _analyticsRepository.getTaskPipelineStats(dailyRange.$1, dailyRange.$2),
+      ]);
+
+      final todayStats = (results[0] as dynamic).fold(
+        (failure) => null,
+        (stats) => stats,
+      );
+      final yesterdayStats = (results[1] as dynamic).fold(
+        (failure) => null,
+        (stats) => stats,
+      );
+      final dailySummary = (results[2] as dynamic).fold(
+        (failure) => null,
+        (summary) => summary,
+      );
+      final tagStats = results[3] as List<TagTimeComparison>;
+      final pipelineStats = (results[4] as dynamic).fold(
+        (failure) => null,
+        (stats) => stats,
+      );
+
+      final allInsights = _generateInsights(
+        date: event.date,
+        period: StatsPeriod.daily,
+        todayStats: todayStats,
+        yesterdayStats: yesterdayStats,
+        dailySummary: dailySummary,
+        periodStats: const [],
+      );
+      final insights = allInsights.take(3).toList();
+
+      emit(state.copyWith(
+        status: StatisticsStatus.loaded,
+        selectedDate: event.date,
+        todayStats: todayStats,
+        yesterdayStats: yesterdayStats,
+        dailySummary: dailySummary,
+        periodStats: const [],
+        tagStats: tagStats,
+        pipelineStats: pipelineStats,
+        periodSummaries: const [],
+        timeComparisons: const [],
+        topSuccessTasks: const [],
+        topFailureTasks: const [],
+        insights: insights,
+        errorMessage: null,
+      ));
+
+      // 주간/월간 캐시 프리로드 (백그라운드)
+      await _preloadPeriodCaches(event.date, emit);
+    } catch (e) {
+      // 프리로드 실패는 무시 (통계 페이지 진입 시 재로드)
+    }
+  }
+
+  /// 주간/월간 캐시 프리로드 (백그라운드)
+  ///
+  /// 1. Hive 영구 캐시 확인
+  /// 2. 캐시 미스 시 데이터 로드 후 Hive에 저장
+  Future<void> _preloadPeriodCaches(
+    DateTime date,
+    Emitter<StatisticsState> emit,
+  ) async {
+    // 짧은 딜레이 후 캐시 프리로드 (UI 렌더링 우선)
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    try {
+      // 주간 캐시 프리로드
+      if (state.weeklyCache == null && !isClosed) {
+        debugPrint('[StatisticsBloc] Preloading weekly cache...');
+        final weeklyKey = PeriodCacheModel.weeklyKey(date);
+
+        // 1. Hive 영구 캐시 확인
+        final hiveCacheModel = await _localDataSource.getPeriodCache(weeklyKey);
+        PeriodCache? weeklyCache;
+
+        if (hiveCacheModel != null) {
+          // Hive 캐시 히트
+          debugPrint('[StatisticsBloc] Weekly Hive cache hit: $weeklyKey');
+          weeklyCache = hiveCacheModel.toEntity();
+        } else {
+          // 캐시 미스 - 데이터 로드
+          debugPrint('[StatisticsBloc] Weekly Hive cache miss, loading data...');
+          final weeklyData = await _loadPeriodData(date, StatsPeriod.weekly);
+          weeklyCache = PeriodCache(
+            periodStats: weeklyData.periodStats,
+            tagStats: weeklyData.tagStats,
+            pipelineStats: weeklyData.pipelineStats,
+            periodSummaries: weeklyData.periodSummaries,
+            timeComparisons: weeklyData.timeComparisons,
+            topSuccessTasks: weeklyData.topSuccessTasks,
+            topFailureTasks: weeklyData.topFailureTasks,
+          );
+
+          // Hive에 영구 저장
+          final cacheModel = PeriodCacheModel.fromEntity(
+            cacheKey: weeklyKey,
+            cache: weeklyCache,
+          );
+          await _localDataSource.savePeriodCache(cacheModel);
+        }
+
+        if (!isClosed) {
+          emit(state.copyWith(weeklyCache: weeklyCache));
+          debugPrint('[StatisticsBloc] Weekly cache loaded');
+        }
+      }
+
+      // 월간 캐시 프리로드
+      if (state.monthlyCache == null && !isClosed) {
+        debugPrint('[StatisticsBloc] Preloading monthly cache...');
+        final monthlyKey = PeriodCacheModel.monthlyKey(date);
+
+        // 1. Hive 영구 캐시 확인
+        final hiveCacheModel = await _localDataSource.getPeriodCache(monthlyKey);
+        PeriodCache? monthlyCache;
+
+        if (hiveCacheModel != null) {
+          // Hive 캐시 히트
+          debugPrint('[StatisticsBloc] Monthly Hive cache hit: $monthlyKey');
+          monthlyCache = hiveCacheModel.toEntity();
+        } else {
+          // 캐시 미스 - 데이터 로드
+          debugPrint('[StatisticsBloc] Monthly Hive cache miss, loading data...');
+          final monthlyData = await _loadPeriodData(date, StatsPeriod.monthly);
+          monthlyCache = PeriodCache(
+            periodStats: monthlyData.periodStats,
+            tagStats: monthlyData.tagStats,
+            pipelineStats: monthlyData.pipelineStats,
+            periodSummaries: monthlyData.periodSummaries,
+            timeComparisons: monthlyData.timeComparisons,
+            topSuccessTasks: monthlyData.topSuccessTasks,
+            topFailureTasks: monthlyData.topFailureTasks,
+          );
+
+          // Hive에 영구 저장
+          final cacheModel = PeriodCacheModel.fromEntity(
+            cacheKey: monthlyKey,
+            cache: monthlyCache,
+          );
+          await _localDataSource.savePeriodCache(cacheModel);
+        }
+
+        if (!isClosed) {
+          emit(state.copyWith(monthlyCache: monthlyCache));
+          debugPrint('[StatisticsBloc] Monthly cache loaded');
+        }
+      }
+
+      debugPrint('[StatisticsBloc] Preload complete!');
+    } catch (e) {
+      debugPrint('[StatisticsBloc] Preload failed: $e');
+    }
+  }
+
+  /// 기간별 모든 데이터 로드 (병렬)
+  Future<_PeriodData> _loadPeriodData(DateTime date, StatsPeriod period) async {
+    final dateRange = _getDateRange(date, period);
+
+    final results = await Future.wait([
+      _loadPeriodStats(date, period),
+      _loadTagStats(date, period),
+      _analyticsRepository.getTaskPipelineStats(dateRange.$1, dateRange.$2),
+      _analyticsRepository.getTimeComparisons(dateRange.$1, dateRange.$2),
+      _analyticsRepository.getTaskCompletionRankings(dateRange.$1, dateRange.$2),
+      if (period != StatsPeriod.daily)
+        _analyticsRepository.getDailyStatsSummaries(dateRange.$1, dateRange.$2),
+    ]);
+
+    final periodStats = results[0] as List<ProductivityStats>;
+    final tagStats = results[1] as List<TagTimeComparison>;
+    final pipelineStats = (results[2] as dynamic).fold(
+      (failure) => null,
+      (stats) => stats,
+    );
+    final timeComparisons = (results[3] as dynamic).fold(
+      (failure) => <TimeComparison>[],
+      (comparisons) => comparisons,
+    );
+    final rankingsResult = results[4];
+    final topSuccessTasks = (rankingsResult as dynamic).fold(
+      (failure) => <TaskCompletionRanking>[],
+      (rankings) => rankings.topSuccess,
+    );
+    final topFailureTasks = (rankingsResult as dynamic).fold(
+      (failure) => <TaskCompletionRanking>[],
+      (rankings) => rankings.topFailure,
+    );
+
+    List<DailyStatsSummary> periodSummaries = [];
+    if (period != StatsPeriod.daily && results.length > 5) {
+      periodSummaries = (results[5] as dynamic).fold(
+        (failure) => <DailyStatsSummary>[],
+        (summaries) => summaries,
+      );
+    }
+
+    return _PeriodData(
+      periodStats: periodStats,
+      tagStats: tagStats,
+      pipelineStats: pipelineStats,
+      periodSummaries: periodSummaries,
+      timeComparisons: timeComparisons,
+      topSuccessTasks: topSuccessTasks,
+      topFailureTasks: topFailureTasks,
+    );
   }
 
   /// 기간별 통계 로드
@@ -234,25 +556,8 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     DateTime date,
     StatsPeriod period,
   ) async {
-    DateTime start;
-    DateTime end;
-
-    switch (period) {
-      case StatsPeriod.daily:
-        start = DateTime(date.year, date.month, date.day);
-        end = start;
-        break;
-      case StatsPeriod.weekly:
-        start = date.subtract(Duration(days: date.weekday - 1));
-        end = start.add(const Duration(days: 6));
-        break;
-      case StatsPeriod.monthly:
-        start = DateTime(date.year, date.month, 1);
-        end = DateTime(date.year, date.month + 1, 0);
-        break;
-    }
-
-    final result = await _analyticsRepository.getTagStatistics(start, end);
+    final range = _getDateRange(date, period);
+    final result = await _analyticsRepository.getTagStatistics(range.$1, range.$2);
     return result.fold((failure) => [], (stats) => stats);
   }
 
@@ -540,4 +845,25 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
 
     return insights;
   }
+}
+
+/// 기간별 데이터 래퍼
+class _PeriodData {
+  final List<ProductivityStats> periodStats;
+  final List<TagTimeComparison> tagStats;
+  final dynamic pipelineStats;
+  final List<DailyStatsSummary> periodSummaries;
+  final List<TimeComparison> timeComparisons;
+  final List<TaskCompletionRanking> topSuccessTasks;
+  final List<TaskCompletionRanking> topFailureTasks;
+
+  const _PeriodData({
+    required this.periodStats,
+    required this.tagStats,
+    this.pipelineStats,
+    required this.periodSummaries,
+    required this.timeComparisons,
+    required this.topSuccessTasks,
+    required this.topFailureTasks,
+  });
 }

@@ -35,6 +35,14 @@
   "tag": "标签",
   "tags": "标签列表",
   "addTag": "添加标签",
+  "tagWork": "工作",
+  "tagPersonal": "个人",
+  "tagHealth": "健康",
+  "tagStudy": "学习",
+  "selectTag": "选择标签",
+  "newTag": "新标签",
+  "tagNameHint": "标签名称",
+  "selectColor": "选择颜色",
 
   "timeBlock": "时间块",
   "createTimeBlock": "创建时间块",
@@ -184,7 +192,7 @@
   "focusTimeMinutes": "专注时间",
   "timeSavedMinutes": "节省时间",
   "top3Achievement": "Top 3 达成",
-  "trend": "趋势",
+  "trend": "生产力趋势",
   "tagAnalysis": "标签分析",
   "insights": "洞察",
   "daily": "每日",
@@ -243,6 +251,12 @@
   "statsRolledOver": "已顺延",
   "statsEfficiency": "效率",
   "statsNoData": "暂无数据",
+  "statsTop3Performance": "Top 3 达成情况",
+  "statsTop3Completed": "已完成",
+  "statsTop3Days": "设置Top 3的天数",
+  "statsTop3PerfectDays": "全部完成的天数",
+  "statsTop3Daily": "每日达成情况",
+  "days": "天",
 
   "navTimeline": "时间线",
   "navReport": "报告",
@@ -367,5 +381,14 @@
   "insightMonthBestTitle": "本月最佳日：{month}月{day}日",
   "@insightMonthBestTitle": { "placeholders": { "month": {"type": "String"}, "day": {"type": "String"} } },
   "insightMonthBestDesc": "当天得分：{score}分",
-  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } }
+  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } },
+
+  "demoMode": "演示模式",
+  "demoModeDescription": "用于App Store截图的示例数据",
+  "demoModeEnable": "启用演示模式",
+  "demoModeDisable": "禁用演示模式",
+  "demoModeEnabled": "演示模式已启用",
+  "demoModeDisabled": "演示模式已禁用",
+  "demoModeGenerating": "正在生成示例数据...",
+  "demoModeClearing": "正在清除演示数据..."
 }

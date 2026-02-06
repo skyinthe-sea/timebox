@@ -39,6 +39,14 @@
   "tag": "Тег",
   "tags": "Теги",
   "addTag": "Добавить тег",
+  "tagWork": "Работа",
+  "tagPersonal": "Личное",
+  "tagHealth": "Здоровье",
+  "tagStudy": "Учёба",
+  "selectTag": "Выберите тег",
+  "newTag": "Новый тег",
+  "tagNameHint": "Название тега",
+  "selectColor": "Выберите цвет",
 
   "timeBlock": "Таймблок",
   "createTimeBlock": "Создать таймблок",
@@ -198,7 +206,7 @@
   "focusTimeMinutes": "Время фокуса",
   "timeSavedMinutes": "Сэкономлено времени",
   "top3Achievement": "Топ 3 достижения",
-  "trend": "Тренд",
+  "trend": "Тренд продуктивности",
   "tagAnalysis": "Анализ по тегам",
   "insights": "Инсайты",
   "daily": "День",
@@ -257,6 +265,12 @@
   "statsRolledOver": "Перенесено",
   "statsEfficiency": "Эффективность",
   "statsNoData": "Пока нет данных",
+  "statsTop3Performance": "Достижение Top 3",
+  "statsTop3Completed": "Выполнено",
+  "statsTop3Days": "Дней с Top 3",
+  "statsTop3PerfectDays": "Идеальных дней",
+  "statsTop3Daily": "Ежедневный прогресс",
+  "days": " дней",
 
   "navTimeline": "Таймлайн",
   "navReport": "Отчёт",
@@ -503,5 +517,14 @@
     "placeholders": {
       "score": {"type": "String"}
     }
-  }
+  },
+
+  "demoMode": "Демо режим",
+  "demoModeDescription": "Образцы данных для скриншотов App Store",
+  "demoModeEnable": "Включить демо режим",
+  "demoModeDisable": "Отключить демо режим",
+  "demoModeEnabled": "Демо режим включён",
+  "demoModeDisabled": "Демо режим отключён",
+  "demoModeGenerating": "Генерация образцов данных...",
+  "demoModeClearing": "Удаление демо данных..."
 }

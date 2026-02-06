@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/widgets/main_shell.dart';
-import '../../features/analytics/presentation/bloc/statistics_bloc.dart';
 import '../../features/analytics/presentation/pages/statistics_page.dart';
 import '../../features/focus/presentation/pages/focus_mode_page.dart';
 import '../../features/planner/presentation/pages/planner_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/timeblock/presentation/pages/calendar_page.dart';
-import '../../injection_container.dart';
 import 'route_names.dart';
 
 /// 앱 라우터 설정
@@ -52,14 +49,11 @@ class AppRouter {
               child: CalendarPage(),
             ),
           ),
-          // 통계
+          // 통계 (app.dart에서 전역 BlocProvider로 제공)
           GoRoute(
             path: RouteNames.statistics,
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: BlocProvider(
-                create: (_) => sl<StatisticsBloc>(),
-                child: const StatisticsPage(),
-              ),
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: StatisticsPage(),
             ),
           ),
           // 설정

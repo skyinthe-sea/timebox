@@ -35,6 +35,14 @@
   "tag": "Tag",
   "tags": "Tags",
   "addTag": "Tag hinzufügen",
+  "tagWork": "Arbeit",
+  "tagPersonal": "Persönlich",
+  "tagHealth": "Gesundheit",
+  "tagStudy": "Lernen",
+  "selectTag": "Tag auswählen",
+  "newTag": "Neuer Tag",
+  "tagNameHint": "Tag-Name",
+  "selectColor": "Farbe wählen",
 
   "timeBlock": "Zeitblock",
   "createTimeBlock": "Zeitblock erstellen",
@@ -184,7 +192,7 @@
   "focusTimeMinutes": "Fokuszeit",
   "timeSavedMinutes": "Eingesparte Zeit",
   "top3Achievement": "Top 3 Erreichung",
-  "trend": "Trend",
+  "trend": "Produktivitätstrend",
   "tagAnalysis": "Tag-Analyse",
   "insights": "Einblicke",
   "daily": "Täglich",
@@ -243,6 +251,12 @@
   "statsRolledOver": "Übertragen",
   "statsEfficiency": "Effizienz",
   "statsNoData": "Noch keine Daten",
+  "statsTop3Performance": "Top 3 Erreichung",
+  "statsTop3Completed": "Abgeschlossen",
+  "statsTop3Days": "Tage mit Top 3",
+  "statsTop3PerfectDays": "Perfekte Tage",
+  "statsTop3Daily": "Täglicher Fortschritt",
+  "days": " Tage",
 
   "navTimeline": "Zeitachse",
   "navReport": "Bericht",
@@ -367,5 +381,14 @@
   "insightMonthBestTitle": "Bester Tag des Monats: {day}.{month}.",
   "@insightMonthBestTitle": { "placeholders": { "month": {"type": "String"}, "day": {"type": "String"} } },
   "insightMonthBestDesc": "Punktzahl an dem Tag: {score}",
-  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } }
+  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } },
+
+  "demoMode": "Demo-Modus",
+  "demoModeDescription": "Beispieldaten für App Store Screenshots",
+  "demoModeEnable": "Demo-Modus aktivieren",
+  "demoModeDisable": "Demo-Modus deaktivieren",
+  "demoModeEnabled": "Demo-Modus aktiviert",
+  "demoModeDisabled": "Demo-Modus deaktiviert",
+  "demoModeGenerating": "Beispieldaten werden erstellt...",
+  "demoModeClearing": "Demo-Daten werden gelöscht..."
 }

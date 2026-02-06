@@ -4,6 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'config/routes/app_router.dart';
 import 'config/themes/app_theme.dart';
+import 'features/analytics/presentation/bloc/statistics_bloc.dart';
+import 'features/analytics/presentation/bloc/statistics_event.dart';
 import 'features/focus/presentation/bloc/focus_bloc.dart';
 import 'features/notification/data/datasources/notification_local_datasource.dart';
 import 'features/notification/domain/repositories/notification_repository.dart';
@@ -57,6 +59,7 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
   /// 앱이 열릴 때 호출
   /// - 앱 오픈 기록
   /// - 일일 리마인더 스케줄링
+  /// - 통계 데이터 프리로드
   Future<void> _onAppOpened() async {
     final notificationDataSource = sl<NotificationLocalDataSource>();
     final notificationRepository = sl<NotificationRepository>();
@@ -100,6 +103,11 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
         ),
         BlocProvider<SettingsCubit>(
           create: (_) => sl<SettingsCubit>(),
+        ),
+        // 통계 Bloc - 전역 관리로 캐시 유지 및 프리로드 지원
+        BlocProvider<StatisticsBloc>(
+          create: (_) => sl<StatisticsBloc>()
+            ..add(PreloadStatistics(DateTime.now())),
         ),
       ],
       child: BlocBuilder<SettingsCubit, SettingsState>(

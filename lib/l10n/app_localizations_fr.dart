@@ -96,6 +96,30 @@ class AppLocalizationsFr extends AppLocalizations {
   String get addTag => 'Ajouter une étiquette';
 
   @override
+  String get tagWork => 'Travail';
+
+  @override
+  String get tagPersonal => 'Personnel';
+
+  @override
+  String get tagHealth => 'Santé';
+
+  @override
+  String get tagStudy => 'Études';
+
+  @override
+  String get selectTag => 'Choisir une étiquette';
+
+  @override
+  String get newTag => 'Nouvelle étiquette';
+
+  @override
+  String get tagNameHint => 'Nom de l\'étiquette';
+
+  @override
+  String get selectColor => 'Choisir une couleur';
+
+  @override
   String get timeBlock => 'Bloc de temps';
 
   @override
@@ -463,7 +487,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get top3Achievement => 'Top 3 atteint';
 
   @override
-  String get trend => 'Tendance';
+  String get trend => 'Tendance de productivité';
 
   @override
   String get tagAnalysis => 'Analyse par étiquette';
@@ -604,6 +628,24 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get statsNoData => 'Pas encore de données';
+
+  @override
+  String get statsTop3Performance => 'Réalisation Top 3';
+
+  @override
+  String get statsTop3Completed => 'Terminé';
+
+  @override
+  String get statsTop3Days => 'Jours avec Top 3';
+
+  @override
+  String get statsTop3PerfectDays => 'Jours parfaits';
+
+  @override
+  String get statsTop3Daily => 'Progression quotidienne';
+
+  @override
+  String get days => ' jours';
 
   @override
   String get navTimeline => 'Chronologie';
@@ -951,4 +993,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String insightMonthBestDesc(String score) {
     return 'Score ce jour-là : $score pts';
   }
+
+  @override
+  String get demoMode => 'Mode Démo';
+
+  @override
+  String get demoModeDescription =>
+      'Données d\'exemple pour les captures d\'écran App Store';
+
+  @override
+  String get demoModeEnable => 'Activer le mode démo';
+
+  @override
+  String get demoModeDisable => 'Désactiver le mode démo';
+
+  @override
+  String get demoModeEnabled => 'Mode démo activé';
+
+  @override
+  String get demoModeDisabled => 'Mode démo désactivé';
+
+  @override
+  String get demoModeGenerating => 'Génération des données d\'exemple...';
+
+  @override
+  String get demoModeClearing => 'Suppression des données démo...';
 }

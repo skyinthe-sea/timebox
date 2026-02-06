@@ -2,7 +2,10 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Core Services
+import 'core/services/custom_tag_service.dart';
+import 'core/services/demo_mode_service.dart';
 import 'core/services/notification_service.dart';
+import 'core/services/sample_data_seeder.dart';
 
 // Notification Feature
 import 'features/notification/data/datasources/notification_local_datasource.dart';
@@ -73,6 +76,8 @@ Future<void> init() async {
   // Core - Services
   //===========================================================================
   sl.registerLazySingleton(() => NotificationService());
+  sl.registerLazySingleton(() => DemoModeService(sl()));
+  sl.registerLazySingleton(() => CustomTagService(sl()));
 
   //===========================================================================
   // Features - Notification
@@ -100,7 +105,10 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<TaskRepository>(
-    () => TaskRepositoryImpl(localDataSource: sl()),
+    () => TaskRepositoryImpl(
+      localDataSource: sl(),
+      analyticsDataSource: sl<AnalyticsLocalDataSource>(),
+    ),
   );
 
   // Use Cases
@@ -194,6 +202,7 @@ Future<void> init() async {
       setTaskRank: sl(),
       removeTaskFromRank: sl(),
       createTask: sl(),
+      updateTask: sl(),
       deleteTask: sl(),
       createTimeBlock: sl(),
       copyTaskToDate: sl(),
@@ -212,7 +221,10 @@ Future<void> init() async {
 
   // BLoC
   sl.registerFactory(
-    () => FocusBloc(sessionDataSource: sl<FocusSessionLocalDataSource>()),
+    () => FocusBloc(
+      sessionDataSource: sl<FocusSessionLocalDataSource>(),
+      analyticsDataSource: sl<AnalyticsLocalDataSource>(),
+    ),
   );
 
   //===========================================================================
@@ -234,9 +246,12 @@ Future<void> init() async {
     ),
   );
 
-  // BLoC
+  // BLoC - Factory로 등록 (app.dart에서 전역 BlocProvider로 관리)
   sl.registerFactory(
-    () => StatisticsBloc(analyticsRepository: sl()),
+    () => StatisticsBloc(
+      analyticsRepository: sl(),
+      localDataSource: sl<AnalyticsLocalDataSource>(),
+    ),
   );
 
   //===========================================================================
@@ -247,6 +262,18 @@ Future<void> init() async {
     () => SettingsCubit(
       notificationRepository: sl(),
       sharedPreferences: sl(),
+    ),
+  );
+
+  //===========================================================================
+  // Core - Sample Data Seeder (registered last as it depends on data sources)
+  //===========================================================================
+  sl.registerLazySingleton(
+    () => SampleDataSeeder(
+      taskDataSource: sl(),
+      timeBlockDataSource: sl(),
+      focusSessionDataSource: sl(),
+      demoModeService: sl(),
     ),
   );
 }

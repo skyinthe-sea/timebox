@@ -39,6 +39,14 @@
   "tag": "태그",
   "tags": "태그들",
   "addTag": "태그 추가",
+  "tagWork": "업무",
+  "tagPersonal": "개인",
+  "tagHealth": "건강",
+  "tagStudy": "학습",
+  "selectTag": "태그 선택",
+  "newTag": "새 태그",
+  "tagNameHint": "태그 이름",
+  "selectColor": "색상 선택",
 
   "timeBlock": "타임 블록",
   "createTimeBlock": "타임 블록 생성",
@@ -198,7 +206,7 @@
   "focusTimeMinutes": "집중 시간",
   "timeSavedMinutes": "절약한 시간",
   "top3Achievement": "Top 3 달성",
-  "trend": "트렌드",
+  "trend": "생산성 트렌드",
   "tagAnalysis": "태그별 분석",
   "insights": "인사이트",
   "daily": "일간",
@@ -257,6 +265,12 @@
   "statsRolledOver": "이월",
   "statsEfficiency": "효율",
   "statsNoData": "아직 데이터가 없어요",
+  "statsTop3Performance": "가장 중요한 3가지 달성",
+  "statsTop3Completed": "완료",
+  "statsTop3Days": "Top 3 설정일",
+  "statsTop3PerfectDays": "전부 완료한 날",
+  "statsTop3Daily": "일별 달성 현황",
+  "days": "일",
 
   "navTimeline": "타임라인",
   "navReport": "리포트",
@@ -503,5 +517,14 @@
     "placeholders": {
       "score": {"type": "String"}
     }
-  }
+  },
+
+  "demoMode": "데모 모드",
+  "demoModeDescription": "앱스토어 스크린샷용 샘플 데이터",
+  "demoModeEnable": "데모 모드 활성화",
+  "demoModeDisable": "데모 모드 비활성화",
+  "demoModeEnabled": "데모 모드가 활성화되었습니다",
+  "demoModeDisabled": "데모 모드가 비활성화되었습니다",
+  "demoModeGenerating": "샘플 데이터 생성 중...",
+  "demoModeClearing": "데모 데이터 삭제 중..."
 }

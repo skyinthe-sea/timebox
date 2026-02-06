@@ -39,7 +39,7 @@ Map<String, dynamic> _$$FocusSessionModelImplToJson(
       'plannedEndTime': instance.plannedEndTime.toIso8601String(),
       'actualStartTime': instance.actualStartTime?.toIso8601String(),
       'actualEndTime': instance.actualEndTime?.toIso8601String(),
-      'pauseRecords': instance.pauseRecords,
+      'pauseRecords': instance.pauseRecords.map((e) => e.toJson()).toList(),
       'createdAt': instance.createdAt.toIso8601String(),
     };
 

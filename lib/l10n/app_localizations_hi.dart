@@ -96,6 +96,30 @@ class AppLocalizationsHi extends AppLocalizations {
   String get addTag => 'टैग जोड़ें';
 
   @override
+  String get tagWork => 'काम';
+
+  @override
+  String get tagPersonal => 'व्यक्तिगत';
+
+  @override
+  String get tagHealth => 'स्वास्थ्य';
+
+  @override
+  String get tagStudy => 'अध्ययन';
+
+  @override
+  String get selectTag => 'टैग चुनें';
+
+  @override
+  String get newTag => 'नया टैग';
+
+  @override
+  String get tagNameHint => 'टैग का नाम';
+
+  @override
+  String get selectColor => 'रंग चुनें';
+
+  @override
   String get timeBlock => 'टाइम ब्लॉक';
 
   @override
@@ -459,7 +483,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get top3Achievement => 'Top 3 उपलब्धि';
 
   @override
-  String get trend => 'रुझान';
+  String get trend => 'उत्पादकता रुझान';
 
   @override
   String get tagAnalysis => 'टैग विश्लेषण';
@@ -597,6 +621,24 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get statsNoData => 'अभी तक कोई डेटा नहीं';
+
+  @override
+  String get statsTop3Performance => 'Top 3 उपलब्धि';
+
+  @override
+  String get statsTop3Completed => 'पूर्ण';
+
+  @override
+  String get statsTop3Days => 'Top 3 सेट किए गए दिन';
+
+  @override
+  String get statsTop3PerfectDays => 'सभी पूर्ण दिन';
+
+  @override
+  String get statsTop3Daily => 'दैनिक प्रगति';
+
+  @override
+  String get days => ' दिन';
 
   @override
   String get navTimeline => 'टाइमलाइन';
@@ -941,4 +983,28 @@ class AppLocalizationsHi extends AppLocalizations {
   String insightMonthBestDesc(String score) {
     return 'उस दिन का स्कोर: $score अंक';
   }
+
+  @override
+  String get demoMode => 'डेमो मोड';
+
+  @override
+  String get demoModeDescription => 'App Store स्क्रीनशॉट के लिए नमूना डेटा';
+
+  @override
+  String get demoModeEnable => 'डेमो मोड सक्षम करें';
+
+  @override
+  String get demoModeDisable => 'डेमो मोड अक्षम करें';
+
+  @override
+  String get demoModeEnabled => 'डेमो मोड सक्षम हुआ';
+
+  @override
+  String get demoModeDisabled => 'डेमो मोड अक्षम हुआ';
+
+  @override
+  String get demoModeGenerating => 'नमूना डेटा बनाया जा रहा है...';
+
+  @override
+  String get demoModeClearing => 'डेमो डेटा हटाया जा रहा है...';
 }

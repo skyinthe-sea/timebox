@@ -34,6 +34,32 @@ abstract class TaskLocalDataSource {
 class TaskLocalDataSourceImpl implements TaskLocalDataSource {
   Box<Map> get _box => HiveService.getTasksBox();
 
+  /// Hive에서 읽은 데이터를 깊은 변환으로 Map<String, dynamic>으로 변환
+  Map<String, dynamic> _deepConvertMap(Map data) {
+    return data.map((key, value) {
+      if (value is Map) {
+        return MapEntry(key.toString(), _deepConvertMap(value));
+      } else if (value is List) {
+        return MapEntry(key.toString(), _deepConvertList(value));
+      } else {
+        return MapEntry(key.toString(), value);
+      }
+    });
+  }
+
+  /// 리스트 내의 맵들도 깊은 변환
+  List<dynamic> _deepConvertList(List data) {
+    return data.map((item) {
+      if (item is Map) {
+        return _deepConvertMap(item);
+      } else if (item is List) {
+        return _deepConvertList(item);
+      } else {
+        return item;
+      }
+    }).toList();
+  }
+
   @override
   Future<List<TaskModel>> getTasks() async {
     try {
@@ -41,7 +67,7 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
       for (final key in _box.keys) {
         final data = _box.get(key);
         if (data != null) {
-          tasks.add(TaskModel.fromJson(Map<String, dynamic>.from(data)));
+          tasks.add(TaskModel.fromJson(_deepConvertMap(data)));
         }
       }
       // 생성일 기준 내림차순 정렬
@@ -57,7 +83,7 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
     try {
       final data = _box.get(id);
       if (data == null) return null;
-      return TaskModel.fromJson(Map<String, dynamic>.from(data));
+      return TaskModel.fromJson(_deepConvertMap(data));
     } catch (e) {
       throw CacheException(message: 'Failed to get task: $e');
     }
@@ -117,7 +143,7 @@ class TaskLocalDataSourceImpl implements TaskLocalDataSource {
       for (final key in _box.keys) {
         final data = _box.get(key);
         if (data != null) {
-          final task = TaskModel.fromJson(Map<String, dynamic>.from(data));
+          final task = TaskModel.fromJson(_deepConvertMap(data));
           // 날짜가 같은지 확인 (년, 월, 일 비교)
           // targetDate가 null인 경우 createdAt 사용 (기존 데이터 호환성)
           final taskDate = task.targetDate ?? task.createdAt;

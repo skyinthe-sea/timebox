@@ -6,18 +6,16 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../domain/entities/insight.dart';
-import '../../domain/entities/priority_breakdown_stats.dart';
 import '../../domain/entities/task_pipeline_stats.dart';
 import '../bloc/statistics_bloc.dart';
 import '../bloc/statistics_event.dart';
 import '../bloc/statistics_state.dart';
 import '../widgets/completion_ring_row.dart';
 import '../widgets/focus_summary_card.dart';
-import '../widgets/plan_vs_actual_chart.dart';
-import '../widgets/priority_breakdown_card.dart';
 import '../widgets/productivity_score_card.dart';
 import '../widgets/task_completion_ranking_card.dart';
 import '../widgets/task_pipeline_funnel.dart';
+import '../widgets/top3_stats_card.dart';
 import '../widgets/top_insights_section.dart';
 
 /// 통계 페이지
@@ -47,6 +45,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
     return BlocBuilder<StatisticsBloc, StatisticsState>(
       builder: (context, state) {
+        // 초기 로딩 (데이터 없음)
         if (state.status == StatisticsStatus.loading && !state.hasData) {
           return const Center(child: LoadingIndicator());
         }
@@ -55,11 +54,17 @@ class _StatisticsPageState extends State<StatisticsPage> {
           return _buildErrorState(context, state.errorMessage);
         }
 
-        return Column(
+        // 기간 전환 시 로딩 오버레이 표시
+        final showLoadingOverlay =
+            state.status == StatisticsStatus.loading && state.hasData;
+
+        return Stack(
           children: [
-            // 헤더
-            Container(
-              height: 40,
+            Column(
+              children: [
+                // 헤더
+                Container(
+                  height: 40,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -128,21 +133,14 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       ),
                     ),
 
-                    // 5. Plan vs Actual Chart
-                    if (state.timeComparisons.isNotEmpty)
+                    // 5. Top 3 통계 (주간/월간만)
+                    if (state.currentPeriod != StatsPeriod.daily &&
+                        state.periodSummaries.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: PlanVsActualChart(
-                          comparisons: state.timeComparisons,
+                        child: Top3StatsCard(
+                          dailySummaries: state.periodSummaries,
                         ),
                       ),
-
-                    // 6. Priority Breakdown
-                    SliverToBoxAdapter(
-                      child: PriorityBreakdownCard(
-                        stats: state.priorityBreakdown ??
-                            PriorityBreakdownStats.empty,
-                      ),
-                    ),
 
                     // 6.5. Task Completion Rankings
                     if (state.topSuccessTasks.isNotEmpty ||
@@ -172,7 +170,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         ),
                       ),
 
-                    // 9. Tag Analysis
+                    // 9. Tag Analysis Chart
                     if (state.tagStats.isNotEmpty)
                       SliverToBoxAdapter(
                         child: Padding(
@@ -198,6 +196,16 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 ),
               ),
             ),
+          ],
+            ),
+            // 기간 전환 시 로딩 오버레이
+            if (showLoadingOverlay)
+              Positioned.fill(
+                child: Container(
+                  color: theme.colorScheme.surface.withValues(alpha: 0.7),
+                  child: const Center(child: LoadingIndicator()),
+                ),
+              ),
           ],
         );
       },
@@ -378,13 +386,17 @@ class _StatisticsPageState extends State<StatisticsPage> {
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
 
-    final colors = [
-      AppColors.primaryLight,
-      AppColors.secondaryLight,
-      AppColors.successLight,
-      AppColors.warningLight,
-      AppColors.rank3,
-    ];
+    // 태그 통계 데이터
+    final tagStats = state.tagStats;
+    if (tagStats.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // 총 시간 계산 (비율 표시용)
+    final totalMinutes = tagStats.fold<int>(
+      0,
+      (sum, tag) => sum + tag.totalPlannedTime.inMinutes,
+    );
 
     return Card(
       elevation: 0,
@@ -399,96 +411,95 @@ class _StatisticsPageState extends State<StatisticsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.tagAnalysis,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 200,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: PieChart(
-                      PieChartData(
-                        sectionsSpace: 2,
-                        centerSpaceRadius: 40,
-                        sections:
-                            state.tagStats.asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final tag = entry.value;
-                          final color = colors[index % colors.length];
-                          final total = state.tagStats.fold<int>(
-                            0,
-                            (sum, t) =>
-                                sum + t.totalPlannedTime.inMinutes,
-                          );
-                          final percentage = total > 0
-                              ? (tag.totalPlannedTime.inMinutes / total) *
-                                  100
-                              : 0.0;
-
-                          return PieChartSectionData(
-                            color: color,
-                            value:
-                                tag.totalPlannedTime.inMinutes.toDouble(),
-                            title:
-                                '${percentage.toStringAsFixed(0)}%',
-                            radius: 50,
-                            titleStyle:
-                                theme.textTheme.bodySmall?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+            Row(
+              children: [
+                Icon(
+                  Icons.label_outline,
+                  size: 20,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.tagAnalysis,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(width: 16),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:
-                        state.tagStats.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final tag = entry.value;
-                      final color = colors[index % colors.length];
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
 
-                      return Padding(
-                        padding:
-                            const EdgeInsets.symmetric(vertical: 4),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+            // 태그별 바 차트
+            ...tagStats.map((tag) {
+              final percentage = totalMinutes > 0
+                  ? (tag.totalPlannedTime.inMinutes / totalMinutes * 100)
+                  : 0.0;
+              final tagColor = Color(tag.colorValue);
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
                           children: [
                             Container(
                               width: 12,
                               height: 12,
                               decoration: BoxDecoration(
-                                color: color,
-                                borderRadius:
-                                    BorderRadius.circular(3),
+                                color: tagColor,
+                                borderRadius: BorderRadius.circular(3),
                               ),
                             ),
                             const SizedBox(width: 8),
                             Text(
                               tag.tagName,
-                              style: theme.textTheme.bodySmall,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
-            ),
+                        Text(
+                          '${tag.taskCount}${l10n.task} / ${_formatDuration(tag.totalPlannedTime)}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.outline,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    // 진행 바
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: percentage / 100,
+                        backgroundColor:
+                            theme.colorScheme.surfaceContainerHighest,
+                        valueColor: AlwaysStoppedAnimation<Color>(tagColor),
+                        minHeight: 8,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
           ],
         ),
       ),
     );
+  }
+
+  String _formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+    if (hours > 0) {
+      return '${hours}h ${minutes}m';
+    }
+    return '${minutes}m';
   }
 
   Widget _buildErrorState(BuildContext context, String? message) {

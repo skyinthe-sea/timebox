@@ -17,6 +17,9 @@ abstract class FocusSessionLocalDataSource {
   /// 특정 날짜의 세션 목록 조회
   Future<List<FocusSessionModel>> getSessionsForDay(DateTime date);
 
+  /// 모든 세션 조회
+  Future<List<FocusSessionModel>> getAllSessions();
+
   /// 세션 저장 (생성/수정)
   Future<FocusSessionModel> saveSession(FocusSessionModel session);
 
@@ -92,6 +95,24 @@ class FocusSessionLocalDataSourceImpl implements FocusSessionLocalDataSource {
       return sessions;
     } catch (e) {
       throw CacheException(message: 'Failed to get sessions for day: $e');
+    }
+  }
+
+  @override
+  Future<List<FocusSessionModel>> getAllSessions() async {
+    try {
+      final sessions = <FocusSessionModel>[];
+      for (final key in _box.keys) {
+        final data = _box.get(key);
+        if (data != null) {
+          sessions.add(
+            FocusSessionModel.fromJson(Map<String, dynamic>.from(data)),
+          );
+        }
+      }
+      return sessions;
+    } catch (e) {
+      throw CacheException(message: 'Failed to get all sessions: $e');
     }
   }
 

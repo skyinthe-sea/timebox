@@ -96,6 +96,30 @@ class AppLocalizationsJa extends AppLocalizations {
   String get addTag => 'タグを追加';
 
   @override
+  String get tagWork => '仕事';
+
+  @override
+  String get tagPersonal => '個人';
+
+  @override
+  String get tagHealth => '健康';
+
+  @override
+  String get tagStudy => '学習';
+
+  @override
+  String get selectTag => 'タグを選択';
+
+  @override
+  String get newTag => '新規タグ';
+
+  @override
+  String get tagNameHint => 'タグ名';
+
+  @override
+  String get selectColor => '色を選択';
+
+  @override
   String get timeBlock => 'タイムブロック';
 
   @override
@@ -457,7 +481,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get top3Achievement => 'Top 3達成';
 
   @override
-  String get trend => 'トレンド';
+  String get trend => '生産性トレンド';
 
   @override
   String get tagAnalysis => 'タグ別分析';
@@ -594,6 +618,24 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get statsNoData => 'まだデータがありません';
+
+  @override
+  String get statsTop3Performance => 'Top 3 達成状況';
+
+  @override
+  String get statsTop3Completed => '完了';
+
+  @override
+  String get statsTop3Days => 'Top 3 設定日数';
+
+  @override
+  String get statsTop3PerfectDays => '全達成日';
+
+  @override
+  String get statsTop3Daily => '日別達成状況';
+
+  @override
+  String get days => '日';
 
   @override
   String get navTimeline => 'タイムライン';
@@ -932,4 +974,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String insightMonthBestDesc(String score) {
     return 'その日のスコア: $scoreポイント';
   }
+
+  @override
+  String get demoMode => 'デモモード';
+
+  @override
+  String get demoModeDescription => 'App Storeスクリーンショット用サンプルデータ';
+
+  @override
+  String get demoModeEnable => 'デモモードを有効にする';
+
+  @override
+  String get demoModeDisable => 'デモモードを無効にする';
+
+  @override
+  String get demoModeEnabled => 'デモモードが有効になりました';
+
+  @override
+  String get demoModeDisabled => 'デモモードが無効になりました';
+
+  @override
+  String get demoModeGenerating => 'サンプルデータを生成中...';
+
+  @override
+  String get demoModeClearing => 'デモデータを削除中...';
 }

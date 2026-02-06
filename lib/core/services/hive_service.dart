@@ -15,6 +15,7 @@ class HiveService {
   // Analytics Box
   static const String dailyStatsSummaryBox = 'daily_stats_summary';
   static const String hourlyProductivityBox = 'hourly_productivity';
+  static const String periodCacheBox = 'period_cache';
 
   /// Hive 초기화
   ///
@@ -39,6 +40,7 @@ class HiveService {
       Hive.openBox<Map>(dailyPrioritiesBox),
       Hive.openBox<Map>(dailyStatsSummaryBox),
       Hive.openBox<Map>(hourlyProductivityBox),
+      Hive.openBox<Map>(periodCacheBox),
     ]);
   }
 
@@ -53,6 +55,7 @@ class HiveService {
       Hive.box<Map>(dailyStatsSummaryBox);
   static Box<Map> getHourlyProductivityBox() =>
       Hive.box<Map>(hourlyProductivityBox);
+  static Box<Map> getPeriodCacheBox() => Hive.box<Map>(periodCacheBox);
 
   /// 모든 Box 닫기
   static Future<void> closeBoxes() async {
@@ -70,6 +73,7 @@ class HiveService {
       getDailyPrioritiesBox().clear(),
       getDailyStatsSummaryBox().clear(),
       getHourlyProductivityBox().clear(),
+      getPeriodCacheBox().clear(),
     ]);
   }
 }

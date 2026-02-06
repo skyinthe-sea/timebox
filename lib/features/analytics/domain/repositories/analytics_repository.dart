@@ -82,4 +82,10 @@ abstract class AnalyticsRepository {
     DateTime start,
     DateTime end,
   );
+
+  /// 기간 내 일별 통계 요약 목록 조회 (Top 3 통계용)
+  Future<Either<Failure, List<DailyStatsSummary>>> getDailyStatsSummaries(
+    DateTime start,
+    DateTime end,
+  );
 }

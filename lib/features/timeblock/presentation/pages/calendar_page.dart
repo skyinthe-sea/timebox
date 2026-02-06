@@ -9,6 +9,7 @@ import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../focus/presentation/widgets/focus_mode_transition.dart';
 import '../../../planner/presentation/bloc/planner_bloc.dart';
+import '../../../task/domain/entities/tag.dart';
 import '../../../task/domain/entities/task.dart';
 import '../../domain/entities/time_block.dart';
 import '../bloc/calendar_bloc.dart';
@@ -328,20 +329,22 @@ class _CalendarPageState extends State<CalendarPage> {
       key: ValueKey('popup_${selectionState.normalizedStartSlot}_${selectionState.normalizedEndSlot}'),
       unscheduledTasks: unscheduledTasks,
       selectionState: selectionState,
-      onTaskSelected: (task, startTime, endTime) {
+      onTaskSelected: (task, startTime, endTime, tags) {
         _assignTaskToTimeBlock(
           context,
           task: task,
           startTime: startTime,
           endTime: endTime,
+          tags: tags,
         );
       },
-      onNewTaskCreated: (title, startTime, endTime) {
+      onNewTaskCreated: (title, startTime, endTime, tags) {
         _createNewTaskAndTimeBlock(
           context,
           title: title,
           startTime: startTime,
           endTime: endTime,
+          tags: tags,
         );
       },
       onCancel: () {
@@ -355,7 +358,23 @@ class _CalendarPageState extends State<CalendarPage> {
     required Task task,
     required DateTime startTime,
     required DateTime endTime,
+    List<Tag> tags = const [],
   }) {
+    // 첫 번째 태그의 색상 사용 (태그가 없으면 null)
+    final colorValue = tags.isNotEmpty ? tags.first.color.toARGB32() : null;
+
+    // 태그가 선택되었으면 Task에도 태그 업데이트
+    if (tags.isNotEmpty) {
+      try {
+        context.read<PlannerBloc>().add(UpdateTaskTags(
+              taskId: task.id,
+              tags: tags,
+            ));
+      } catch (_) {
+        // PlannerBloc이 없는 경우 무시
+      }
+    }
+
     // TimeBlock 생성
     context.read<CalendarBloc>().add(
           CreateTimeBlockEvent(
@@ -363,6 +382,7 @@ class _CalendarPageState extends State<CalendarPage> {
             title: task.title,
             startTime: startTime,
             endTime: endTime,
+            colorValue: colorValue,
           ),
         );
 
@@ -378,8 +398,12 @@ class _CalendarPageState extends State<CalendarPage> {
     required String title,
     required DateTime startTime,
     required DateTime endTime,
+    List<Tag> tags = const [],
   }) {
     final taskId = const Uuid().v4();
+
+    // 첫 번째 태그의 색상 사용 (태그가 없으면 null)
+    final colorValue = tags.isNotEmpty ? tags.first.color.toARGB32() : null;
 
     // 새 태스크 생성 (PlannerBloc 통해)
     try {
@@ -388,6 +412,7 @@ class _CalendarPageState extends State<CalendarPage> {
             taskId: taskId,
             title: title,
             estimatedDuration: duration,
+            tags: tags,
           ));
     } catch (_) {
       // PlannerBloc이 없는 경우 무시
@@ -400,6 +425,7 @@ class _CalendarPageState extends State<CalendarPage> {
             title: title,
             startTime: startTime,
             endTime: endTime,
+            colorValue: colorValue,
           ),
         );
 

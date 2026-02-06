@@ -284,6 +284,54 @@ abstract class AppLocalizations {
   /// **'태그 추가'**
   String get addTag;
 
+  /// No description provided for @tagWork.
+  ///
+  /// In ko, this message translates to:
+  /// **'업무'**
+  String get tagWork;
+
+  /// No description provided for @tagPersonal.
+  ///
+  /// In ko, this message translates to:
+  /// **'개인'**
+  String get tagPersonal;
+
+  /// No description provided for @tagHealth.
+  ///
+  /// In ko, this message translates to:
+  /// **'건강'**
+  String get tagHealth;
+
+  /// No description provided for @tagStudy.
+  ///
+  /// In ko, this message translates to:
+  /// **'학습'**
+  String get tagStudy;
+
+  /// No description provided for @selectTag.
+  ///
+  /// In ko, this message translates to:
+  /// **'태그 선택'**
+  String get selectTag;
+
+  /// No description provided for @newTag.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 태그'**
+  String get newTag;
+
+  /// No description provided for @tagNameHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'태그 이름'**
+  String get tagNameHint;
+
+  /// No description provided for @selectColor.
+  ///
+  /// In ko, this message translates to:
+  /// **'색상 선택'**
+  String get selectColor;
+
   /// No description provided for @timeBlock.
   ///
   /// In ko, this message translates to:
@@ -989,7 +1037,7 @@ abstract class AppLocalizations {
   /// No description provided for @trend.
   ///
   /// In ko, this message translates to:
-  /// **'트렌드'**
+  /// **'생산성 트렌드'**
   String get trend;
 
   /// No description provided for @tagAnalysis.
@@ -1255,6 +1303,42 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'아직 데이터가 없어요'**
   String get statsNoData;
+
+  /// No description provided for @statsTop3Performance.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 중요한 3가지 달성'**
+  String get statsTop3Performance;
+
+  /// No description provided for @statsTop3Completed.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료'**
+  String get statsTop3Completed;
+
+  /// No description provided for @statsTop3Days.
+  ///
+  /// In ko, this message translates to:
+  /// **'Top 3 설정일'**
+  String get statsTop3Days;
+
+  /// No description provided for @statsTop3PerfectDays.
+  ///
+  /// In ko, this message translates to:
+  /// **'전부 완료한 날'**
+  String get statsTop3PerfectDays;
+
+  /// No description provided for @statsTop3Daily.
+  ///
+  /// In ko, this message translates to:
+  /// **'일별 달성 현황'**
+  String get statsTop3Daily;
+
+  /// No description provided for @days.
+  ///
+  /// In ko, this message translates to:
+  /// **'일'**
+  String get days;
 
   /// No description provided for @navTimeline.
   ///
@@ -1819,6 +1903,54 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'그날의 점수: {score}점'**
   String insightMonthBestDesc(String score);
+
+  /// No description provided for @demoMode.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 모드'**
+  String get demoMode;
+
+  /// No description provided for @demoModeDescription.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱스토어 스크린샷용 샘플 데이터'**
+  String get demoModeDescription;
+
+  /// No description provided for @demoModeEnable.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 모드 활성화'**
+  String get demoModeEnable;
+
+  /// No description provided for @demoModeDisable.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 모드 비활성화'**
+  String get demoModeDisable;
+
+  /// No description provided for @demoModeEnabled.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 모드가 활성화되었습니다'**
+  String get demoModeEnabled;
+
+  /// No description provided for @demoModeDisabled.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 모드가 비활성화되었습니다'**
+  String get demoModeDisabled;
+
+  /// No description provided for @demoModeGenerating.
+  ///
+  /// In ko, this message translates to:
+  /// **'샘플 데이터 생성 중...'**
+  String get demoModeGenerating;
+
+  /// No description provided for @demoModeClearing.
+  ///
+  /// In ko, this message translates to:
+  /// **'데모 데이터 삭제 중...'**
+  String get demoModeClearing;
 }
 
 class _AppLocalizationsDelegate

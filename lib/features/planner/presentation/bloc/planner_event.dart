@@ -82,12 +82,14 @@ class QuickCreateTask extends PlannerEvent {
   final String title;
   final Duration estimatedDuration;
   final TaskPriority priority;
+  final List<Tag> tags;
 
   const QuickCreateTask({
     this.taskId,
     required this.title,
     this.estimatedDuration = const Duration(minutes: 30),
     this.priority = TaskPriority.medium,
+    this.tags = const [],
   });
 }
 
@@ -126,4 +128,15 @@ class RequestTaskSuggestions extends PlannerEvent {
 /// Task 자동완성 제안 클리어
 class ClearTaskSuggestions extends PlannerEvent {
   const ClearTaskSuggestions();
+}
+
+/// Task 태그 업데이트
+class UpdateTaskTags extends PlannerEvent {
+  final String taskId;
+  final List<Tag> tags;
+
+  const UpdateTaskTags({
+    required this.taskId,
+    required this.tags,
+  });
 }

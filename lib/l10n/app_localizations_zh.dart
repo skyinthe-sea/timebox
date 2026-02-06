@@ -96,6 +96,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String get addTag => '添加标签';
 
   @override
+  String get tagWork => '工作';
+
+  @override
+  String get tagPersonal => '个人';
+
+  @override
+  String get tagHealth => '健康';
+
+  @override
+  String get tagStudy => '学习';
+
+  @override
+  String get selectTag => '选择标签';
+
+  @override
+  String get newTag => '新标签';
+
+  @override
+  String get tagNameHint => '标签名称';
+
+  @override
+  String get selectColor => '选择颜色';
+
+  @override
   String get timeBlock => '时间块';
 
   @override
@@ -457,7 +481,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get top3Achievement => 'Top 3 达成';
 
   @override
-  String get trend => '趋势';
+  String get trend => '生产力趋势';
 
   @override
   String get tagAnalysis => '标签分析';
@@ -594,6 +618,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get statsNoData => '暂无数据';
+
+  @override
+  String get statsTop3Performance => 'Top 3 达成情况';
+
+  @override
+  String get statsTop3Completed => '已完成';
+
+  @override
+  String get statsTop3Days => '设置Top 3的天数';
+
+  @override
+  String get statsTop3PerfectDays => '全部完成的天数';
+
+  @override
+  String get statsTop3Daily => '每日达成情况';
+
+  @override
+  String get days => '天';
 
   @override
   String get navTimeline => '时间线';
@@ -932,4 +974,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String insightMonthBestDesc(String score) {
     return '当天得分：$score分';
   }
+
+  @override
+  String get demoMode => '演示模式';
+
+  @override
+  String get demoModeDescription => '用于App Store截图的示例数据';
+
+  @override
+  String get demoModeEnable => '启用演示模式';
+
+  @override
+  String get demoModeDisable => '禁用演示模式';
+
+  @override
+  String get demoModeEnabled => '演示模式已启用';
+
+  @override
+  String get demoModeDisabled => '演示模式已禁用';
+
+  @override
+  String get demoModeGenerating => '正在生成示例数据...';
+
+  @override
+  String get demoModeClearing => '正在清除演示数据...';
 }

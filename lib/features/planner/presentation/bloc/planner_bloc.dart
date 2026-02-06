@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../task/domain/entities/tag.dart';
 import '../../../task/domain/entities/task.dart';
 import '../../../task/domain/entities/task_suggestion.dart';
 import '../../../task/domain/usecases/copy_task_to_date.dart';
@@ -11,6 +12,7 @@ import '../../../task/domain/usecases/create_task.dart';
 import '../../../task/domain/usecases/delete_task.dart';
 import '../../../task/domain/usecases/get_task_suggestions.dart';
 import '../../../task/domain/usecases/rollover_task.dart';
+import '../../../task/domain/usecases/update_task.dart';
 import '../../../task/domain/usecases/watch_tasks_by_date.dart';
 import '../../../timeblock/domain/entities/time_block.dart';
 import '../../../timeblock/domain/usecases/create_time_block.dart';
@@ -36,6 +38,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
   final SetTaskRank setTaskRank;
   final RemoveTaskFromRank removeTaskFromRank;
   final CreateTask createTask;
+  final UpdateTask updateTask;
   final DeleteTask deleteTask;
   final CreateTimeBlock createTimeBlock;
   final CopyTaskToDate copyTaskToDate;
@@ -55,6 +58,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     required this.setTaskRank,
     required this.removeTaskFromRank,
     required this.createTask,
+    required this.updateTask,
     required this.deleteTask,
     required this.createTimeBlock,
     required this.copyTaskToDate,
@@ -78,6 +82,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     on<ClearLastCreatedTask>(_onClearLastCreatedTask);
     on<RequestTaskSuggestions>(_onRequestTaskSuggestions);
     on<ClearTaskSuggestions>(_onClearTaskSuggestions);
+    on<UpdateTaskTags>(_onUpdateTaskTags);
   }
 
   Future<void> _onInitializePlanner(
@@ -269,6 +274,7 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
       status: TaskStatus.todo,
       createdAt: DateTime.now(),
       targetDate: state.selectedDate,
+      tags: event.tags,
     );
 
     final result = await createTask(task);
@@ -365,6 +371,29 @@ class PlannerBloc extends Bloc<PlannerEvent, PlannerState> {
     Emitter<PlannerState> emit,
   ) {
     emit(state.copyWith(suggestions: const []));
+  }
+
+  Future<void> _onUpdateTaskTags(
+    UpdateTaskTags event,
+    Emitter<PlannerState> emit,
+  ) async {
+    // 기존 Task 찾기
+    final index = state.tasks.indexWhere((t) => t.id == event.taskId);
+    if (index == -1) return;
+
+    final existingTask = state.tasks[index];
+
+    // 태그만 업데이트
+    final updatedTask = existingTask.copyWith(tags: event.tags);
+    final result = await updateTask(updatedTask);
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        status: PlannerStateStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => {}, // watchTasksByDate가 자동으로 업데이트
+    );
   }
 
   @override

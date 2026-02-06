@@ -35,6 +35,14 @@
   "tag": "टैग",
   "tags": "टैग्स",
   "addTag": "टैग जोड़ें",
+  "tagWork": "काम",
+  "tagPersonal": "व्यक्तिगत",
+  "tagHealth": "स्वास्थ्य",
+  "tagStudy": "अध्ययन",
+  "selectTag": "टैग चुनें",
+  "newTag": "नया टैग",
+  "tagNameHint": "टैग का नाम",
+  "selectColor": "रंग चुनें",
 
   "timeBlock": "टाइम ब्लॉक",
   "createTimeBlock": "टाइम ब्लॉक बनाएं",
@@ -184,7 +192,7 @@
   "focusTimeMinutes": "फोकस समय",
   "timeSavedMinutes": "बचाया गया समय",
   "top3Achievement": "Top 3 उपलब्धि",
-  "trend": "रुझान",
+  "trend": "उत्पादकता रुझान",
   "tagAnalysis": "टैग विश्लेषण",
   "insights": "अंतर्दृष्टि",
   "daily": "दैनिक",
@@ -243,6 +251,12 @@
   "statsRolledOver": "स्थानांतरित",
   "statsEfficiency": "दक्षता",
   "statsNoData": "अभी तक कोई डेटा नहीं",
+  "statsTop3Performance": "Top 3 उपलब्धि",
+  "statsTop3Completed": "पूर्ण",
+  "statsTop3Days": "Top 3 सेट किए गए दिन",
+  "statsTop3PerfectDays": "सभी पूर्ण दिन",
+  "statsTop3Daily": "दैनिक प्रगति",
+  "days": " दिन",
 
   "navTimeline": "टाइमलाइन",
   "navReport": "रिपोर्ट",
@@ -367,5 +381,14 @@
   "insightMonthBestTitle": "इस महीने का सर्वश्रेष्ठ दिन: {month}/{day}",
   "@insightMonthBestTitle": { "placeholders": { "month": {"type": "String"}, "day": {"type": "String"} } },
   "insightMonthBestDesc": "उस दिन का स्कोर: {score} अंक",
-  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } }
+  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } },
+
+  "demoMode": "डेमो मोड",
+  "demoModeDescription": "App Store स्क्रीनशॉट के लिए नमूना डेटा",
+  "demoModeEnable": "डेमो मोड सक्षम करें",
+  "demoModeDisable": "डेमो मोड अक्षम करें",
+  "demoModeEnabled": "डेमो मोड सक्षम हुआ",
+  "demoModeDisabled": "डेमो मोड अक्षम हुआ",
+  "demoModeGenerating": "नमूना डेटा बनाया जा रहा है...",
+  "demoModeClearing": "डेमो डेटा हटाया जा रहा है..."
 }

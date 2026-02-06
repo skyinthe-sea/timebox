@@ -872,6 +872,39 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       return Left(UnknownFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<DailyStatsSummary>>> getDailyStatsSummaries(
+    DateTime start,
+    DateTime end,
+  ) async {
+    try {
+      final summaries = <DailyStatsSummary>[];
+      var currentDate = start;
+
+      while (!currentDate.isAfter(end)) {
+        // 캐시된 데이터 확인
+        final cached = await analyticsDataSource.getDailyStatsSummary(currentDate);
+        if (cached != null) {
+          summaries.add(cached.toEntity());
+        } else {
+          // 캐시가 없으면 새로 계산
+          final result = await saveDailyStatsSummary(currentDate);
+          result.fold(
+            (_) {},
+            (summary) => summaries.add(summary),
+          );
+        }
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
+
+      return Right(summaries);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(message: e.message));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
 }
 
 class _RankingData {

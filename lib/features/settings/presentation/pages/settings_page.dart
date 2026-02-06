@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/services/demo_mode_service.dart';
+import '../../../../core/services/sample_data_seeder.dart';
+import '../../../../injection_container.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/settings_cubit.dart';
 
@@ -70,6 +73,7 @@ class SettingsPage extends StatelessWidget {
                   const Divider(),
                   // 데이터 섹션
                   _buildSectionHeader(theme, l10n.data),
+                  _buildDemoModeTile(context, state, l10n),
                   _buildResetTile(context, l10n),
                   const SizedBox(height: 24),
                   // 앱 정보
@@ -238,6 +242,7 @@ class SettingsPage extends StatelessWidget {
   ) {
     showDialog(
       context: context,
+      useRootNavigator: true,
       builder: (dialogContext) => SimpleDialog(
         title: Text(l10n.language),
         children: supportedLocales.map((locale) {
@@ -245,14 +250,60 @@ class SettingsPage extends StatelessWidget {
             title: Text(_getLocaleDisplayName(locale)),
             value: locale,
             groupValue: state.locale,
-            onChanged: (value) {
+            onChanged: (value) async {
               context.read<SettingsCubit>().setLocale(value!);
-              Navigator.pop(dialogContext);
+              Navigator.of(dialogContext, rootNavigator: true).pop();
+              // 데모 모드가 활성화되어 있으면 언어 변경 시 데이터 재생성
+              // 다음 프레임에서 실행하여 다이얼로그 닫힘이 완료된 후 처리
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (context.mounted) {
+                  _regenerateDemoDataIfNeeded(context, value.languageCode);
+                }
+              });
             },
           );
         }).toList(),
       ),
     );
+  }
+
+  Future<void> _regenerateDemoDataIfNeeded(
+    BuildContext context,
+    String locale,
+  ) async {
+    final demoModeService = sl<DemoModeService>();
+    if (!demoModeService.isEnabled) return;
+    if (!demoModeService.needsRegeneration(locale)) return;
+
+    final seeder = sl<SampleDataSeeder>();
+
+    // 로딩 표시
+    if (!context.mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      useRootNavigator: true,
+      builder: (ctx) => const AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(width: 16),
+            Expanded(child: Text('Regenerating demo data...')),
+          ],
+        ),
+      ),
+    );
+
+    try {
+      await seeder.seedData(locale);
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+      }
+    }
   }
 
   String _getLocaleDisplayName(Locale locale) {
@@ -622,6 +673,125 @@ class SettingsPage extends StatelessWidget {
         }).toList(),
       ),
     );
+  }
+
+  Widget _buildDemoModeTile(
+    BuildContext context,
+    SettingsState state,
+    AppLocalizations l10n,
+  ) {
+    final demoModeService = sl<DemoModeService>();
+
+    return ListenableBuilder(
+      listenable: demoModeService,
+      builder: (context, _) {
+        return SwitchListTile(
+          secondary: Icon(
+            Icons.screenshot_monitor,
+            color: demoModeService.isEnabled
+                ? Theme.of(context).colorScheme.primary
+                : null,
+          ),
+          title: Text(l10n.demoMode),
+          subtitle: Text(l10n.demoModeDescription),
+          value: demoModeService.isEnabled,
+          onChanged: (value) async {
+            if (value) {
+              await _enableDemoMode(context, state.locale.languageCode, l10n);
+            } else {
+              await _disableDemoMode(context, l10n);
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _enableDemoMode(
+    BuildContext context,
+    String locale,
+    AppLocalizations l10n,
+  ) async {
+    final demoModeService = sl<DemoModeService>();
+    final seeder = sl<SampleDataSeeder>();
+
+    // 로딩 표시
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      useRootNavigator: true,
+      builder: (ctx) => AlertDialog(
+        content: Row(
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(width: 16),
+            Expanded(child: Text(l10n.demoModeGenerating)),
+          ],
+        ),
+      ),
+    );
+
+    try {
+      await demoModeService.enable();
+      await seeder.seedData(locale);
+
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // 로딩 닫기
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.demoModeEnabled)),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _disableDemoMode(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    final demoModeService = sl<DemoModeService>();
+    final seeder = sl<SampleDataSeeder>();
+
+    // 로딩 표시
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      useRootNavigator: true,
+      builder: (ctx) => AlertDialog(
+        content: Row(
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(width: 16),
+            Expanded(child: Text(l10n.demoModeClearing)),
+          ],
+        ),
+      ),
+    );
+
+    try {
+      await seeder.clearDemoData();
+      await demoModeService.disable();
+
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop(); // 로딩 닫기
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.demoModeDisabled)),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
   }
 
   Widget _buildResetTile(BuildContext context, AppLocalizations l10n) {

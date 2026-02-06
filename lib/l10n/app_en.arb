@@ -35,6 +35,14 @@
   "tag": "Tag",
   "tags": "Tags",
   "addTag": "Add Tag",
+  "tagWork": "Work",
+  "tagPersonal": "Personal",
+  "tagHealth": "Health",
+  "tagStudy": "Study",
+  "selectTag": "Select Tag",
+  "newTag": "New Tag",
+  "tagNameHint": "Tag name",
+  "selectColor": "Select color",
 
   "timeBlock": "Time Block",
   "createTimeBlock": "Create Time Block",
@@ -184,7 +192,7 @@
   "focusTimeMinutes": "Focus Time",
   "timeSavedMinutes": "Time Saved",
   "top3Achievement": "Top 3 Achievement",
-  "trend": "Trend",
+  "trend": "Productivity Trend",
   "tagAnalysis": "Tag Analysis",
   "insights": "Insights",
   "daily": "Daily",
@@ -243,6 +251,12 @@
   "statsRolledOver": "Rolled Over",
   "statsEfficiency": "Efficiency",
   "statsNoData": "No data yet",
+  "statsTop3Performance": "Top 3 Achievement",
+  "statsTop3Completed": "Completed",
+  "statsTop3Days": "Days with Top 3",
+  "statsTop3PerfectDays": "Perfect days",
+  "statsTop3Daily": "Daily progress",
+  "days": " days",
 
   "navTimeline": "Timeline",
   "navReport": "Report",
@@ -367,5 +381,14 @@
   "insightMonthBestTitle": "Best day this month: {month}/{day}",
   "@insightMonthBestTitle": { "placeholders": { "month": {"type": "String"}, "day": {"type": "String"} } },
   "insightMonthBestDesc": "Score that day: {score} points",
-  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } }
+  "@insightMonthBestDesc": { "placeholders": { "score": {"type": "String"} } },
+
+  "demoMode": "Demo Mode",
+  "demoModeDescription": "Sample data for App Store screenshots",
+  "demoModeEnable": "Enable Demo Mode",
+  "demoModeDisable": "Disable Demo Mode",
+  "demoModeEnabled": "Demo mode enabled",
+  "demoModeDisabled": "Demo mode disabled",
+  "demoModeGenerating": "Generating sample data...",
+  "demoModeClearing": "Clearing demo data..."
 }
