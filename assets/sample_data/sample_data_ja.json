@@ -1,0 +1,99 @@
+{
+  "tagNames": {
+    "work": "仕事",
+    "personal": "個人",
+    "health": "健康",
+    "study": "学習"
+  },
+  "tasks": [
+    {
+      "key": "morning_exercise",
+      "title": "朝の運動30分",
+      "note": "ストレッチと軽いジョギングで一日をスタート",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "high"
+    },
+    {
+      "key": "meditation",
+      "title": "瞑想15分",
+      "note": "呼吸に集中して心を落ち着ける",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 15,
+      "priority": "medium"
+    },
+    {
+      "key": "team_meeting",
+      "title": "週次チームミーティング",
+      "note": "今週の目標と進捗状況を共有",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 60,
+      "priority": "high"
+    },
+    {
+      "key": "email_review",
+      "title": "メール確認と返信",
+      "note": "重要なメールを優先的に処理",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 30,
+      "priority": "medium"
+    },
+    {
+      "key": "deep_work",
+      "title": "集中作業タイム",
+      "note": "邪魔されずにコアタスクに没頭",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 90,
+      "priority": "high"
+    },
+    {
+      "key": "lunch",
+      "title": "昼食",
+      "timeSlot": "lunch",
+      "tagId": "personal",
+      "durationMinutes": 60,
+      "priority": "medium"
+    },
+    {
+      "key": "code_review",
+      "title": "コードレビュー",
+      "note": "チームのPRをレビューしてフィードバック",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "language_study",
+      "title": "語学学習",
+      "note": "単語暗記と会話練習",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "reading",
+      "title": "読書タイム",
+      "note": "自己啓発本を読む",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 30,
+      "priority": "low"
+    },
+    {
+      "key": "yoga",
+      "title": "ヨガ",
+      "note": "一日の終わりにストレッチ",
+      "timeSlot": "evening",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "medium"
+    }
+  ]
+}

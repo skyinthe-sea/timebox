@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/services/stats_update_service.dart';
 import '../../../analytics/data/datasources/analytics_local_datasource.dart';
 import '../../data/datasources/focus_session_local_datasource.dart';
 import '../../data/models/focus_session_model.dart';
@@ -21,11 +22,13 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
   Timer? _timer;
   final FocusSessionLocalDataSource? sessionDataSource;
   final AnalyticsLocalDataSource? analyticsDataSource;
+  final StatsUpdateService? statsUpdateService;
   static const _uuid = Uuid();
 
   FocusBloc({
     this.sessionDataSource,
     this.analyticsDataSource,
+    this.statsUpdateService,
   }) : super(const FocusState()) {
     on<StartFocusSession>(_onStartSession);
     on<StartTimeBlockFocusSession>(_onStartTimeBlockSession);
@@ -201,17 +204,15 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
           FocusSessionModel.fromEntity(session),
         );
 
-        // 세션 완료 시 통계 캐시 무효화
-        if (session.status == SessionStatus.completed &&
-            analyticsDataSource != null) {
+        // 세션 완료 시 Write-through 통계 재계산
+        if (session.status == SessionStatus.completed) {
           final date = DateTime(
             session.plannedStartTime.year,
             session.plannedStartTime.month,
             session.plannedStartTime.day,
           );
-          await analyticsDataSource!.deleteDailyStatsSummary(date);
-          await analyticsDataSource!.invalidateCachesForDate(date);
-          debugPrint('[FocusBloc] Statistics cache invalidated for: $date');
+          statsUpdateService?.onDataChanged(date);
+          debugPrint('[FocusBloc] Write-through stats update triggered for: $date');
         }
       } catch (e) {
         // 저장 실패 시 로그만 남김

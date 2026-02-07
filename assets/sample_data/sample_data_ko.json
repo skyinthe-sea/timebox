@@ -1,0 +1,99 @@
+{
+  "tagNames": {
+    "work": "업무",
+    "personal": "개인",
+    "health": "건강",
+    "study": "학습"
+  },
+  "tasks": [
+    {
+      "key": "morning_exercise",
+      "title": "아침 운동 30분",
+      "note": "스트레칭과 가벼운 조깅으로 하루를 시작하기",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "high"
+    },
+    {
+      "key": "meditation",
+      "title": "명상 15분",
+      "note": "호흡에 집중하며 마음 비우기",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 15,
+      "priority": "medium"
+    },
+    {
+      "key": "team_meeting",
+      "title": "주간 팀 미팅",
+      "note": "이번 주 목표와 진행 상황 공유",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 60,
+      "priority": "high"
+    },
+    {
+      "key": "email_review",
+      "title": "이메일 확인 및 답장",
+      "note": "중요 메일 먼저 처리하기",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 30,
+      "priority": "medium"
+    },
+    {
+      "key": "deep_work",
+      "title": "집중 업무 시간",
+      "note": "방해 없이 핵심 업무에 몰입",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 90,
+      "priority": "high"
+    },
+    {
+      "key": "lunch",
+      "title": "점심 식사",
+      "timeSlot": "lunch",
+      "tagId": "personal",
+      "durationMinutes": 60,
+      "priority": "medium"
+    },
+    {
+      "key": "code_review",
+      "title": "코드 리뷰",
+      "note": "팀원 PR 검토 및 피드백 작성",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "language_study",
+      "title": "영어 공부",
+      "note": "단어 암기 및 회화 연습",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "reading",
+      "title": "독서",
+      "note": "자기계발 도서 읽기",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 30,
+      "priority": "low"
+    },
+    {
+      "key": "yoga",
+      "title": "요가",
+      "note": "하루 마무리 스트레칭",
+      "timeSlot": "evening",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "medium"
+    }
+  ]
+}

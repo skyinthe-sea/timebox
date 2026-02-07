@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/services/stats_update_service.dart';
 import '../../../../core/utils/date_time_utils.dart';
 import '../../../analytics/data/datasources/analytics_local_datasource.dart';
 import '../../domain/entities/time_block.dart';
@@ -13,10 +14,12 @@ import '../models/time_block_model.dart';
 class TimeBlockRepositoryImpl implements TimeBlockRepository {
   final TimeBlockLocalDataSource localDataSource;
   final AnalyticsLocalDataSource? analyticsDataSource;
+  final StatsUpdateService? statsUpdateService;
 
   TimeBlockRepositoryImpl({
     required this.localDataSource,
     this.analyticsDataSource,
+    this.statsUpdateService,
   });
 
   @override
@@ -69,16 +72,13 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
       final model = TimeBlockModel.fromEntity(timeBlock);
       final savedModel = await localDataSource.saveTimeBlock(model);
 
-      // 통계 캐시 무효화 (일간, 주간, 월간)
-      if (analyticsDataSource != null) {
-        final date = DateTime(
-          savedModel.startTime.year,
-          savedModel.startTime.month,
-          savedModel.startTime.day,
-        );
-        await analyticsDataSource!.deleteDailyStatsSummary(date);
-        await analyticsDataSource!.invalidateCachesForDate(date);
-      }
+      // Write-through 통계 재계산
+      final date = DateTime(
+        savedModel.startTime.year,
+        savedModel.startTime.month,
+        savedModel.startTime.day,
+      );
+      statsUpdateService?.onDataChanged(date);
 
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
@@ -95,16 +95,13 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
       final model = TimeBlockModel.fromEntity(timeBlock);
       final savedModel = await localDataSource.saveTimeBlock(model);
 
-      // 통계 캐시 무효화 (일간, 주간, 월간)
-      if (analyticsDataSource != null) {
-        final date = DateTime(
-          savedModel.startTime.year,
-          savedModel.startTime.month,
-          savedModel.startTime.day,
-        );
-        await analyticsDataSource!.deleteDailyStatsSummary(date);
-        await analyticsDataSource!.invalidateCachesForDate(date);
-      }
+      // Write-through 통계 재계산
+      final date = DateTime(
+        savedModel.startTime.year,
+        savedModel.startTime.month,
+        savedModel.startTime.day,
+      );
+      statsUpdateService?.onDataChanged(date);
 
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
@@ -122,15 +119,14 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
 
       await localDataSource.deleteTimeBlock(id);
 
-      // 통계 캐시 무효화 (일간, 주간, 월간)
-      if (model != null && analyticsDataSource != null) {
+      // Write-through 통계 재계산
+      if (model != null) {
         final date = DateTime(
           model.startTime.year,
           model.startTime.month,
           model.startTime.day,
         );
-        await analyticsDataSource!.deleteDailyStatsSummary(date);
-        await analyticsDataSource!.invalidateCachesForDate(date);
+        statsUpdateService?.onDataChanged(date);
       }
 
       return const Right(null);
@@ -150,6 +146,12 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
         return Left(CacheFailure(message: 'TimeBlock not found'));
       }
 
+      final oldDate = DateTime(
+        model.startTime.year,
+        model.startTime.month,
+        model.startTime.day,
+      );
+
       final duration = model.endTime.difference(model.startTime);
       final newEndTime = newStartTime.add(duration);
 
@@ -159,6 +161,18 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
       );
 
       final savedModel = await localDataSource.saveTimeBlock(updatedModel);
+
+      // Write-through 통계 재계산
+      final newDate = DateTime(
+        newStartTime.year,
+        newStartTime.month,
+        newStartTime.day,
+      );
+      statsUpdateService?.onDataChanged(oldDate);
+      if (oldDate != newDate) {
+        statsUpdateService?.onDataChanged(newDate);
+      }
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -182,6 +196,15 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
       );
 
       final savedModel = await localDataSource.saveTimeBlock(updatedModel);
+
+      // Write-through 통계 재계산
+      final date = DateTime(
+        newStartTime.year,
+        newStartTime.month,
+        newStartTime.day,
+      );
+      statsUpdateService?.onDataChanged(date);
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -234,16 +257,13 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
       final updatedModel = model.copyWith(status: status.name);
       final savedModel = await localDataSource.saveTimeBlock(updatedModel);
 
-      // 통계 캐시 무효화 (일간, 주간, 월간)
-      if (analyticsDataSource != null) {
-        final date = DateTime(
-          savedModel.startTime.year,
-          savedModel.startTime.month,
-          savedModel.startTime.day,
-        );
-        await analyticsDataSource!.deleteDailyStatsSummary(date);
-        await analyticsDataSource!.invalidateCachesForDate(date);
-      }
+      // Write-through 통계 재계산
+      final date = DateTime(
+        savedModel.startTime.year,
+        savedModel.startTime.month,
+        savedModel.startTime.day,
+      );
+      statsUpdateService?.onDataChanged(date);
 
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
@@ -271,6 +291,15 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
       );
 
       final savedModel = await localDataSource.saveTimeBlock(updatedModel);
+
+      // Write-through 통계 재계산
+      final date = DateTime(
+        savedModel.startTime.year,
+        savedModel.startTime.month,
+        savedModel.startTime.day,
+      );
+      statsUpdateService?.onDataChanged(date);
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

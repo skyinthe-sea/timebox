@@ -1,0 +1,99 @@
+{
+  "tagNames": {
+    "work": "काम",
+    "personal": "व्यक्तिगत",
+    "health": "स्वास्थ्य",
+    "study": "पढ़ाई"
+  },
+  "tasks": [
+    {
+      "key": "morning_exercise",
+      "title": "सुबह व्यायाम 30 मिनट",
+      "note": "स्ट्रेचिंग और हल्की जॉगिंग के साथ दिन की शुरुआत",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "high"
+    },
+    {
+      "key": "meditation",
+      "title": "ध्यान 15 मिनट",
+      "note": "सांस पर ध्यान देकर मन शांत करें",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 15,
+      "priority": "medium"
+    },
+    {
+      "key": "team_meeting",
+      "title": "साप्ताहिक टीम मीटिंग",
+      "note": "इस सप्ताह के लक्ष्य और प्रगति साझा करें",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 60,
+      "priority": "high"
+    },
+    {
+      "key": "email_review",
+      "title": "ईमेल जांच और जवाब",
+      "note": "महत्वपूर्ण ईमेल पहले संभालें",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 30,
+      "priority": "medium"
+    },
+    {
+      "key": "deep_work",
+      "title": "गहन कार्य सत्र",
+      "note": "बिना किसी विचलन के मुख्य कार्यों पर ध्यान दें",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 90,
+      "priority": "high"
+    },
+    {
+      "key": "lunch",
+      "title": "दोपहर का भोजन",
+      "timeSlot": "lunch",
+      "tagId": "personal",
+      "durationMinutes": 60,
+      "priority": "medium"
+    },
+    {
+      "key": "code_review",
+      "title": "कोड रिव्यू",
+      "note": "टीम के PR की समीक्षा करें और फीडबैक दें",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "language_study",
+      "title": "भाषा अध्ययन",
+      "note": "शब्दावली और बातचीत का अभ्यास",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "reading",
+      "title": "पढ़ने का समय",
+      "note": "आत्म-सुधार की किताबें पढ़ें",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 30,
+      "priority": "low"
+    },
+    {
+      "key": "yoga",
+      "title": "योगा",
+      "note": "दिन के अंत में स्ट्रेचिंग",
+      "timeSlot": "evening",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "medium"
+    }
+  ]
+}

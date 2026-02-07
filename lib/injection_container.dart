@@ -6,6 +6,7 @@ import 'core/services/custom_tag_service.dart';
 import 'core/services/demo_mode_service.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/sample_data_seeder.dart';
+import 'core/services/stats_update_service.dart';
 
 // Notification Feature
 import 'features/notification/data/datasources/notification_local_datasource.dart';
@@ -108,6 +109,7 @@ Future<void> init() async {
     () => TaskRepositoryImpl(
       localDataSource: sl(),
       analyticsDataSource: sl<AnalyticsLocalDataSource>(),
+      statsUpdateService: sl<StatsUpdateService>(),
     ),
   );
 
@@ -147,6 +149,7 @@ Future<void> init() async {
     () => TimeBlockRepositoryImpl(
       localDataSource: sl(),
       analyticsDataSource: sl<AnalyticsLocalDataSource>(),
+      statsUpdateService: sl<StatsUpdateService>(),
     ),
   );
 
@@ -184,7 +187,10 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<DailyPriorityRepository>(
-    () => DailyPriorityRepositoryImpl(localDataSource: sl()),
+    () => DailyPriorityRepositoryImpl(
+      localDataSource: sl(),
+      statsUpdateService: sl<StatsUpdateService>(),
+    ),
   );
 
   // Use Cases
@@ -224,6 +230,7 @@ Future<void> init() async {
     () => FocusBloc(
       sessionDataSource: sl<FocusSessionLocalDataSource>(),
       analyticsDataSource: sl<AnalyticsLocalDataSource>(),
+      statsUpdateService: sl<StatsUpdateService>(),
     ),
   );
 
@@ -236,7 +243,7 @@ Future<void> init() async {
   );
 
   // Repositories
-  sl.registerLazySingleton<AnalyticsRepository>(
+  sl.registerLazySingleton<AnalyticsRepositoryImpl>(
     () => AnalyticsRepositoryImpl(
       analyticsDataSource: sl(),
       taskDataSource: sl(),
@@ -245,12 +252,24 @@ Future<void> init() async {
       dailyPriorityDataSource: sl(),
     ),
   );
+  sl.registerLazySingleton<AnalyticsRepository>(
+    () => sl<AnalyticsRepositoryImpl>(),
+  );
+
+  // Write-Through Stats Cache Service
+  sl.registerLazySingleton(
+    () => StatsUpdateService(
+      analyticsRepository: sl<AnalyticsRepositoryImpl>(),
+      analyticsDataSource: sl<AnalyticsLocalDataSource>(),
+    ),
+  );
 
   // BLoC - Factory로 등록 (app.dart에서 전역 BlocProvider로 관리)
   sl.registerFactory(
     () => StatisticsBloc(
       analyticsRepository: sl(),
       localDataSource: sl<AnalyticsLocalDataSource>(),
+      statsUpdateService: sl<StatsUpdateService>(),
     ),
   );
 
@@ -274,6 +293,8 @@ Future<void> init() async {
       timeBlockDataSource: sl(),
       focusSessionDataSource: sl(),
       demoModeService: sl(),
+      statsUpdateService: sl<StatsUpdateService>(),
+      analyticsDataSource: sl<AnalyticsLocalDataSource>(),
     ),
   );
 }

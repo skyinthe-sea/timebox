@@ -1,0 +1,99 @@
+{
+  "tagNames": {
+    "work": "Travail",
+    "personal": "Personnel",
+    "health": "Santé",
+    "study": "Études"
+  },
+  "tasks": [
+    {
+      "key": "morning_exercise",
+      "title": "Exercice matinal 30min",
+      "note": "Commencer la journée avec étirements et jogging léger",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "high"
+    },
+    {
+      "key": "meditation",
+      "title": "Méditation 15min",
+      "note": "Clarifier l'esprit en se concentrant sur la respiration",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 15,
+      "priority": "medium"
+    },
+    {
+      "key": "team_meeting",
+      "title": "Réunion d'équipe hebdomadaire",
+      "note": "Partager les objectifs et la progression de la semaine",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 60,
+      "priority": "high"
+    },
+    {
+      "key": "email_review",
+      "title": "Vérifier et répondre aux emails",
+      "note": "Traiter les emails importants en premier",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 30,
+      "priority": "medium"
+    },
+    {
+      "key": "deep_work",
+      "title": "Session de travail profond",
+      "note": "Se concentrer sur les tâches principales sans distractions",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 90,
+      "priority": "high"
+    },
+    {
+      "key": "lunch",
+      "title": "Pause déjeuner",
+      "timeSlot": "lunch",
+      "tagId": "personal",
+      "durationMinutes": 60,
+      "priority": "medium"
+    },
+    {
+      "key": "code_review",
+      "title": "Revue de code",
+      "note": "Examiner les PR de l'équipe et fournir des commentaires",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "language_study",
+      "title": "Étude des langues",
+      "note": "Pratique du vocabulaire et de la conversation",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "reading",
+      "title": "Temps de lecture",
+      "note": "Lire des livres de développement personnel",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 30,
+      "priority": "low"
+    },
+    {
+      "key": "yoga",
+      "title": "Cours de yoga",
+      "note": "Routine d'étirements de fin de journée",
+      "timeSlot": "evening",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "medium"
+    }
+  ]
+}

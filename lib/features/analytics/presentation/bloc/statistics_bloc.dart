@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/services/stats_update_service.dart';
 import '../../data/datasources/analytics_local_datasource.dart';
 import '../../data/models/period_cache_model.dart';
 import '../../domain/entities/daily_stats_summary.dart';
@@ -18,10 +21,12 @@ import 'statistics_state.dart';
 class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   final AnalyticsRepository _analyticsRepository;
   final AnalyticsLocalDataSource _localDataSource;
+  StreamSubscription<DateTime>? _statsUpdateSubscription;
 
   StatisticsBloc({
     required AnalyticsRepository analyticsRepository,
     required AnalyticsLocalDataSource localDataSource,
+    StatsUpdateService? statsUpdateService,
   })  : _analyticsRepository = analyticsRepository,
         _localDataSource = localDataSource,
         super(StatisticsState.initial()) {
@@ -31,6 +36,14 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     on<SelectDate>(_onSelectDate);
     on<RefreshInsights>(_onRefreshInsights);
     on<PreloadStatistics>(_onPreloadStatistics);
+    on<StatsUpdatedForDate>(_onStatsUpdatedForDate);
+
+    // Write-through 통계 업데이트 스트림 구독
+    _statsUpdateSubscription = statsUpdateService?.onStatsUpdated.listen((date) {
+      if (!isClosed) {
+        add(StatsUpdatedForDate(date));
+      }
+    });
   }
 
   Future<void> _onLoadStatistics(
@@ -278,6 +291,37 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       periodStats: state.periodStats,
     );
     emit(state.copyWith(insights: insights));
+  }
+
+  /// Write-through 통계 업데이트 완료 핸들러
+  ///
+  /// 현재 보고 있는 기간에 해당 날짜가 포함되면
+  /// 메모리 캐시를 클리어하고 Hive에서 따뜻한 캐시를 다시 읽음
+  Future<void> _onStatsUpdatedForDate(
+    StatsUpdatedForDate event,
+    Emitter<StatisticsState> emit,
+  ) async {
+    if (state.status != StatisticsStatus.loaded) return;
+
+    // 현재 보고 있는 기간에 해당 날짜가 포함되는지 확인
+    final isRelevant = _isDateInCurrentPeriod(event.date);
+    if (!isRelevant) return;
+
+    debugPrint('[StatisticsBloc] Stats updated for ${event.date}, refreshing...');
+
+    // 메모리 캐시 클리어 → Hive에서 따뜻한 캐시 읽기
+    emit(state.copyWith(weeklyCache: null, monthlyCache: null));
+    add(LoadStatistics(date: state.selectedDate, period: state.currentPeriod));
+  }
+
+  /// 날짜가 현재 표시 기간에 포함되는지 확인
+  bool _isDateInCurrentPeriod(DateTime date) {
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    final range = _getDateRange(state.selectedDate, state.currentPeriod);
+    final start = DateTime(range.$1.year, range.$1.month, range.$1.day);
+    final end = DateTime(range.$2.year, range.$2.month, range.$2.day);
+
+    return !normalizedDate.isBefore(start) && !normalizedDate.isAfter(end);
   }
 
   /// 통계 데이터 백그라운드 프리로드
@@ -844,6 +888,12 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     }
 
     return insights;
+  }
+
+  @override
+  Future<void> close() {
+    _statsUpdateSubscription?.cancel();
+    return super.close();
   }
 }
 

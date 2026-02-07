@@ -1,0 +1,99 @@
+{
+  "tagNames": {
+    "work": "Work",
+    "personal": "Personal",
+    "health": "Health",
+    "study": "Study"
+  },
+  "tasks": [
+    {
+      "key": "morning_exercise",
+      "title": "Morning workout 30min",
+      "note": "Start the day with stretching and light jogging",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "high"
+    },
+    {
+      "key": "meditation",
+      "title": "Meditation 15min",
+      "note": "Clear mind by focusing on breathing",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 15,
+      "priority": "medium"
+    },
+    {
+      "key": "team_meeting",
+      "title": "Weekly team meeting",
+      "note": "Share weekly goals and progress updates",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 60,
+      "priority": "high"
+    },
+    {
+      "key": "email_review",
+      "title": "Check and reply emails",
+      "note": "Handle important emails first",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 30,
+      "priority": "medium"
+    },
+    {
+      "key": "deep_work",
+      "title": "Deep work session",
+      "note": "Focus on core tasks without distractions",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 90,
+      "priority": "high"
+    },
+    {
+      "key": "lunch",
+      "title": "Lunch break",
+      "timeSlot": "lunch",
+      "tagId": "personal",
+      "durationMinutes": 60,
+      "priority": "medium"
+    },
+    {
+      "key": "code_review",
+      "title": "Code review",
+      "note": "Review team PRs and provide feedback",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "language_study",
+      "title": "Language study",
+      "note": "Vocabulary and conversation practice",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "reading",
+      "title": "Reading time",
+      "note": "Read self-improvement books",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 30,
+      "priority": "low"
+    },
+    {
+      "key": "yoga",
+      "title": "Yoga class",
+      "note": "End of day stretching routine",
+      "timeSlot": "evening",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "medium"
+    }
+  ]
+}

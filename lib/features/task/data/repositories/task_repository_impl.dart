@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart' hide Task;
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/services/stats_update_service.dart';
 import '../../../analytics/data/datasources/analytics_local_datasource.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/entities/task_suggestion.dart';
@@ -19,10 +20,12 @@ import '../models/subtask_model.dart';
 class TaskRepositoryImpl implements TaskRepository {
   final TaskLocalDataSource localDataSource;
   final AnalyticsLocalDataSource? analyticsDataSource;
+  final StatsUpdateService? statsUpdateService;
 
   TaskRepositoryImpl({
     required this.localDataSource,
     this.analyticsDataSource,
+    this.statsUpdateService,
   });
 
   @override
@@ -74,6 +77,17 @@ class TaskRepositoryImpl implements TaskRepository {
     try {
       final model = TaskModel.fromEntity(task);
       final savedModel = await localDataSource.saveTask(model);
+
+      // Write-through 통계 재계산
+      if (savedModel.targetDate != null) {
+        final date = DateTime(
+          savedModel.targetDate!.year,
+          savedModel.targetDate!.month,
+          savedModel.targetDate!.day,
+        );
+        statsUpdateService?.onDataChanged(date);
+      }
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -87,6 +101,17 @@ class TaskRepositoryImpl implements TaskRepository {
     try {
       final model = TaskModel.fromEntity(task);
       final savedModel = await localDataSource.saveTask(model);
+
+      // Write-through 통계 재계산
+      if (savedModel.targetDate != null) {
+        final date = DateTime(
+          savedModel.targetDate!.year,
+          savedModel.targetDate!.month,
+          savedModel.targetDate!.day,
+        );
+        statsUpdateService?.onDataChanged(date);
+      }
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -103,17 +128,14 @@ class TaskRepositoryImpl implements TaskRepository {
 
       await localDataSource.deleteTask(id);
 
-      // 통계 캐시 무효화
-      if (model != null &&
-          model.targetDate != null &&
-          analyticsDataSource != null) {
+      // Write-through 통계 재계산
+      if (model != null && model.targetDate != null) {
         final date = DateTime(
           model.targetDate!.year,
           model.targetDate!.month,
           model.targetDate!.day,
         );
-        await analyticsDataSource!.deleteDailyStatsSummary(date);
-        await analyticsDataSource!.invalidateCachesForDate(date);
+        statsUpdateService?.onDataChanged(date);
       }
 
       return const Right(null);
@@ -158,15 +180,14 @@ class TaskRepositoryImpl implements TaskRepository {
       );
       final savedModel = await localDataSource.saveTask(updatedModel);
 
-      // 통계 캐시 무효화 (Task 완료 시)
-      if (analyticsDataSource != null && savedModel.targetDate != null) {
+      // Write-through 통계 재계산
+      if (savedModel.targetDate != null) {
         final date = DateTime(
           savedModel.targetDate!.year,
           savedModel.targetDate!.month,
           savedModel.targetDate!.day,
         );
-        await analyticsDataSource!.deleteDailyStatsSummary(date);
-        await analyticsDataSource!.invalidateCachesForDate(date);
+        statsUpdateService?.onDataChanged(date);
       }
 
       return Right(savedModel.toEntity());
@@ -324,12 +345,30 @@ class TaskRepositoryImpl implements TaskRepository {
         return Left(CacheFailure(message: 'Task not found'));
       }
 
+      // 이전 날짜 저장 (양쪽 날짜 모두 통계 갱신 필요)
+      final oldDate = model.targetDate;
+
       // targetDate 업데이트 및 rolloverCount 증가
       final updatedModel = model.copyWith(
         targetDate: toDate,
         rolloverCount: model.rolloverCount + 1,
       );
       final savedModel = await localDataSource.saveTask(updatedModel);
+
+      // Write-through 통계 재계산 (양쪽 날짜)
+      if (oldDate != null) {
+        statsUpdateService?.onDataChanged(DateTime(
+          oldDate.year,
+          oldDate.month,
+          oldDate.day,
+        ));
+      }
+      statsUpdateService?.onDataChanged(DateTime(
+        toDate.year,
+        toDate.month,
+        toDate.day,
+      ));
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

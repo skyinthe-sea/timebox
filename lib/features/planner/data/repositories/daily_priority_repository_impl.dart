@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/services/stats_update_service.dart';
 import '../../domain/entities/daily_priority.dart';
 import '../../domain/repositories/daily_priority_repository.dart';
 import '../datasources/daily_priority_local_datasource.dart';
@@ -11,9 +12,13 @@ import '../models/daily_priority_model.dart';
 /// DailyPriority 저장소 구현
 class DailyPriorityRepositoryImpl implements DailyPriorityRepository {
   final DailyPriorityLocalDataSource localDataSource;
+  final StatsUpdateService? statsUpdateService;
   final Uuid _uuid = const Uuid();
 
-  DailyPriorityRepositoryImpl({required this.localDataSource});
+  DailyPriorityRepositoryImpl({
+    required this.localDataSource,
+    this.statsUpdateService,
+  });
 
   /// 날짜 정규화 (시간을 자정으로)
   DateTime _normalizeDate(DateTime date) {
@@ -80,6 +85,10 @@ class DailyPriorityRepositoryImpl implements DailyPriorityRepository {
       }
 
       final savedModel = await localDataSource.saveDailyPriority(model);
+
+      // Write-through 통계 재계산 (Top3 달성 반영)
+      statsUpdateService?.onDataChanged(normalizedDate);
+
       return Right(savedModel.toEntity());
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

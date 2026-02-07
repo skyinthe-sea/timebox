@@ -1,0 +1,99 @@
+{
+  "tagNames": {
+    "work": "Arbeit",
+    "personal": "Privat",
+    "health": "Gesundheit",
+    "study": "Lernen"
+  },
+  "tasks": [
+    {
+      "key": "morning_exercise",
+      "title": "Morgentraining 30min",
+      "note": "Den Tag mit Dehnen und leichtem Joggen beginnen",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "high"
+    },
+    {
+      "key": "meditation",
+      "title": "Meditation 15min",
+      "note": "Den Geist klären durch Fokussierung auf die Atmung",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 15,
+      "priority": "medium"
+    },
+    {
+      "key": "team_meeting",
+      "title": "Wöchentliches Team-Meeting",
+      "note": "Wochenziele und Fortschritte teilen",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 60,
+      "priority": "high"
+    },
+    {
+      "key": "email_review",
+      "title": "E-Mails prüfen und beantworten",
+      "note": "Wichtige E-Mails zuerst bearbeiten",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 30,
+      "priority": "medium"
+    },
+    {
+      "key": "deep_work",
+      "title": "Tiefenarbeit-Session",
+      "note": "Ohne Ablenkung auf Kernaufgaben konzentrieren",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 90,
+      "priority": "high"
+    },
+    {
+      "key": "lunch",
+      "title": "Mittagspause",
+      "timeSlot": "lunch",
+      "tagId": "personal",
+      "durationMinutes": 60,
+      "priority": "medium"
+    },
+    {
+      "key": "code_review",
+      "title": "Code-Review",
+      "note": "Team-PRs prüfen und Feedback geben",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "language_study",
+      "title": "Sprachstudium",
+      "note": "Vokabel- und Konversationspraxis",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "reading",
+      "title": "Lesezeit",
+      "note": "Selbstverbesserungs-Bücher lesen",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 30,
+      "priority": "low"
+    },
+    {
+      "key": "yoga",
+      "title": "Yoga-Kurs",
+      "note": "Dehnroutine zum Tagesabschluss",
+      "timeSlot": "evening",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "medium"
+    }
+  ]
+}

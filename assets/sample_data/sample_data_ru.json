@@ -1,0 +1,99 @@
+{
+  "tagNames": {
+    "work": "Работа",
+    "personal": "Личное",
+    "health": "Здоровье",
+    "study": "Учёба"
+  },
+  "tasks": [
+    {
+      "key": "morning_exercise",
+      "title": "Утренняя зарядка 30мин",
+      "note": "Начать день с растяжки и лёгкой пробежки",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "high"
+    },
+    {
+      "key": "meditation",
+      "title": "Медитация 15мин",
+      "note": "Очистить разум, сосредоточившись на дыхании",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 15,
+      "priority": "medium"
+    },
+    {
+      "key": "team_meeting",
+      "title": "Еженедельная встреча команды",
+      "note": "Обсудить цели и прогресс на неделю",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 60,
+      "priority": "high"
+    },
+    {
+      "key": "email_review",
+      "title": "Проверка и ответы на письма",
+      "note": "Сначала важные письма",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 30,
+      "priority": "medium"
+    },
+    {
+      "key": "deep_work",
+      "title": "Сессия глубокой работы",
+      "note": "Сфокусироваться на основных задачах без отвлечений",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 90,
+      "priority": "high"
+    },
+    {
+      "key": "lunch",
+      "title": "Обеденный перерыв",
+      "timeSlot": "lunch",
+      "tagId": "personal",
+      "durationMinutes": 60,
+      "priority": "medium"
+    },
+    {
+      "key": "code_review",
+      "title": "Код-ревью",
+      "note": "Проверить PR команды и дать обратную связь",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "language_study",
+      "title": "Изучение языка",
+      "note": "Практика словарного запаса и разговора",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "reading",
+      "title": "Время для чтения",
+      "note": "Читать книги по саморазвитию",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 30,
+      "priority": "low"
+    },
+    {
+      "key": "yoga",
+      "title": "Занятие йогой",
+      "note": "Растяжка в конце дня",
+      "timeSlot": "evening",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "medium"
+    }
+  ]
+}

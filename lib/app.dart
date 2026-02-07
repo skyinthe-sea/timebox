@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'config/routes/app_router.dart';
 import 'config/themes/app_theme.dart';
+import 'core/services/stats_update_service.dart';
 import 'features/analytics/presentation/bloc/statistics_bloc.dart';
 import 'features/analytics/presentation/bloc/statistics_event.dart';
 import 'features/focus/presentation/bloc/focus_bloc.dart';
@@ -59,7 +60,7 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
   /// 앱이 열릴 때 호출
   /// - 앱 오픈 기록
   /// - 일일 리마인더 스케줄링
-  /// - 통계 데이터 프리로드
+  /// - 오늘 통계 캐시 보장
   Future<void> _onAppOpened() async {
     final notificationDataSource = sl<NotificationLocalDataSource>();
     final notificationRepository = sl<NotificationRepository>();
@@ -67,6 +68,9 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
 
     // 앱 오픈 기록
     await notificationDataSource.recordAppOpenToday();
+
+    // 오늘 통계 캐시 보장 (Write-through)
+    sl<StatsUpdateService>().ensureTodayStats();
 
     // 오늘 타임블록이 있는지 확인
     final today = DateTime.now();

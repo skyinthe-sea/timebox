@@ -1,0 +1,99 @@
+{
+  "tagNames": {
+    "work": "工作",
+    "personal": "个人",
+    "health": "健康",
+    "study": "学习"
+  },
+  "tasks": [
+    {
+      "key": "morning_exercise",
+      "title": "晨练30分钟",
+      "note": "拉伸和轻度慢跑开始新的一天",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "high"
+    },
+    {
+      "key": "meditation",
+      "title": "冥想15分钟",
+      "note": "专注呼吸，放空心灵",
+      "timeSlot": "morning",
+      "tagId": "health",
+      "durationMinutes": 15,
+      "priority": "medium"
+    },
+    {
+      "key": "team_meeting",
+      "title": "周会",
+      "note": "分享本周目标和进度更新",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 60,
+      "priority": "high"
+    },
+    {
+      "key": "email_review",
+      "title": "查看并回复邮件",
+      "note": "优先处理重要邮件",
+      "timeSlot": "workMorning",
+      "tagId": "work",
+      "durationMinutes": 30,
+      "priority": "medium"
+    },
+    {
+      "key": "deep_work",
+      "title": "深度工作时间",
+      "note": "不受干扰地专注于核心任务",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 90,
+      "priority": "high"
+    },
+    {
+      "key": "lunch",
+      "title": "午餐休息",
+      "timeSlot": "lunch",
+      "tagId": "personal",
+      "durationMinutes": 60,
+      "priority": "medium"
+    },
+    {
+      "key": "code_review",
+      "title": "代码审查",
+      "note": "审查团队PR并提供反馈",
+      "timeSlot": "workAfternoon",
+      "tagId": "work",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "language_study",
+      "title": "语言学习",
+      "note": "词汇和会话练习",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 45,
+      "priority": "medium"
+    },
+    {
+      "key": "reading",
+      "title": "阅读时间",
+      "note": "阅读自我提升书籍",
+      "timeSlot": "evening",
+      "tagId": "study",
+      "durationMinutes": 30,
+      "priority": "low"
+    },
+    {
+      "key": "yoga",
+      "title": "瑜伽",
+      "note": "一天结束时的拉伸运动",
+      "timeSlot": "evening",
+      "tagId": "health",
+      "durationMinutes": 30,
+      "priority": "medium"
+    }
+  ]
+}

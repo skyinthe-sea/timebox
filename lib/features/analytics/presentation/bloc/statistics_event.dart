@@ -71,3 +71,15 @@ class PreloadStatistics extends StatisticsEvent {
   @override
   List<Object?> get props => [date];
 }
+
+/// 백그라운드 통계 업데이트 완료 알림
+///
+/// StatsUpdateService가 write-through 재계산을 완료했을 때 발생
+class StatsUpdatedForDate extends StatisticsEvent {
+  final DateTime date;
+
+  const StatsUpdatedForDate(this.date);
+
+  @override
+  List<Object?> get props => [date];
+}
