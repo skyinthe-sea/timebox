@@ -33,6 +33,7 @@ mixin _$ProductivityStatsModel {
   int get totalActualTimeMinutes => throw _privateConstructorUsedError;
   int get focusTimeMinutes => throw _privateConstructorUsedError;
   int get averageTimeDifferenceMinutes => throw _privateConstructorUsedError;
+  double get timeAccuracyPercent => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -58,7 +59,8 @@ abstract class $ProductivityStatsModelCopyWith<$Res> {
       int totalPlannedTimeMinutes,
       int totalActualTimeMinutes,
       int focusTimeMinutes,
-      int averageTimeDifferenceMinutes});
+      int averageTimeDifferenceMinutes,
+      double timeAccuracyPercent});
 }
 
 /// @nodoc
@@ -87,6 +89,7 @@ class _$ProductivityStatsModelCopyWithImpl<$Res,
     Object? totalActualTimeMinutes = null,
     Object? focusTimeMinutes = null,
     Object? averageTimeDifferenceMinutes = null,
+    Object? timeAccuracyPercent = null,
   }) {
     return _then(_value.copyWith(
       date: null == date
@@ -137,6 +140,10 @@ class _$ProductivityStatsModelCopyWithImpl<$Res,
           ? _value.averageTimeDifferenceMinutes
           : averageTimeDifferenceMinutes // ignore: cast_nullable_to_non_nullable
               as int,
+      timeAccuracyPercent: null == timeAccuracyPercent
+          ? _value.timeAccuracyPercent
+          : timeAccuracyPercent // ignore: cast_nullable_to_non_nullable
+              as double,
     ) as $Val);
   }
 }
@@ -162,7 +169,8 @@ abstract class _$$ProductivityStatsModelImplCopyWith<$Res>
       int totalPlannedTimeMinutes,
       int totalActualTimeMinutes,
       int focusTimeMinutes,
-      int averageTimeDifferenceMinutes});
+      int averageTimeDifferenceMinutes,
+      double timeAccuracyPercent});
 }
 
 /// @nodoc
@@ -190,6 +198,7 @@ class __$$ProductivityStatsModelImplCopyWithImpl<$Res>
     Object? totalActualTimeMinutes = null,
     Object? focusTimeMinutes = null,
     Object? averageTimeDifferenceMinutes = null,
+    Object? timeAccuracyPercent = null,
   }) {
     return _then(_$ProductivityStatsModelImpl(
       date: null == date
@@ -240,6 +249,10 @@ class __$$ProductivityStatsModelImplCopyWithImpl<$Res>
           ? _value.averageTimeDifferenceMinutes
           : averageTimeDifferenceMinutes // ignore: cast_nullable_to_non_nullable
               as int,
+      timeAccuracyPercent: null == timeAccuracyPercent
+          ? _value.timeAccuracyPercent
+          : timeAccuracyPercent // ignore: cast_nullable_to_non_nullable
+              as double,
     ));
   }
 }
@@ -259,7 +272,8 @@ class _$ProductivityStatsModelImpl extends _ProductivityStatsModel {
       required this.totalPlannedTimeMinutes,
       required this.totalActualTimeMinutes,
       required this.focusTimeMinutes,
-      required this.averageTimeDifferenceMinutes})
+      required this.averageTimeDifferenceMinutes,
+      this.timeAccuracyPercent = -1.0})
       : super._();
 
   factory _$ProductivityStatsModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -290,10 +304,13 @@ class _$ProductivityStatsModelImpl extends _ProductivityStatsModel {
   final int focusTimeMinutes;
   @override
   final int averageTimeDifferenceMinutes;
+  @override
+  @JsonKey()
+  final double timeAccuracyPercent;
 
   @override
   String toString() {
-    return 'ProductivityStatsModel(date: $date, score: $score, completedTasks: $completedTasks, totalPlannedTasks: $totalPlannedTasks, completedTimeBlocks: $completedTimeBlocks, skippedTimeBlocks: $skippedTimeBlocks, totalPlannedTimeBlocks: $totalPlannedTimeBlocks, executionRate: $executionRate, totalPlannedTimeMinutes: $totalPlannedTimeMinutes, totalActualTimeMinutes: $totalActualTimeMinutes, focusTimeMinutes: $focusTimeMinutes, averageTimeDifferenceMinutes: $averageTimeDifferenceMinutes)';
+    return 'ProductivityStatsModel(date: $date, score: $score, completedTasks: $completedTasks, totalPlannedTasks: $totalPlannedTasks, completedTimeBlocks: $completedTimeBlocks, skippedTimeBlocks: $skippedTimeBlocks, totalPlannedTimeBlocks: $totalPlannedTimeBlocks, executionRate: $executionRate, totalPlannedTimeMinutes: $totalPlannedTimeMinutes, totalActualTimeMinutes: $totalActualTimeMinutes, focusTimeMinutes: $focusTimeMinutes, averageTimeDifferenceMinutes: $averageTimeDifferenceMinutes, timeAccuracyPercent: $timeAccuracyPercent)';
   }
 
   @override
@@ -325,7 +342,9 @@ class _$ProductivityStatsModelImpl extends _ProductivityStatsModel {
             (identical(other.averageTimeDifferenceMinutes,
                     averageTimeDifferenceMinutes) ||
                 other.averageTimeDifferenceMinutes ==
-                    averageTimeDifferenceMinutes));
+                    averageTimeDifferenceMinutes) &&
+            (identical(other.timeAccuracyPercent, timeAccuracyPercent) ||
+                other.timeAccuracyPercent == timeAccuracyPercent));
   }
 
   @JsonKey(ignore: true)
@@ -343,7 +362,8 @@ class _$ProductivityStatsModelImpl extends _ProductivityStatsModel {
       totalPlannedTimeMinutes,
       totalActualTimeMinutes,
       focusTimeMinutes,
-      averageTimeDifferenceMinutes);
+      averageTimeDifferenceMinutes,
+      timeAccuracyPercent);
 
   @JsonKey(ignore: true)
   @override
@@ -362,19 +382,19 @@ class _$ProductivityStatsModelImpl extends _ProductivityStatsModel {
 
 abstract class _ProductivityStatsModel extends ProductivityStatsModel {
   const factory _ProductivityStatsModel(
-          {required final DateTime date,
-          required final int score,
-          required final int completedTasks,
-          required final int totalPlannedTasks,
-          required final int completedTimeBlocks,
-          final int skippedTimeBlocks,
-          required final int totalPlannedTimeBlocks,
-          required final double executionRate,
-          required final int totalPlannedTimeMinutes,
-          required final int totalActualTimeMinutes,
-          required final int focusTimeMinutes,
-          required final int averageTimeDifferenceMinutes}) =
-      _$ProductivityStatsModelImpl;
+      {required final DateTime date,
+      required final int score,
+      required final int completedTasks,
+      required final int totalPlannedTasks,
+      required final int completedTimeBlocks,
+      final int skippedTimeBlocks,
+      required final int totalPlannedTimeBlocks,
+      required final double executionRate,
+      required final int totalPlannedTimeMinutes,
+      required final int totalActualTimeMinutes,
+      required final int focusTimeMinutes,
+      required final int averageTimeDifferenceMinutes,
+      final double timeAccuracyPercent}) = _$ProductivityStatsModelImpl;
   const _ProductivityStatsModel._() : super._();
 
   factory _ProductivityStatsModel.fromJson(Map<String, dynamic> json) =
@@ -404,6 +424,8 @@ abstract class _ProductivityStatsModel extends ProductivityStatsModel {
   int get focusTimeMinutes;
   @override
   int get averageTimeDifferenceMinutes;
+  @override
+  double get timeAccuracyPercent;
   @override
   @JsonKey(ignore: true)
   _$$ProductivityStatsModelImplCopyWith<_$ProductivityStatsModelImpl>

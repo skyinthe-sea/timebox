@@ -175,7 +175,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
   Widget _buildHeader(
       BuildContext context, TimelineSelectionState selectionState) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     final startTime = TimelineSelectionCubit.slotToTimeString(
         selectionState.normalizedStartSlot!);
@@ -235,7 +235,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    l10n?.selectTag ?? '태그 선택',
+                    l10n.selectTag,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.colorScheme.outline,
                     ),
@@ -261,14 +261,14 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
   Widget _buildTaskList(
       BuildContext context, TimelineSelectionState selectionState) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     if (widget.unscheduledTasks.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(24),
         child: Center(
           child: Text(
-            l10n?.noUnscheduledTasks ?? 'No unscheduled tasks',
+            l10n.noUnscheduledTasks,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.outline,
             ),
@@ -299,7 +299,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
 
   Widget _buildNewTaskInput(
       BuildContext context, TimelineSelectionState selectionState) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -311,7 +311,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
             focusNode: _newTaskFocusNode,
             autofocus: true,
             decoration: InputDecoration(
-              hintText: l10n?.addNewTaskHint ?? 'Enter task title...',
+              hintText: l10n.addNewTaskHint,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -336,7 +336,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
                         _newTaskController.clear();
                       });
                     },
-                    child: Text(l10n?.cancel ?? 'Cancel'),
+                    child: Text(l10n.cancel),
                   ),
                 ),
               if (widget.unscheduledTasks.isNotEmpty) const SizedBox(width: 12),
@@ -346,7 +346,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
                     _newTaskController.text,
                     selectionState,
                   ),
-                  child: Text(l10n?.add ?? 'Add'),
+                  child: Text(l10n.add),
                 ),
               ),
             ],
@@ -360,7 +360,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
   Widget _buildTagSelectionContent(
       BuildContext context, TimelineSelectionState selectionState) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -387,7 +387,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
               Expanded(
                 child: OutlinedButton(
                   onPressed: _goBackToTaskSelection,
-                  child: Text(l10n?.cancel ?? 'Cancel'),
+                  child: Text(l10n.cancel),
                 ),
               ),
               const SizedBox(width: 12),
@@ -399,7 +399,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
                         ? _selectedTags.first.color
                         : theme.colorScheme.primary,
                   ),
-                  child: Text(l10n?.confirm ?? 'Confirm'),
+                  child: Text(l10n.confirm),
                 ),
               ),
             ],
@@ -472,7 +472,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
 
   Widget _buildAddNewButton(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       decoration: BoxDecoration(
@@ -490,7 +490,7 @@ class _BrainDumpPopupState extends State<BrainDumpPopup>
           });
         },
         icon: const Icon(Icons.add, size: 20),
-        label: Text(l10n?.addNewTask ?? 'Add new task'),
+        label: Text(l10n.addNewTask),
         style: TextButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
         ),

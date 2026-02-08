@@ -37,8 +37,11 @@ class ProductivityStats {
   /// 집중 시간 (Focus Mode에서 보낸 시간)
   final Duration focusTime;
 
-  /// 평균 시간 오차 (실제 - 계획)
-  final Duration averageTimeDifference;
+  /// 시간 차이 총합 (실제 - 계획)
+  final Duration totalTimeDifference;
+
+  /// 블록별 평균 시간 정확도 (%, -1 = 데이터 없음)
+  final double timeAccuracyPercent;
 
   const ProductivityStats({
     required this.date,
@@ -52,7 +55,8 @@ class ProductivityStats {
     required this.totalPlannedTime,
     required this.totalActualTime,
     required this.focusTime,
-    required this.averageTimeDifference,
+    required this.totalTimeDifference,
+    this.timeAccuracyPercent = -1.0,
   });
 
   /// Task 완료율 (%)
@@ -67,13 +71,13 @@ class ProductivityStats {
     return (completedTimeBlocks / totalPlannedTimeBlocks) * 100;
   }
 
-  /// 시간 정확도 (100% - 오차율)
-  /// totalPlannedTime과 averageTimeDifference는 측정된 블록 기준
+  /// 시간 정확도 (%, -1 = 데이터 없음)
+  /// 블록별 평균 정확도 사용 (상쇄 방지)
   double get timeAccuracy {
-    if (totalPlannedTime.inMinutes == 0) return 0.0;
-    final diffRatio = averageTimeDifference.inMinutes.abs() /
-        totalPlannedTime.inMinutes;
-    return (1 - diffRatio).clamp(0.0, 1.0) * 100;
+    // 블록별 평균 정확도가 저장되어 있으면 사용
+    if (timeAccuracyPercent >= 0) return timeAccuracyPercent;
+    // 데이터 없음
+    return -1.0;
   }
 
   // TODO: copyWith, props (Equatable), toJson/fromJson 구현

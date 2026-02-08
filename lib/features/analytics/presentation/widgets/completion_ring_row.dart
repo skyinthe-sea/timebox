@@ -21,6 +21,7 @@ class CompletionRingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hasTimeData = timeAccuracy >= 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -49,7 +50,8 @@ class CompletionRingRow extends StatelessWidget {
           Expanded(
             child: _MiniRingCard(
               label: l10n.statsEfficiency,
-              value: timeAccuracy,
+              value: hasTimeData ? timeAccuracy : 0,
+              noData: !hasTimeData,
               color: AppColors.secondaryLight,
               darkColor: AppColors.secondaryDark,
               delayMs: 200,
@@ -64,6 +66,7 @@ class CompletionRingRow extends StatelessWidget {
 class _MiniRingCard extends StatelessWidget {
   final String label;
   final double value;
+  final bool noData;
   final Color color;
   final Color darkColor;
   final int delayMs;
@@ -71,6 +74,7 @@ class _MiniRingCard extends StatelessWidget {
   const _MiniRingCard({
     required this.label,
     required this.value,
+    this.noData = false,
     required this.color,
     required this.darkColor,
     required this.delayMs,
@@ -113,10 +117,12 @@ class _MiniRingCard extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        '${(animValue * 100).round()}%',
+                        noData ? '--' : '${(animValue * 100).round()}%',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: ringColor,
+                          color: noData
+                              ? theme.colorScheme.outline
+                              : ringColor,
                         ),
                       ),
                     ),

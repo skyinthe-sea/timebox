@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/routes/app_router.dart';
 import 'config/themes/app_theme.dart';
@@ -33,10 +34,6 @@ class TimeboxApp extends StatefulWidget {
 }
 
 class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
-  // Cached notification strings (updated when locale is available)
-  String _dailyReminderTitle = 'Plan your day!';
-  String _dailyReminderBody = 'The first step to achieving your goals.';
-
   @override
   void initState() {
     super.initState();
@@ -55,6 +52,13 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       _onAppOpened();
     }
+  }
+
+  /// 저장된 locale 설정에서 다국어 인스턴스 가져오기
+  AppLocalizations _getLocalizedStrings() {
+    final prefs = sl<SharedPreferences>();
+    final langCode = prefs.getString('settings_locale') ?? 'ko';
+    return lookupAppLocalizations(Locale(langCode));
   }
 
   /// 앱이 열릴 때 호출
@@ -80,12 +84,14 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
       (timeBlocks) => timeBlocks.isNotEmpty,
     );
 
+    // 저장된 locale로 다국어 문자열 가져오기
+    final l10n = _getLocalizedStrings();
+
     // 일일 리마인더 스케줄링 (오늘 계획이 있으면 알림 안 함)
-    // Note: notification strings use keys that are resolved at schedule time
     await notificationRepository.scheduleDailyReminder(
       hasTimeBlocksToday: hasTimeBlocksToday,
-      dailyReminderTitle: _dailyReminderTitle,
-      dailyReminderBody: _dailyReminderBody,
+      dailyReminderTitle: l10n.dailyReminderTitle,
+      dailyReminderBody: l10n.dailyReminderBody,
     );
   }
 
@@ -118,12 +124,7 @@ class _TimeboxAppState extends State<TimeboxApp> with WidgetsBindingObserver {
         builder: (context, settingsState) {
           return MaterialApp.router(
             onGenerateTitle: (context) {
-              final l10n = AppLocalizations.of(context);
-              if (l10n != null) {
-                _dailyReminderTitle = l10n.dailyReminderTitle;
-                _dailyReminderBody = l10n.dailyReminderBody;
-              }
-              return l10n?.appName ?? 'Timebox Planner';
+              return AppLocalizations.of(context)?.appName ?? 'Timebox Planner';
             },
             debugShowCheckedModeBanner: false,
 

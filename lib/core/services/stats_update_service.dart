@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/analytics/data/datasources/analytics_local_datasource.dart';
 import '../../features/analytics/data/models/period_cache_model.dart';
@@ -23,6 +24,15 @@ class StatsUpdateService {
   /// 동시 실행 방지 락
   final Set<String> _activeLocks = {};
 
+  /// 재계산 진행 중 새 변경이 발생한 날짜 (재실행 필요)
+  final Set<String> _pendingRerun = {};
+
+  /// 리포트 페이지 활성 여부
+  bool _isReportActive = false;
+
+  /// 재계산 보류된 날짜들 (period cache rebuild 스킵됨)
+  final Set<String> _dirtyDates = {};
+
   /// 통계 업데이트 완료 알림 스트림
   final _controller = StreamController<DateTime>.broadcast();
 
@@ -33,6 +43,19 @@ class StatsUpdateService {
     required AnalyticsLocalDataSource analyticsDataSource,
   })  : _analyticsRepository = analyticsRepository,
         _analyticsDataSource = analyticsDataSource;
+
+  /// 특정 날짜의 일간 통계 강제 재계산 (UI 새로고침용)
+  ///
+  /// 디바운스 없이 즉시 재계산하여 Hive 캐시를 업데이트합니다.
+  /// period cache 리빌드는 하지 않습니다.
+  Future<void> forceRecalculateDaily(DateTime date) async {
+    try {
+      await _analyticsRepository.saveDailyStatsSummary(date);
+      debugPrint('[StatsUpdateService] Force recalculated daily stats for: ${_dateKey(date)}');
+    } catch (e) {
+      debugPrint('[StatsUpdateService] Error force recalculating: $e');
+    }
+  }
 
   /// CRUD 후 호출 (fire-and-forget, 논블로킹)
   ///
@@ -45,11 +68,62 @@ class StatsUpdateService {
     });
   }
 
+  /// 리포트 페이지 활성/비활성 전환
+  ///
+  /// 활성화 시 보류된 dirty dates를 flush하여 period cache를 무효화합니다.
+  /// Future를 반환하여 호출자가 flush 완료를 기다릴 수 있습니다.
+  Future<void> setReportPageActive(bool active) async {
+    _isReportActive = active;
+    if (active && _dirtyDates.isNotEmpty) {
+      await _flushDirtyDates();
+    }
+  }
+
+  /// 보류된 dirty dates의 period cache를 무효화하고 알림
+  Future<void> _flushDirtyDates() async {
+    final dates = Set<String>.from(_dirtyDates);
+    _dirtyDates.clear();
+
+    // 영향받는 주간/월간 캐시 키 수집 (중복 제거)
+    final cacheKeysToInvalidate = <String>{};
+    for (final key in dates) {
+      final date = DateTime.parse(key);
+      cacheKeysToInvalidate.add(PeriodCacheModel.weeklyKey(date));
+      cacheKeysToInvalidate.add(PeriodCacheModel.monthlyKey(date));
+    }
+
+    // Hive period cache 삭제
+    for (final cacheKey in cacheKeysToInvalidate) {
+      await _analyticsDataSource.deletePeriodCache(cacheKey);
+    }
+
+    debugPrint('[StatsUpdateService] Flushed ${dates.length} dirty dates, '
+        'invalidated ${cacheKeysToInvalidate.length} period caches');
+
+    // StatisticsBloc에 변경 알림 → 메모리 캐시 클리어 유도
+    if (!_controller.isClosed) {
+      _controller.add(DateTime.now());
+    }
+  }
+
   /// 앱 시작 시 오늘 통계 보장
   Future<void> ensureTodayStats() async {
     final today = DateTime.now();
     final normalizedToday = DateTime(today.year, today.month, today.day);
     try {
+      // 이월 알고리즘 v2 마이그레이션: 최근 30일 캐시 리프레시 (1회성)
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool('rollover_v2_migrated') != true) {
+        debugPrint('[StatsUpdateService] Migrating rollover v2: recalculating last 30 days');
+        await recalculateRange(
+          normalizedToday.subtract(const Duration(days: 30)),
+          normalizedToday,
+        );
+        await prefs.setBool('rollover_v2_migrated', true);
+        debugPrint('[StatsUpdateService] Rollover v2 migration complete');
+        return; // recalculateRange already covers today
+      }
+
       final cached =
           await _analyticsDataSource.getDailyStatsSummary(normalizedToday);
       if (cached == null) {
@@ -64,20 +138,30 @@ class StatsUpdateService {
   Future<void> _recalculateForDate(DateTime date) async {
     final key = _dateKey(date);
 
-    // 이미 실행 중이면 스킵
-    if (_activeLocks.contains(key)) return;
+    // 이미 실행 중이면 재실행 예약 후 리턴
+    if (_activeLocks.contains(key)) {
+      _pendingRerun.add(key);
+      debugPrint('[StatsUpdateService] Recalculation in progress for $key, scheduled re-run');
+      return;
+    }
     _activeLocks.add(key);
 
     try {
       debugPrint('[StatsUpdateService] Recalculating stats for: $key');
 
-      // 1. 일간 통계 재계산 (기존 saveDailyStatsSummary 호출)
+      // 1. 일간 통계는 항상 재계산 (가벼움, ~6 Hive reads)
       await _analyticsRepository.saveDailyStatsSummary(date);
 
-      // 2. 해당 날짜가 포함된 주간/월간 기간 캐시 리빌드
-      await _rebuildPeriodCaches(date);
+      if (_isReportActive) {
+        // 2a. 리포트 보는 중: 기존 full rebuild
+        await _rebuildPeriodCaches(date);
+      } else {
+        // 2b. 리포트 안 보는 중: dirty만 마킹 (period cache 재빌드 스킵!)
+        _dirtyDates.add(key);
+        debugPrint('[StatsUpdateService] Deferred period cache rebuild for: $key');
+      }
 
-      // 3. 완료 알림
+      // 항상 BLoC에 통지 (StatefulShellRoute에서 initState 재실행 안 됨)
       if (!_controller.isClosed) {
         _controller.add(date);
       }
@@ -87,6 +171,12 @@ class StatsUpdateService {
       debugPrint('[StatsUpdateService] Error recalculating stats for $key: $e');
     } finally {
       _activeLocks.remove(key);
+
+      // 진행 중 새 변경이 있었으면 재실행
+      if (_pendingRerun.remove(key)) {
+        debugPrint('[StatsUpdateService] Re-running recalculation for: $key');
+        _recalculateForDate(date);
+      }
     }
   }
 

@@ -21,6 +21,7 @@ import 'statistics_state.dart';
 class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   final AnalyticsRepository _analyticsRepository;
   final AnalyticsLocalDataSource _localDataSource;
+  final StatsUpdateService? _statsUpdateService;
   StreamSubscription<DateTime>? _statsUpdateSubscription;
 
   StatisticsBloc({
@@ -29,6 +30,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     StatsUpdateService? statsUpdateService,
   })  : _analyticsRepository = analyticsRepository,
         _localDataSource = localDataSource,
+        _statsUpdateService = statsUpdateService,
         super(StatisticsState.initial()) {
     on<LoadStatistics>(_onLoadStatistics);
     on<RefreshStatistics>(_onRefreshStatistics);
@@ -46,10 +48,33 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     });
   }
 
+  /// 보류된 flush Future (LoadStatistics에서 await)
+  Future<void>? _pendingFlush;
+
+  /// 리포트 페이지 진입 시 호출
+  ///
+  /// dirty dates flush를 시작하고, LoadStatistics가 이를 await하여
+  /// stale Hive 캐시를 읽지 않도록 보장합니다.
+  void onReportPageOpened() {
+    _pendingFlush = _statsUpdateService?.setReportPageActive(true);
+  }
+
+  /// 리포트 페이지 이탈 시 호출
+  void onReportPageClosed() {
+    _statsUpdateService?.setReportPageActive(false);
+    _pendingFlush = null;
+  }
+
   Future<void> _onLoadStatistics(
     LoadStatistics event,
     Emitter<StatisticsState> emit,
   ) async {
+    // dirty dates flush 완료 대기 (stale Hive 캐시 방지)
+    if (_pendingFlush != null) {
+      await _pendingFlush;
+      _pendingFlush = null;
+    }
+
     emit(state.copyWith(
       status: StatisticsStatus.loading,
       selectedDate: event.date,
@@ -131,7 +156,12 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     RefreshStatistics event,
     Emitter<StatisticsState> emit,
   ) async {
-    // 새로고침 시 캐시 클리어
+    // 선택된 날짜의 일간 통계 강제 재계산 (stale 캐시 방지)
+    if (_statsUpdateService != null) {
+      await _statsUpdateService.forceRecalculateDaily(state.selectedDate);
+    }
+
+    // 캐시 클리어 및 재로드
     emit(state.copyWith(
       weeklyCache: null,
       monthlyCache: null,
@@ -697,20 +727,22 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
 
     // 7. Top 3 달성
     if (dailySummary != null && dailySummary.top3CompletedCount > 0) {
-      if (dailySummary.top3CompletedCount == 3) {
+      if (dailySummary.top3CompletedCount >= dailySummary.top3SetCount &&
+          dailySummary.top3SetCount > 0) {
         insights.add(Insight(
           id: 'insight_top3_${now.millisecondsSinceEpoch}',
           type: InsightType.completionRate,
           priority: InsightPriority.high,
           titleKey: 'insightTop3AllCompleteTitle',
           descriptionKey: 'insightTop3AllCompleteDesc',
-          value: 3,
+          value: dailySummary.top3SetCount.toDouble(),
           unitKey: 'insightUnitCount',
           iconCodePoint: 0xe838,
           isPositive: true,
           createdAt: now,
         ));
       } else {
+        final remaining = dailySummary.top3SetCount - dailySummary.top3CompletedCount;
         insights.add(Insight(
           id: 'insight_top3_${now.millisecondsSinceEpoch}',
           type: InsightType.completionRate,
@@ -719,7 +751,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           descriptionKey: 'insightTop3PartialDesc',
           params: {
             'completed': '${dailySummary.top3CompletedCount}',
-            'remaining': '${3 - dailySummary.top3CompletedCount}',
+            'remaining': '$remaining',
           },
           value: dailySummary.top3CompletedCount.toDouble(),
           unitKey: 'insightUnitCount',

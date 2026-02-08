@@ -33,7 +33,11 @@ class DailyStatsSummaryModel with _$DailyStatsSummaryModel {
     @Default(0) int totalPauseDurationMinutes,
 
     // Top 3 달성
+    @Default(0) int top3SetCount,
     @Default(0) int top3CompletedCount,
+
+    // 시간 정확도 (블록별 평균, -1 = 데이터 없음)
+    @Default(-1.0) double timeAccuracyPercent,
 
     // 생산성 점수
     required int productivityScore,
@@ -60,7 +64,9 @@ class DailyStatsSummaryModel with _$DailyStatsSummaryModel {
       focusSessionCount: focusSessionCount,
       totalFocusDuration: Duration(minutes: totalFocusDurationMinutes),
       totalPauseDuration: Duration(minutes: totalPauseDurationMinutes),
+      top3SetCount: top3SetCount,
       top3CompletedCount: top3CompletedCount,
+      timeAccuracyPercent: timeAccuracyPercent,
       productivityScore: productivityScore,
       calculatedAt: calculatedAt,
     );
@@ -81,7 +87,9 @@ class DailyStatsSummaryModel with _$DailyStatsSummaryModel {
       focusSessionCount: entity.focusSessionCount,
       totalFocusDurationMinutes: entity.totalFocusDuration.inMinutes,
       totalPauseDurationMinutes: entity.totalPauseDuration.inMinutes,
+      top3SetCount: entity.top3SetCount,
       top3CompletedCount: entity.top3CompletedCount,
+      timeAccuracyPercent: entity.timeAccuracyPercent,
       productivityScore: entity.productivityScore,
       calculatedAt: entity.calculatedAt,
     );

@@ -134,8 +134,8 @@
   "dayStartTime": "दिन की शुरुआत का समय",
   "dayEndTime": "दिन के अंत का समय",
   "planner": "टाइमबॉक्स",
-  "copyToTomorrow": "कल भी करें",
-  "copiedToTomorrow": "कल के लिए कॉपी किया गया",
+  "copyToTomorrow": "कल के लिए स्थानांतरित करें",
+  "copiedToTomorrow": "कल के लिए स्थानांतरित किया गया",
   "rolloverBadge": "स्थानांतरित {count}x",
   "@rolloverBadge": {
     "placeholders": {
@@ -249,7 +249,8 @@
   "statsScheduled": "शेड्यूल",
   "statsCompleted": "पूर्ण",
   "statsRolledOver": "स्थानांतरित",
-  "statsEfficiency": "दक्षता",
+  "statsEfficiency": "सटीकता",
+  "statsAccomplished": "उपलब्धि",
   "statsNoData": "अभी तक कोई डेटा नहीं",
   "statsTop3Performance": "Top 3 उपलब्धि",
   "statsTop3Completed": "पूर्ण",
@@ -390,5 +391,43 @@
   "demoModeEnabled": "डेमो मोड सक्षम हुआ",
   "demoModeDisabled": "डेमो मोड अक्षम हुआ",
   "demoModeGenerating": "नमूना डेटा बनाया जा रहा है...",
-  "demoModeClearing": "डेमो डेटा हटाया जा रहा है..."
+  "demoModeClearing": "डेमो डेटा हटाया जा रहा है...",
+
+  "timeBlockStartAlarmTitle": "{title} - शुरू होने से {time} पहले",
+  "@timeBlockStartAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockStartAlarmBody": "जल्द ही शुरू होगा। तैयार हो जाइए!",
+  "timeBlockEndAlarmTitle": "{title} - समाप्त होने से {time} पहले",
+  "@timeBlockEndAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockEndAlarmBody": "समाप्त करने का समय है।",
+  "focusSessionCompleteTitle": "फोकस सत्र पूरा हुआ!",
+  "focusSessionCompleteBody": "बहुत बढ़िया! थोड़ा आराम करें।",
+
+  "statDescProductivityScoreTitle": "उत्पादकता स्कोर",
+  "statDescProductivityScoreBody": "पूर्णता दर, समय सटीकता और टाइम ब्लॉक निष्पादन को मिलाकर 0-100 अंकों का स्कोर।",
+  "statDescCompletionRingsTitle": "पूर्णता रिंग",
+  "statDescCompletionRingsBody": "कार्य पूर्णता दर, टाइम ब्लॉक निष्पादन दर और समय सटीकता दिखाता है।",
+  "statDescTaskPipelineTitle": "कार्य प्रवाह",
+  "statDescTaskPipelineBody": "कुल→शेड्यूल→पूर्ण→स्थानांतरित का प्रवाह दिखाता है।",
+  "statDescTop3StatsTitle": "Top 3 उपलब्धि",
+  "statDescTop3StatsBody": "आपके 3 सबसे महत्वपूर्ण कार्यों की उपलब्धि स्थिति दिखाता है।",
+  "statDescTaskRankingTitle": "कार्य रैंकिंग",
+  "statDescTaskRankingBody": "दोहराए जाने वाले कार्यों की पूर्णता सफलता/विफलता रैंकिंग।",
+  "statDescFocusSummaryTitle": "फोकस विश्लेषण",
+  "statDescFocusSummaryBody": "फोकस मोड दक्षता, समय, सत्र संख्या और विराम अवधि।",
+  "statDescTrendChartTitle": "उत्पादकता रुझान",
+  "statDescTrendChartBody": "दैनिक उत्पादकता स्कोर परिवर्तन को लाइन ग्राफ में दिखाता है।",
+  "statDescTagAnalysisTitle": "टैग विश्लेषण",
+  "statDescTagAnalysisBody": "टैग के अनुसार कार्य संख्या और नियोजित समय दिखाता है।",
+  "statDescInsightsTitle": "अंतर्दृष्टि",
+  "statDescInsightsBody": "आपके डेटा पर आधारित स्वचालित प्रदर्शन विश्लेषण।"
 }

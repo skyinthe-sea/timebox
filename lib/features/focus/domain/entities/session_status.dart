@@ -40,16 +40,16 @@ extension SessionStatusExtension on SessionStatus {
         this == SessionStatus.cancelled;
   }
 
-  /// 상태 라벨 (다국어 키로 대체 예정)
+  /// 상태 라벨 (영어 기본값, UI에서 l10n 사용 권장)
   String get label {
     return switch (this) {
-      SessionStatus.pending => '예정',
-      SessionStatus.inProgress => '진행 중',
-      SessionStatus.paused => '일시 정지',
-      SessionStatus.completed => '완료',
-      SessionStatus.delayed => '지연됨',
-      SessionStatus.skipped => '건너뜀',
-      SessionStatus.cancelled => '취소됨',
+      SessionStatus.pending => 'Pending',
+      SessionStatus.inProgress => 'In Progress',
+      SessionStatus.paused => 'Paused',
+      SessionStatus.completed => 'Completed',
+      SessionStatus.delayed => 'Delayed',
+      SessionStatus.skipped => 'Skipped',
+      SessionStatus.cancelled => 'Cancelled',
     };
   }
 }

@@ -23,45 +23,60 @@ class AppRouter {
 
   // Navigator keys
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
-  static final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: RouteNames.home,
     debugLogDiagnostics: false,
     routes: [
-      // ShellRoute for bottom navigation
-      ShellRoute(
-        navigatorKey: _shellNavigatorKey,
-        builder: (context, state, child) => MainShell(child: child),
-        routes: [
+      // StatefulShellRoute: 각 탭의 위젯 상태를 보존 (날짜 등)
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            MainShell(navigationShell: navigationShell),
+        branches: [
           // 홈 (플래너)
-          GoRoute(
-            path: RouteNames.home,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: PlannerPage(),
-            ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.home,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: PlannerPage(),
+                ),
+              ),
+            ],
           ),
           // 캘린더 (기존 타임블록 뷰)
-          GoRoute(
-            path: RouteNames.calendar,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: CalendarPage(),
-            ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.calendar,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: CalendarPage(),
+                ),
+              ),
+            ],
           ),
           // 통계 (app.dart에서 전역 BlocProvider로 제공)
-          GoRoute(
-            path: RouteNames.statistics,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: StatisticsPage(),
-            ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.statistics,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: StatisticsPage(),
+                ),
+              ),
+            ],
           ),
           // 설정
-          GoRoute(
-            path: RouteNames.settings,
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: SettingsPage(),
-            ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.settings,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: SettingsPage(),
+                ),
+              ),
+            ],
           ),
         ],
       ),

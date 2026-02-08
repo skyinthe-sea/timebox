@@ -45,8 +45,14 @@ class DailyStatsSummary extends Equatable {
   final Duration totalPauseDuration;
 
   // Top 3 달성
+  /// 해당 날 설정된 Top 3 슬롯 수 (0~3)
+  final int top3SetCount;
+
   /// Top 3 중 완료한 수 (0~3)
   final int top3CompletedCount;
+
+  /// 블록별 평균 시간 정확도 (%, -1 = 데이터 없음)
+  final double timeAccuracyPercent;
 
   // 생산성 점수
   /// 종합 생산성 점수 (0~100)
@@ -69,7 +75,9 @@ class DailyStatsSummary extends Equatable {
     required this.focusSessionCount,
     required this.totalFocusDuration,
     required this.totalPauseDuration,
+    this.top3SetCount = 0,
     required this.top3CompletedCount,
+    this.timeAccuracyPercent = -1.0,
     required this.productivityScore,
     required this.calculatedAt,
   });
@@ -91,9 +99,12 @@ class DailyStatsSummary extends Equatable {
     return (completedTimeBlocks / totalTimeBlocks) * 100;
   }
 
-  /// 시간 정확도 (%)
+  /// 시간 정확도 (%, -1 = 데이터 없음)
   double get timeAccuracy {
-    if (totalPlannedDuration.inMinutes == 0) return 0.0;
+    // 블록별 평균 정확도가 저장되어 있으면 사용
+    if (timeAccuracyPercent >= 0) return timeAccuracyPercent;
+    // 레거시 폴백: 집계 기반 계산
+    if (totalPlannedDuration.inMinutes == 0) return -1.0;
     final diff = (totalActualDuration - totalPlannedDuration).inMinutes.abs();
     final ratio = diff / totalPlannedDuration.inMinutes;
     return ((1 - ratio) * 100).clamp(0.0, 100.0);
@@ -108,7 +119,8 @@ class DailyStatsSummary extends Equatable {
 
   /// Top 3 달성률 (%)
   double get top3CompletionRate {
-    return (top3CompletedCount / 3) * 100;
+    if (top3SetCount == 0) return 0.0;
+    return (top3CompletedCount / top3SetCount) * 100;
   }
 
   /// 시간 절약/초과 (분)
@@ -132,6 +144,7 @@ class DailyStatsSummary extends Equatable {
       focusSessionCount: 0,
       totalFocusDuration: Duration.zero,
       totalPauseDuration: Duration.zero,
+      top3SetCount: 0,
       top3CompletedCount: 0,
       productivityScore: 0,
       calculatedAt: DateTime.now(),
@@ -151,7 +164,9 @@ class DailyStatsSummary extends Equatable {
     int? focusSessionCount,
     Duration? totalFocusDuration,
     Duration? totalPauseDuration,
+    int? top3SetCount,
     int? top3CompletedCount,
+    double? timeAccuracyPercent,
     int? productivityScore,
     DateTime? calculatedAt,
   }) {
@@ -168,7 +183,9 @@ class DailyStatsSummary extends Equatable {
       focusSessionCount: focusSessionCount ?? this.focusSessionCount,
       totalFocusDuration: totalFocusDuration ?? this.totalFocusDuration,
       totalPauseDuration: totalPauseDuration ?? this.totalPauseDuration,
+      top3SetCount: top3SetCount ?? this.top3SetCount,
       top3CompletedCount: top3CompletedCount ?? this.top3CompletedCount,
+      timeAccuracyPercent: timeAccuracyPercent ?? this.timeAccuracyPercent,
       productivityScore: productivityScore ?? this.productivityScore,
       calculatedAt: calculatedAt ?? this.calculatedAt,
     );
@@ -188,7 +205,9 @@ class DailyStatsSummary extends Equatable {
         focusSessionCount,
         totalFocusDuration,
         totalPauseDuration,
+        top3SetCount,
         top3CompletedCount,
+        timeAccuracyPercent,
         productivityScore,
         calculatedAt,
       ];

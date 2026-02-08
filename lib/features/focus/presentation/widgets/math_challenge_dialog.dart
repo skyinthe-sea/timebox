@@ -105,7 +105,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
 
     return AlertDialog(
@@ -116,7 +116,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
             color: theme.colorScheme.primary,
           ),
           const SizedBox(width: 8),
-          Text(l10n?.mathChallenge ?? '수학 문제'),
+          Text(l10n.mathChallenge),
         ],
       ),
       content: Column(
@@ -200,7 +200,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
               fontWeight: FontWeight.bold,
             ),
             decoration: InputDecoration(
-              hintText: l10n?.enterAnswer ?? '답 입력',
+              hintText: l10n.enterAnswer,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -256,7 +256,7 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                l10n?.wrongAnswer ?? '틀렸습니다. 다시 시도하세요.',
+                l10n.wrongAnswer,
                 style: TextStyle(
                   color: isDark ? AppColors.errorDark : AppColors.errorLight,
                   fontSize: 12,
@@ -268,11 +268,11 @@ class _MathChallengeDialogState extends State<MathChallengeDialog> {
       actions: [
         TextButton(
           onPressed: widget.onCancel,
-          child: Text(l10n?.cancel ?? '취소'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: _checkAnswer,
-          child: Text(l10n?.confirm ?? '확인'),
+          child: Text(l10n.confirm),
         ),
       ],
     );

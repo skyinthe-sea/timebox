@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -6,6 +7,48 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
+
+import '../../config/routes/app_router.dart';
+import '../../config/routes/route_names.dart';
+
+/// 알림 채널 타입
+enum NotificationChannelType {
+  /// 타임블록 시작/종료 알람
+  alarms(
+    id: 'timebox_alarms',
+    name: 'Timebox Alarms',
+    description: 'Time block start/end alarm notifications',
+    importance: Importance.high,
+  ),
+
+  /// 일일 리마인더
+  reminders(
+    id: 'timebox_reminders',
+    name: 'Timebox Reminders',
+    description: 'Daily reminder notifications',
+    importance: Importance.defaultImportance,
+  ),
+
+  /// 포커스 모드 완료
+  focus(
+    id: 'timebox_focus',
+    name: 'Timebox Focus',
+    description: 'Focus mode completion notifications',
+    importance: Importance.high,
+  );
+
+  final String id;
+  final String name;
+  final String description;
+  final Importance importance;
+
+  const NotificationChannelType({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.importance,
+  });
+}
 
 /// 알림 ID 생성기
 ///
@@ -19,6 +62,11 @@ class NotificationIdGenerator {
   /// 타임블록 종료 알람 ID
   static int forTimeBlockEnd(String timeBlockId, int minutesBefore) {
     return 'tb_end_${timeBlockId}_$minutesBefore'.hashCode.abs() % 2147483647;
+  }
+
+  /// 포커스 세션 완료 알림 ID
+  static int forFocusSession(String sessionId) {
+    return 'focus_$sessionId'.hashCode.abs() % 2147483647;
   }
 
   /// 일일 참여 알림 ID (고정)
@@ -86,8 +134,30 @@ class NotificationService {
 
   /// 알림 탭 핸들러
   void _onNotificationTapped(NotificationResponse response) {
-    // TODO: 알림 탭 시 특정 화면으로 이동
     debugPrint('Notification tapped: ${response.payload}');
+
+    final payload = response.payload;
+    if (payload == null || payload.isEmpty) return;
+
+    try {
+      final data = jsonDecode(payload) as Map<String, dynamic>;
+      final type = data['type'] as String?;
+
+      switch (type) {
+        case 'timeblock_start':
+        case 'timeblock_end':
+          AppRouter.router.go(RouteNames.calendar);
+          break;
+        case 'daily_engagement':
+          AppRouter.router.go(RouteNames.home);
+          break;
+        case 'focus_complete':
+          AppRouter.router.go(RouteNames.calendar);
+          break;
+      }
+    } catch (e) {
+      debugPrint('Failed to handle notification tap: $e');
+    }
   }
 
   /// 권한 요청
@@ -135,6 +205,23 @@ class NotificationService {
     return false;
   }
 
+  /// 채널별 Android 알림 상세 설정 생성
+  AndroidNotificationDetails _androidDetailsForChannel(
+    NotificationChannelType channelType,
+  ) {
+    return AndroidNotificationDetails(
+      channelType.id,
+      channelType.name,
+      channelDescription: channelType.description,
+      importance: channelType.importance,
+      priority: channelType.importance == Importance.high
+          ? Priority.high
+          : Priority.defaultPriority,
+      enableVibration: true,
+      playSound: true,
+    );
+  }
+
   /// 알림 스케줄링
   ///
   /// [id] 고유 알림 ID
@@ -142,12 +229,14 @@ class NotificationService {
   /// [body] 알림 본문
   /// [scheduledTime] 알림 시간
   /// [payload] 추가 데이터 (JSON)
+  /// [channelType] 알림 채널 타입 (기본: alarms)
   Future<void> scheduleNotification({
     required int id,
     required String title,
     required String body,
     required DateTime scheduledTime,
     String? payload,
+    NotificationChannelType channelType = NotificationChannelType.alarms,
   }) async {
     if (!_isInitialized) return;
 
@@ -157,15 +246,7 @@ class NotificationService {
       return;
     }
 
-    final androidDetails = AndroidNotificationDetails(
-      'timebox_alarms',
-      'Timebox Alarms',
-      channelDescription: 'Timebox timeblock alarm notifications',
-      importance: Importance.high,
-      priority: Priority.high,
-      enableVibration: true,
-      playSound: true,
-    );
+    final androidDetails = _androidDetailsForChannel(channelType);
 
     const iosDetails = DarwinNotificationDetails(
       presentAlert: true,
@@ -190,7 +271,7 @@ class NotificationService {
           UILocalNotificationDateInterpretation.absoluteTime,
     );
 
-    debugPrint('Scheduled notification: id=$id, time=$scheduledTime');
+    debugPrint('Scheduled notification: id=$id, time=$scheduledTime, channel=${channelType.id}');
   }
 
   /// 특정 알림 취소

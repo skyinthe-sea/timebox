@@ -358,10 +358,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get planner => 'タイムボックス';
 
   @override
-  String get copyToTomorrow => '明日も行う';
+  String get copyToTomorrow => '明日に繰り越す';
 
   @override
-  String get copiedToTomorrow => '明日にコピーしました';
+  String get copiedToTomorrow => '明日に繰り越しました';
 
   @override
   String rolloverBadge(int count) {
@@ -614,7 +614,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get statsRolledOver => '繰り越し';
 
   @override
-  String get statsEfficiency => '効率';
+  String get statsEfficiency => '正確度';
+
+  @override
+  String get statsAccomplished => '達成';
 
   @override
   String get statsNoData => 'まだデータがありません';
@@ -998,4 +1001,81 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get demoModeClearing => 'デモデータを削除中...';
+
+  @override
+  String timeBlockStartAlarmTitle(String title, String time) {
+    return '$title - 開始$time前';
+  }
+
+  @override
+  String get timeBlockStartAlarmBody => 'まもなく開始です。準備しましょう！';
+
+  @override
+  String timeBlockEndAlarmTitle(String title, String time) {
+    return '$title - 終了$time前';
+  }
+
+  @override
+  String get timeBlockEndAlarmBody => 'まとめの時間です。';
+
+  @override
+  String get focusSessionCompleteTitle => '集中時間完了！';
+
+  @override
+  String get focusSessionCompleteBody => 'お疲れ様でした。少し休憩しましょう。';
+
+  @override
+  String get statDescProductivityScoreTitle => '生産性スコア';
+
+  @override
+  String get statDescProductivityScoreBody =>
+      '完了率、時間精度、タイムブロック実行率を総合した0〜100点のスコアです。';
+
+  @override
+  String get statDescCompletionRingsTitle => '完了率リング';
+
+  @override
+  String get statDescCompletionRingsBody => 'タスク完了率、タイムブロック実行率、時間精度を表示します。';
+
+  @override
+  String get statDescTaskPipelineTitle => 'タスクフロー';
+
+  @override
+  String get statDescTaskPipelineBody => '全体→スケジュール→完了→繰り越しの流れを表示します。';
+
+  @override
+  String get statDescTop3StatsTitle => 'Top 3 達成';
+
+  @override
+  String get statDescTop3StatsBody => '最も重要な3つのタスクの達成状況です。';
+
+  @override
+  String get statDescTaskRankingTitle => 'タスクランキング';
+
+  @override
+  String get statDescTaskRankingBody => '繰り返しタスクの完了成功/失敗ランキングです。';
+
+  @override
+  String get statDescFocusSummaryTitle => '集中分析';
+
+  @override
+  String get statDescFocusSummaryBody => '集中モードの効率、時間、セッション数、一時停止時間です。';
+
+  @override
+  String get statDescTrendChartTitle => '生産性トレンド';
+
+  @override
+  String get statDescTrendChartBody => '日別の生産性スコア推移を折れ線グラフで表示します。';
+
+  @override
+  String get statDescTagAnalysisTitle => 'タグ別分析';
+
+  @override
+  String get statDescTagAnalysisBody => 'タグ別のタスク数と計画時間を表示します。';
+
+  @override
+  String get statDescInsightsTitle => 'インサイト';
+
+  @override
+  String get statDescInsightsBody => 'データに基づく自動生成パフォーマンス分析です。';
 }

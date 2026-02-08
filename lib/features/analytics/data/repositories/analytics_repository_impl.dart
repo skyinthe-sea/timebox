@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../task/data/datasources/task_local_datasource.dart';
+import '../../../task/data/models/task_model.dart';
 import '../../../timeblock/data/datasources/time_block_local_datasource.dart';
 import '../../../focus/data/datasources/focus_session_local_datasource.dart';
 import '../../../planner/data/datasources/daily_priority_local_datasource.dart';
@@ -41,13 +42,20 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   @override
   Future<Either<Failure, ProductivityStats>> getDailyStats(DateTime date) async {
     try {
-      // 먼저 캐시된 통계 확인
-      final cached = await analyticsDataSource.getDailyStatsSummary(date);
-      if (cached != null) {
-        return Right(_summaryToProductivityStats(cached.toEntity()));
+      final now = DateTime.now();
+      final isToday = date.year == now.year &&
+          date.month == now.month &&
+          date.day == now.day;
+
+      // 과거 날짜만 캐시 사용 (오늘은 항상 실시간 계산)
+      if (!isToday) {
+        final cached = await analyticsDataSource.getDailyStatsSummary(date);
+        if (cached != null) {
+          return Right(_summaryToProductivityStats(cached.toEntity()));
+        }
       }
 
-      // 캐시가 없으면 실시간 계산
+      // 오늘이거나 캐시 미스: 실시간 계산
       final stats = await _calculateDailyStats(date);
       return Right(stats);
     } on CacheException catch (e) {
@@ -202,16 +210,24 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
             await timeBlockDataSource.getTimeBlocksForDay(currentDate);
 
         for (final task in tasks) {
-          // 해당 Task에 연결된 TimeBlock에서 실제 시간 계산
+          // 해당 Task에 연결된 TimeBlock에서 계획 시간과 실제 시간 계산
+          int taskPlannedMinutes = 0;
           int taskActualMinutes = 0;
           for (final block in timeBlocks) {
-            if (block.taskId == task.id &&
-                block.actualStart != null &&
-                block.actualEnd != null) {
-              taskActualMinutes +=
-                  block.actualEnd!.difference(block.actualStart!).inMinutes;
+            if (block.taskId == task.id) {
+              taskPlannedMinutes +=
+                  block.endTime.difference(block.startTime).inMinutes;
+              if (block.actualStart != null && block.actualEnd != null) {
+                taskActualMinutes +=
+                    block.actualEnd!.difference(block.actualStart!).inMinutes;
+              }
             }
           }
+
+          // TimeBlock이 없으면 Task의 estimatedDuration을 폴백으로 사용
+          final plannedMinutes = taskPlannedMinutes > 0
+              ? taskPlannedMinutes
+              : task.estimatedDurationMinutes;
 
           for (final tag in task.tags) {
             final builder = tagStats.putIfAbsent(
@@ -222,7 +238,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
               ),
             );
             builder.addTask(
-              task.estimatedDurationMinutes,
+              plannedMinutes,
               taskActualMinutes > 0 ? taskActualMinutes : null,
             );
           }
@@ -243,8 +259,21 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   Future<Either<Failure, List<String>>> getIncompleteTasks(DateTime date) async {
     try {
       final tasks = await taskDataSource.getTasksByDate(date);
+      final timeBlocks = await timeBlockDataSource.getTimeBlocksForDay(date);
+
+      // 완료 판정: TimeBlock 완료 OR Task status == 'done' (union)
+      final completedByTb = timeBlocks
+          .where((b) => b.status == 'completed' && b.taskId != null)
+          .map((b) => b.taskId!)
+          .toSet();
+      final completedByTask = tasks
+          .where((t) => t.status == 'done')
+          .map((t) => t.id)
+          .toSet();
+      final completedIds = completedByTb.union(completedByTask);
+
       final incomplete = tasks
-          .where((t) => t.status != 'done')
+          .where((t) => !completedIds.contains(t.id))
           .map((t) => t.id)
           .toList();
       return Right(incomplete);
@@ -259,7 +288,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   Future<Either<Failure, int>> getRolloverCount(DateTime date) async {
     try {
       final tasks = await taskDataSource.getTasksByDate(date);
-      final rolloverCount = tasks.where((t) => t.rolloverCount > 0).length;
+      final rolloverCount = _countRolledOverTasks(tasks, date);
       return Right(rolloverCount);
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));
@@ -335,22 +364,45 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
 
   /// 일간 통계 실시간 계산
   Future<ProductivityStats> _calculateDailyStats(DateTime date) async {
-    // Task 통계
-    final tasks = await taskDataSource.getTasksByDate(date);
+    // Task 통계 (archived 제외)
+    final allTasks = await taskDataSource.getTasksByDate(date);
+    final tasks = allTasks.where((t) => t.status != 'archived').toList();
     final totalTasks = tasks.length;
-    final completedTasks = tasks.where((t) => t.status == 'done').length;
 
-    // TimeBlock 통계
+    // TimeBlock 통계 (현재 시간 이전 블록만 완료율 계산에 포함)
     final timeBlocks = await timeBlockDataSource.getTimeBlocksForDay(date);
-    final totalTimeBlocks = timeBlocks.length;
-    final completedTimeBlocks =
-        timeBlocks.where((b) => b.status == 'completed').length;
-    final skippedTimeBlocks =
-        timeBlocks.where((b) => b.status == 'skipped').length;
 
-    // 계획/실제 시간 (측정된 블록 기준: actualStart/actualEnd가 있는 블록만)
+    // 완료 판정: TimeBlock 완료 OR Task status == 'done' (union)
+    final completedByTimeBlock = timeBlocks
+        .where((tb) => tb.status == 'completed' && tb.taskId != null)
+        .map((tb) => tb.taskId!)
+        .toSet();
+    final completedByTask = tasks
+        .where((t) => t.status == 'done')
+        .map((t) => t.id)
+        .toSet();
+    final completedTaskIds = completedByTimeBlock.union(completedByTask);
+    // 실제로 현재 날짜의 task 중 완료된 것만 카운트
+    final completedTasks = tasks.where((t) => completedTaskIds.contains(t.id)).length;
+    final now = DateTime.now();
+    final isToday = date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day;
+    // 오늘이면 시작 시간이 지난 블록만, 과거 날짜면 전체
+    final relevantBlocks = isToday
+        ? timeBlocks.where((b) => b.startTime.isBefore(now)).toList()
+        : timeBlocks;
+    final totalTimeBlocks = relevantBlocks.length;
+    final completedTimeBlocks =
+        relevantBlocks.where((b) => b.status == 'completed').length;
+    final skippedTimeBlocks =
+        relevantBlocks.where((b) => b.status == 'skipped').length;
+
+    // 계획/실제 시간 + 블록별 정확도 (상쇄 방지)
     var measuredPlannedMinutes = 0;
     var actualMinutes = 0;
+    double timeAccuracySum = 0;
+    int measuredBlockCount = 0;
 
     for (final block in timeBlocks) {
       if (block.actualStart != null && block.actualEnd != null) {
@@ -358,8 +410,20 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         final actual = block.actualEnd!.difference(block.actualStart!).inMinutes;
         actualMinutes += actual;
         measuredPlannedMinutes += blockPlanned;
+        // 블록별 정확도 계산 (상쇄 방지)
+        if (blockPlanned > 0) {
+          final blockAccuracy =
+              (1 - (actual - blockPlanned).abs() / blockPlanned).clamp(0.0, 1.0);
+          timeAccuracySum += blockAccuracy;
+          measuredBlockCount++;
+        }
       }
     }
+
+    // 블록별 평균 정확도 (-1 = 데이터 없음)
+    final timeAccuracyPercent = measuredBlockCount > 0
+        ? (timeAccuracySum / measuredBlockCount) * 100
+        : -1.0;
 
     // Focus 통계 (일시정지 시간 제외)
     final sessions = await focusSessionDataSource.getSessionsForDay(date);
@@ -401,14 +465,15 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         totalPlannedTime: Duration.zero,
         totalActualTime: Duration.zero,
         focusTime: Duration(minutes: focusMinutes),
-        averageTimeDifference: Duration.zero,
+        totalTimeDifference: Duration.zero,
+        timeAccuracyPercent: -1.0,
       );
     }
 
     // 동적 가중치: 데이터가 있는 항목만 점수에 반영
     final taskRate = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
-    final timeAccuracy = measuredPlannedMinutes > 0
-        ? (1 - (timeDiffTotal.abs() / measuredPlannedMinutes)).clamp(0.0, 1.0)
+    final timeAccuracy = measuredBlockCount > 0
+        ? timeAccuracySum / measuredBlockCount
         : 0.0;
     final blockRate =
         totalTimeBlocks > 0 ? completedTimeBlocks / totalTimeBlocks : 0.0;
@@ -419,7 +484,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       weightedSum += taskRate * 0.3;
       totalWeight += 0.3;
     }
-    if (measuredPlannedMinutes > 0) {
+    if (measuredBlockCount > 0) {
       weightedSum += timeAccuracy * 0.3;
       totalWeight += 0.3;
     }
@@ -444,7 +509,8 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       totalPlannedTime: Duration(minutes: measuredPlannedMinutes),
       totalActualTime: Duration(minutes: actualMinutes),
       focusTime: Duration(minutes: focusMinutes),
-      averageTimeDifference: Duration(minutes: timeDiffTotal),
+      totalTimeDifference: Duration(minutes: timeDiffTotal),
+      timeAccuracyPercent: timeAccuracyPercent,
     );
   }
 
@@ -461,7 +527,8 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       totalPlannedTime: summary.totalPlannedDuration,
       totalActualTime: summary.totalActualDuration,
       focusTime: summary.totalFocusDuration,
-      averageTimeDifference: summary.totalActualDuration - summary.totalPlannedDuration,
+      totalTimeDifference: summary.totalActualDuration - summary.totalPlannedDuration,
+      timeAccuracyPercent: summary.timeAccuracyPercent,
     );
   }
 
@@ -475,15 +542,27 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       // TimeBlock 데이터 조회 (Top3 달성 + 측정 데이터 계산용)
       final timeBlocks = await timeBlockDataSource.getTimeBlocksForDay(date);
 
-      // Top 3 달성 계산 (TimeBlock 완료 기준)
+      // Top 3 달성 계산 (TimeBlock 완료 또는 Task 완료)
       final priority = await dailyPriorityDataSource.getDailyPriority(date);
       var top3Completed = 0;
+      var top3Set = 0;
       if (priority != null) {
-        // TaskId별로 완료된 TimeBlock이 있는지 확인
-        final completedTaskIds = timeBlocks
+        // 설정된 Top 3 슬롯 수 카운트
+        if (priority.rank1TaskId != null) top3Set++;
+        if (priority.rank2TaskId != null) top3Set++;
+        if (priority.rank3TaskId != null) top3Set++;
+
+        // 완료 판정: TimeBlock 완료 OR Task status == 'done'
+        final completedByTimeBlock = timeBlocks
             .where((tb) => tb.status == 'completed' && tb.taskId != null)
             .map((tb) => tb.taskId)
             .toSet();
+        final tasks = await taskDataSource.getTasksByDate(date);
+        final completedByTask = tasks
+            .where((t) => t.status == 'done')
+            .map((t) => t.id)
+            .toSet();
+        final completedTaskIds = completedByTimeBlock.union(completedByTask);
 
         if (priority.rank1TaskId != null &&
             completedTaskIds.contains(priority.rank1TaskId)) {
@@ -499,21 +578,35 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         }
       }
 
-      // 실제 데이터가 있는 블록의 계획/실제 시간 계산 (측정 가능한 비교를 위해)
+      // 실제 데이터가 있는 블록의 계획/실제 시간 + 블록별 정확도 계산
       var measuredPlannedMinutes = 0;
       var measuredActualMinutes = 0;
+      double blockAccuracySum = 0;
+      int measuredBlockCount = 0;
       for (final block in timeBlocks) {
         if (block.actualStart != null && block.actualEnd != null) {
-          measuredPlannedMinutes +=
+          final blockPlanned =
               block.endTime.difference(block.startTime).inMinutes;
-          measuredActualMinutes +=
+          final blockActual =
               block.actualEnd!.difference(block.actualStart!).inMinutes;
+          measuredPlannedMinutes += blockPlanned;
+          measuredActualMinutes += blockActual;
+          if (blockPlanned > 0) {
+            final accuracy =
+                (1 - (blockActual - blockPlanned).abs() / blockPlanned)
+                    .clamp(0.0, 1.0);
+            blockAccuracySum += accuracy;
+            measuredBlockCount++;
+          }
         }
       }
+      final savedTimeAccuracyPercent = measuredBlockCount > 0
+          ? (blockAccuracySum / measuredBlockCount) * 100
+          : -1.0;
 
-      // 이월 Task 수
+      // 이월 Task 수 (확장 정의: rolloverCount > 0 OR createdAt < date)
       final tasks = await taskDataSource.getTasksByDate(date);
-      final rolledOver = tasks.where((t) => t.rolloverCount > 0).length;
+      final rolledOver = _countRolledOverTasks(tasks, date);
 
       // Focus 일시정지 시간
       final sessions = await focusSessionDataSource.getSessionsForDay(date);
@@ -540,7 +633,9 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         focusSessionCount: sessions.length,
         totalFocusDuration: stats.focusTime,
         totalPauseDuration: Duration(minutes: pauseMinutes),
+        top3SetCount: top3Set,
         top3CompletedCount: top3Completed,
+        timeAccuracyPercent: savedTimeAccuracyPercent,
         productivityScore: stats.score,
         calculatedAt: DateTime.now(),
       );
@@ -653,9 +748,18 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
         ));
       }
 
-      // 2. 이월 경고
+      // 2. 이월 경고 (확장 정의: rolloverCount >= 3 OR 3일 이상 방치)
       final tasks = await taskDataSource.getTasksByDate(date);
-      final highRollover = tasks.where((t) => t.rolloverCount >= 3).length;
+      final normalizedDate = DateTime(date.year, date.month, date.day);
+      final highRollover = tasks.where((t) {
+        if (t.rolloverCount >= 3) return true;
+        final createdDate = DateTime(
+          t.createdAt.year,
+          t.createdAt.month,
+          t.createdAt.day,
+        );
+        return normalizedDate.difference(createdDate).inDays >= 3;
+      }).length;
       if (highRollover > 0) {
         insights.add(Insight.rolloverWarning(
           id: 'insight_${now.millisecondsSinceEpoch}_2',
@@ -703,6 +807,24 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     }
   }
 
+  /// 이월 Task 수 계산 (확장 정의)
+  ///
+  /// 조건 (OR):
+  /// 1. rolloverCount > 0 (명시적 이월 버튼 사용)
+  /// 2. createdAt 날짜 < date (이전 날짜에 생성된 Task가 해당 날짜에 존재)
+  int _countRolledOverTasks(List<TaskModel> tasks, DateTime date) {
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    return tasks.where((t) {
+      if (t.rolloverCount > 0) return true;
+      final createdDate = DateTime(
+        t.createdAt.year,
+        t.createdAt.month,
+        t.createdAt.day,
+      );
+      return createdDate.isBefore(normalizedDate);
+    }).length;
+  }
+
   bool _isSameDate(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
   }
@@ -712,7 +834,17 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     DateTime date,
   ) async {
     try {
-      // 캐시된 데이터 확인
+      final now = DateTime.now();
+      final isToday = date.year == now.year &&
+          date.month == now.month &&
+          date.day == now.day;
+
+      // 오늘은 항상 재계산 (데이터가 실시간으로 변경됨)
+      if (isToday) {
+        return saveDailyStatsSummary(date);
+      }
+
+      // 과거 날짜: 캐시 확인
       final cached = await analyticsDataSource.getDailyStatsSummary(date);
       if (cached != null) {
         return Right(cached.toEntity());
@@ -742,11 +874,23 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       while (!currentDate.isAfter(end)) {
         final tasks = await taskDataSource.getTasksByDate(currentDate);
         totalTasks += tasks.length;
-        completedTasks += tasks.where((t) => t.status == 'done').length;
-        rolledOverTasks += tasks.where((t) => t.rolloverCount > 0).length;
+        rolledOverTasks += _countRolledOverTasks(tasks, currentDate);
 
         final timeBlocks =
             await timeBlockDataSource.getTimeBlocksForDay(currentDate);
+
+        // 완료 판정: TimeBlock 완료 OR Task status == 'done' (union)
+        final completedByTb = timeBlocks
+            .where((b) => b.status == 'completed' && b.taskId != null)
+            .map((b) => b.taskId!)
+            .toSet();
+        final completedByTask = tasks
+            .where((t) => t.status == 'done')
+            .map((t) => t.id)
+            .toSet();
+        final completedIds = completedByTb.union(completedByTask);
+        completedTasks += tasks.where((t) => completedIds.contains(t.id)).length;
+
         // 해당 날짜의 TimeBlock에 연결된 Task ID 집합
         final scheduledIdsForDay = timeBlocks
             .where((b) => b.taskId != null)
@@ -785,8 +929,22 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
       var currentDate = start;
       while (!currentDate.isAfter(end)) {
         final tasks = await taskDataSource.getTasksByDate(currentDate);
+        final timeBlocks =
+            await timeBlockDataSource.getTimeBlocksForDay(currentDate);
+
+        // 완료 판정: TimeBlock 완료 OR Task status == 'done' (union)
+        final completedByTb = timeBlocks
+            .where((b) => b.status == 'completed' && b.taskId != null)
+            .map((b) => b.taskId!)
+            .toSet();
+        final completedByTask = tasks
+            .where((t) => t.status == 'done')
+            .map((t) => t.id)
+            .toSet();
+        final completedIds = completedByTb.union(completedByTask);
+
         for (final task in tasks) {
-          final isDone = task.status == 'done';
+          final isDone = completedIds.contains(task.id);
           switch (task.priority) {
             case 'high':
               highTotal++;
@@ -822,42 +980,69 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     DateTime end,
   ) async {
     try {
-      // 기간 내 모든 Task 수집 → 제목별 그룹핑
+      // 타임블록 기반 랭킹: 타임블록에 배정된 태스크만 대상
+      // 카운트 단위 = 타임블록 (완료/실패가 확정된 것만)
       final groups = <String, _RankingData>{};
       var currentDate = start;
       while (!currentDate.isAfter(end)) {
         final tasks = await taskDataSource.getTasksByDate(currentDate);
-        for (final task in tasks) {
+        final timeBlocks =
+            await timeBlockDataSource.getTimeBlocksForDay(currentDate);
+
+        // Task ID → Task 맵 (빠른 조회용)
+        final taskMap = {for (final t in tasks) t.id: t};
+
+        for (final block in timeBlocks) {
+          if (block.taskId == null) continue;
+
+          // 미결정 상태 제외 (pending, inProgress)
+          if (block.status == 'pending' || block.status == 'inProgress') {
+            continue;
+          }
+
+          final task = taskMap[block.taskId];
+          if (task == null) continue;
+
           final normalized = task.title.toLowerCase().trim();
           final data = groups.putIfAbsent(
             normalized,
             () => _RankingData(originalTitle: task.title),
           );
           data.total++;
-          if (task.status == 'done') {
+          if (block.status == 'completed') {
             data.completed++;
           }
         }
         currentDate = currentDate.add(const Duration(days: 1));
       }
 
-      // 최소 2회 이상 생성된 Task만 대상
-      final qualified = groups.values.where((d) => d.total >= 2).toList();
+      final qualified = groups.values.where((d) => d.total >= 1).toList();
 
-      // Top 5 성공: 완료율 높은 순
+      // Top 5 성공: 완료율 높은 순 (동률 시 총 건수 많은 순)
       final successList = List<_RankingData>.from(qualified)
-        ..sort((a, b) => b.completionRate.compareTo(a.completionRate));
-      final topSuccess = successList.take(5).map((d) => TaskCompletionRanking(
+        ..sort((a, b) {
+          final rateCompare = b.completionRate.compareTo(a.completionRate);
+          if (rateCompare != 0) return rateCompare;
+          return b.total.compareTo(a.total);
+        });
+      final topSuccessData = successList.take(5).toList();
+      final topSuccess = topSuccessData.map((d) => TaskCompletionRanking(
             title: d.originalTitle,
             totalCount: d.total,
             completedCount: d.completed,
             completionRate: d.completionRate,
           )).toList();
 
-      // Top 5 실패: 완료율 낮은 순, 100% 완료 제외
-      final failureCandidates =
-          qualified.where((d) => d.completionRate < 1.0).toList()
-            ..sort((a, b) => a.completionRate.compareTo(b.completionRate));
+      // Top 5 실패: 완료율 낮은 순, 100% 완료 및 성공 목록 항목 제외
+      final topSuccessSet = topSuccessData.toSet();
+      final failureCandidates = qualified
+          .where((d) => d.completionRate < 1.0 && !topSuccessSet.contains(d))
+          .toList()
+        ..sort((a, b) {
+          final rateCompare = a.completionRate.compareTo(b.completionRate);
+          if (rateCompare != 0) return rateCompare;
+          return b.total.compareTo(a.total);
+        });
       final topFailure = failureCandidates.take(5).map((d) => TaskCompletionRanking(
             title: d.originalTitle,
             totalCount: d.total,

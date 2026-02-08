@@ -148,8 +148,8 @@
   "dayStartTime": "Начало дня",
   "dayEndTime": "Конец дня",
   "planner": "Таймбокс",
-  "copyToTomorrow": "Повторить завтра",
-  "copiedToTomorrow": "Скопировано на завтра",
+  "copyToTomorrow": "Перенести на завтра",
+  "copiedToTomorrow": "Перенесено на завтра",
   "rolloverBadge": "Перенос: {count}",
   "@rolloverBadge": {
     "placeholders": {
@@ -263,7 +263,8 @@
   "statsScheduled": "Запланировано",
   "statsCompleted": "Выполнено",
   "statsRolledOver": "Перенесено",
-  "statsEfficiency": "Эффективность",
+  "statsEfficiency": "Точность",
+  "statsAccomplished": "Достигнуто",
   "statsNoData": "Пока нет данных",
   "statsTop3Performance": "Достижение Top 3",
   "statsTop3Completed": "Выполнено",
@@ -526,5 +527,43 @@
   "demoModeEnabled": "Демо режим включён",
   "demoModeDisabled": "Демо режим отключён",
   "demoModeGenerating": "Генерация образцов данных...",
-  "demoModeClearing": "Удаление демо данных..."
+  "demoModeClearing": "Удаление демо данных...",
+
+  "timeBlockStartAlarmTitle": "{title} - за {time} до начала",
+  "@timeBlockStartAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockStartAlarmBody": "Скоро начнётся. Подготовьтесь!",
+  "timeBlockEndAlarmTitle": "{title} - за {time} до окончания",
+  "@timeBlockEndAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockEndAlarmBody": "Пора завершать.",
+  "focusSessionCompleteTitle": "Сессия фокусировки завершена!",
+  "focusSessionCompleteBody": "Отличная работа! Сделайте короткий перерыв.",
+
+  "statDescProductivityScoreTitle": "Балл продуктивности",
+  "statDescProductivityScoreBody": "Оценка от 0 до 100, объединяющая процент выполнения, точность времени и исполнение таймблоков.",
+  "statDescCompletionRingsTitle": "Кольца выполнения",
+  "statDescCompletionRingsBody": "Показывает процент выполнения задач, таймблоков и точность времени.",
+  "statDescTaskPipelineTitle": "Поток задач",
+  "statDescTaskPipelineBody": "Показывает поток: всего → запланировано → выполнено → перенесено.",
+  "statDescTop3StatsTitle": "Достижение Топ 3",
+  "statDescTop3StatsBody": "Статус достижения 3 самых важных задач.",
+  "statDescTaskRankingTitle": "Рейтинг задач",
+  "statDescTaskRankingBody": "Ранжирует повторяющиеся задачи по успешности выполнения.",
+  "statDescFocusSummaryTitle": "Анализ фокуса",
+  "statDescFocusSummaryBody": "Эффективность фокуса, время, количество сессий и длительность пауз.",
+  "statDescTrendChartTitle": "Тренд продуктивности",
+  "statDescTrendChartBody": "Показывает ежедневные изменения балла продуктивности в виде графика.",
+  "statDescTagAnalysisTitle": "Анализ по тегам",
+  "statDescTagAnalysisBody": "Показывает количество задач и запланированное время по тегам.",
+  "statDescInsightsTitle": "Инсайты",
+  "statDescInsightsBody": "Автоматический анализ эффективности на основе ваших данных."
 }

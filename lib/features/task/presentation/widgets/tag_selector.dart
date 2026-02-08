@@ -32,16 +32,16 @@ class TagSelector extends StatefulWidget {
 
   /// 태그 ID로 다국어 이름 반환 (기본 태그만)
   static String getLocalizedTagName(BuildContext context, Tag tag) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     switch (tag.id) {
       case 'work':
-        return l10n?.tagWork ?? '업무';
+        return l10n.tagWork;
       case 'personal':
-        return l10n?.tagPersonal ?? '개인';
+        return l10n.tagPersonal;
       case 'health':
-        return l10n?.tagHealth ?? '건강';
+        return l10n.tagHealth;
       case 'study':
-        return l10n?.tagStudy ?? '학습';
+        return l10n.tagStudy;
       default:
         // 커스텀 태그는 저장된 이름 사용
         return tag.name;
@@ -178,7 +178,7 @@ class _TagSelectorState extends State<TagSelector> {
             ),
             SizedBox(width: widget.compact ? 4 : 6),
             Text(
-              l10n?.addTag ?? '태그 추가',
+              l10n!.addTag,
               style: TextStyle(
                 fontSize: widget.compact ? 12 : 14,
                 fontWeight: FontWeight.w500,
@@ -236,14 +236,14 @@ class _AddTagDialogState extends State<_AddTagDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       title: Text(
-        l10n?.newTag ?? '새 태그',
+        l10n.newTag,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w600,
         ),
@@ -257,7 +257,7 @@ class _AddTagDialogState extends State<_AddTagDialog> {
             controller: _nameController,
             autofocus: true,
             decoration: InputDecoration(
-              hintText: l10n?.tagNameHint ?? '태그 이름',
+              hintText: l10n.tagNameHint,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -272,7 +272,7 @@ class _AddTagDialogState extends State<_AddTagDialog> {
 
           // 색상 선택
           Text(
-            l10n?.selectColor ?? '색상 선택',
+            l10n.selectColor,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w500,
               color: theme.colorScheme.outline,
@@ -329,7 +329,7 @@ class _AddTagDialogState extends State<_AddTagDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n?.cancel ?? '취소'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: _nameController.text.trim().isEmpty
@@ -345,7 +345,7 @@ class _AddTagDialogState extends State<_AddTagDialog> {
                     Navigator.of(context).pop(tag);
                   }
                 },
-          child: Text(l10n?.add ?? '추가'),
+          child: Text(l10n.add),
         ),
       ],
     );

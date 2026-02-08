@@ -32,28 +32,28 @@ class Tag {
 abstract class DefaultTags {
   static const Tag work = Tag(
     id: 'work',
-    name: '업무',
+    name: 'Work',
     color: Color(0xFF3B82F6), // Blue
     icon: Icons.work,
   );
 
   static const Tag personal = Tag(
     id: 'personal',
-    name: '개인',
+    name: 'Personal',
     color: Color(0xFF10B981), // Green
     icon: Icons.person,
   );
 
   static const Tag health = Tag(
     id: 'health',
-    name: '건강',
+    name: 'Health',
     color: Color(0xFFEF4444), // Red
     icon: Icons.favorite,
   );
 
   static const Tag study = Tag(
     id: 'study',
-    name: '학습',
+    name: 'Study',
     color: Color(0xFFF59E0B), // Amber
     icon: Icons.school,
   );

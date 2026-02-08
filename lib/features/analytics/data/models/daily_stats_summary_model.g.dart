@@ -25,7 +25,10 @@ _$DailyStatsSummaryModelImpl _$$DailyStatsSummaryModelImplFromJson(
           (json['totalFocusDurationMinutes'] as num?)?.toInt() ?? 0,
       totalPauseDurationMinutes:
           (json['totalPauseDurationMinutes'] as num?)?.toInt() ?? 0,
+      top3SetCount: (json['top3SetCount'] as num?)?.toInt() ?? 0,
       top3CompletedCount: (json['top3CompletedCount'] as num?)?.toInt() ?? 0,
+      timeAccuracyPercent:
+          (json['timeAccuracyPercent'] as num?)?.toDouble() ?? -1.0,
       productivityScore: (json['productivityScore'] as num).toInt(),
       calculatedAt: DateTime.parse(json['calculatedAt'] as String),
     );
@@ -45,7 +48,9 @@ Map<String, dynamic> _$$DailyStatsSummaryModelImplToJson(
       'focusSessionCount': instance.focusSessionCount,
       'totalFocusDurationMinutes': instance.totalFocusDurationMinutes,
       'totalPauseDurationMinutes': instance.totalPauseDurationMinutes,
+      'top3SetCount': instance.top3SetCount,
       'top3CompletedCount': instance.top3CompletedCount,
+      'timeAccuracyPercent': instance.timeAccuracyPercent,
       'productivityScore': instance.productivityScore,
       'calculatedAt': instance.calculatedAt.toIso8601String(),
     };

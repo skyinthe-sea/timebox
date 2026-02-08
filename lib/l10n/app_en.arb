@@ -134,8 +134,8 @@
   "dayStartTime": "Day Start Time",
   "dayEndTime": "Day End Time",
   "planner": "Timebox",
-  "copyToTomorrow": "Copy to tomorrow",
-  "copiedToTomorrow": "Copied to tomorrow",
+  "copyToTomorrow": "Rollover to tomorrow",
+  "copiedToTomorrow": "Rolled over to tomorrow",
   "rolloverBadge": "Rollover {count}x",
   "@rolloverBadge": {
     "placeholders": {
@@ -249,7 +249,8 @@
   "statsScheduled": "Scheduled",
   "statsCompleted": "Completed",
   "statsRolledOver": "Rolled Over",
-  "statsEfficiency": "Efficiency",
+  "statsEfficiency": "Accuracy",
+  "statsAccomplished": "Done",
   "statsNoData": "No data yet",
   "statsTop3Performance": "Top 3 Achievement",
   "statsTop3Completed": "Completed",
@@ -390,5 +391,43 @@
   "demoModeEnabled": "Demo mode enabled",
   "demoModeDisabled": "Demo mode disabled",
   "demoModeGenerating": "Generating sample data...",
-  "demoModeClearing": "Clearing demo data..."
+  "demoModeClearing": "Clearing demo data...",
+
+  "timeBlockStartAlarmTitle": "{title} - {time} before start",
+  "@timeBlockStartAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockStartAlarmBody": "Starting soon. Get ready!",
+  "timeBlockEndAlarmTitle": "{title} - {time} before end",
+  "@timeBlockEndAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockEndAlarmBody": "Time to wrap up.",
+  "focusSessionCompleteTitle": "Focus session complete!",
+  "focusSessionCompleteBody": "Great work! Take a short break.",
+
+  "statDescProductivityScoreTitle": "Productivity Score",
+  "statDescProductivityScoreBody": "A 0–100 score combining completion rate, time accuracy, and time block execution.",
+  "statDescCompletionRingsTitle": "Completion Rings",
+  "statDescCompletionRingsBody": "Shows task completion rate, time block execution rate, and time accuracy.",
+  "statDescTaskPipelineTitle": "Task Pipeline",
+  "statDescTaskPipelineBody": "Shows the flow from total → scheduled → completed → rolled over.",
+  "statDescTop3StatsTitle": "Top 3 Achievement",
+  "statDescTop3StatsBody": "Shows the achievement status of your 3 most important tasks.",
+  "statDescTaskRankingTitle": "Task Ranking",
+  "statDescTaskRankingBody": "Ranks recurring tasks by completion success/failure.",
+  "statDescFocusSummaryTitle": "Focus Analysis",
+  "statDescFocusSummaryBody": "Focus mode efficiency, time, session count, and pause duration.",
+  "statDescTrendChartTitle": "Productivity Trend",
+  "statDescTrendChartBody": "Shows daily productivity score changes as a line graph.",
+  "statDescTagAnalysisTitle": "Tag Analysis",
+  "statDescTagAnalysisBody": "Shows task count and planned time by tag.",
+  "statDescInsightsTitle": "Insights",
+  "statDescInsightsBody": "Auto-generated performance analysis based on your data."
 }

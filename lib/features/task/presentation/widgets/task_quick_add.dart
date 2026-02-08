@@ -90,7 +90,7 @@ class _TaskQuickAddState extends State<TaskQuickAdd> {
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                    label: Text(DurationPresets.getLabel(duration)),
+                    label: Text(DurationPresets.getLabel(duration, AppLocalizations.of(context)!)),
                     selected: isSelected,
                     onSelected: (_) {
                       setState(() => _selectedDuration = duration);

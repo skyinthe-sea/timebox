@@ -47,12 +47,14 @@ class NotificationSettings extends Equatable {
   factory NotificationSettings.defaults() => const NotificationSettings();
 
   /// 분 단위를 표시 문자열로 변환
-  static String formatMinutes(int minutes) {
+  static String formatMinutes(int minutes, {String Function(int)? hoursFormatter, String Function(int)? minutesFormatter}) {
+    final hFmt = hoursFormatter ?? (h) => '${h}h';
+    final mFmt = minutesFormatter ?? (m) => '${m}m';
     if (minutes >= 60) {
       final hours = minutes ~/ 60;
-      return '$hours시간';
+      return hFmt(hours);
     }
-    return '$minutes분';
+    return mFmt(minutes);
   }
 
   NotificationSettings copyWith({

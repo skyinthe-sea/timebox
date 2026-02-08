@@ -134,8 +134,8 @@
   "dayStartTime": "Heure de début de journée",
   "dayEndTime": "Heure de fin de journée",
   "planner": "Timebox",
-  "copyToTomorrow": "Faire aussi demain",
-  "copiedToTomorrow": "Copié pour demain",
+  "copyToTomorrow": "Reporter à demain",
+  "copiedToTomorrow": "Reporté à demain",
   "rolloverBadge": "Report {count}x",
   "@rolloverBadge": {
     "placeholders": {
@@ -249,7 +249,8 @@
   "statsScheduled": "Planifié",
   "statsCompleted": "Terminé",
   "statsRolledOver": "Reporté",
-  "statsEfficiency": "Efficacité",
+  "statsEfficiency": "Précision",
+  "statsAccomplished": "Atteint",
   "statsNoData": "Pas encore de données",
   "statsTop3Performance": "Réalisation Top 3",
   "statsTop3Completed": "Terminé",
@@ -390,5 +391,43 @@
   "demoModeEnabled": "Mode démo activé",
   "demoModeDisabled": "Mode démo désactivé",
   "demoModeGenerating": "Génération des données d'exemple...",
-  "demoModeClearing": "Suppression des données démo..."
+  "demoModeClearing": "Suppression des données démo...",
+
+  "timeBlockStartAlarmTitle": "{title} - {time} avant le début",
+  "@timeBlockStartAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockStartAlarmBody": "Ça commence bientôt. Préparez-vous !",
+  "timeBlockEndAlarmTitle": "{title} - {time} avant la fin",
+  "@timeBlockEndAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockEndAlarmBody": "Il est temps de conclure.",
+  "focusSessionCompleteTitle": "Session de concentration terminée !",
+  "focusSessionCompleteBody": "Excellent travail ! Prenez une courte pause.",
+
+  "statDescProductivityScoreTitle": "Score de productivité",
+  "statDescProductivityScoreBody": "Score de 0 à 100 combinant taux de complétion, précision temporelle et exécution des blocs.",
+  "statDescCompletionRingsTitle": "Anneaux de complétion",
+  "statDescCompletionRingsBody": "Affiche le taux de complétion des tâches, le taux d'exécution des blocs et la précision temporelle.",
+  "statDescTaskPipelineTitle": "Flux de tâches",
+  "statDescTaskPipelineBody": "Affiche le flux total → planifié → terminé → reporté.",
+  "statDescTop3StatsTitle": "Réalisation Top 3",
+  "statDescTop3StatsBody": "Affiche l'état de réalisation de vos 3 tâches les plus importantes.",
+  "statDescTaskRankingTitle": "Classement des tâches",
+  "statDescTaskRankingBody": "Classe les tâches récurrentes par succès/échec de complétion.",
+  "statDescFocusSummaryTitle": "Analyse de concentration",
+  "statDescFocusSummaryBody": "Efficacité du mode focus, temps, nombre de sessions et durée des pauses.",
+  "statDescTrendChartTitle": "Tendance de productivité",
+  "statDescTrendChartBody": "Affiche l'évolution quotidienne du score de productivité en graphique linéaire.",
+  "statDescTagAnalysisTitle": "Analyse par tag",
+  "statDescTagAnalysisBody": "Affiche le nombre de tâches et le temps planifié par tag.",
+  "statDescInsightsTitle": "Analyses",
+  "statDescInsightsBody": "Analyse de performance auto-générée basée sur vos données."
 }

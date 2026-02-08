@@ -17,6 +17,7 @@ import '../widgets/task_completion_ranking_card.dart';
 import '../widgets/task_pipeline_funnel.dart';
 import '../widgets/top3_stats_card.dart';
 import '../widgets/top_insights_section.dart';
+import '../../../../core/widgets/stat_description_overlay.dart';
 
 /// 통계 페이지
 ///
@@ -29,13 +30,23 @@ class StatisticsPage extends StatefulWidget {
 }
 
 class _StatisticsPageState extends State<StatisticsPage> {
+  late final StatisticsBloc _bloc;
+
   @override
   void initState() {
     super.initState();
-    context.read<StatisticsBloc>().add(LoadStatistics(
+    _bloc = context.read<StatisticsBloc>();
+    _bloc.onReportPageOpened();
+    _bloc.add(LoadStatistics(
           date: DateTime.now(),
           period: StatsPeriod.daily,
         ));
+  }
+
+  @override
+  void dispose() {
+    _bloc.onReportPageClosed();
+    super.dispose();
   }
 
   @override
@@ -103,33 +114,45 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
                     // 2. 생산성 점수 카드 (기간에 맞는 통계 표시)
                     SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: ProductivityScoreCard(
-                          score: state.displayStats?.score ?? 0,
-                          scoreChange: state.scoreChange,
-                          title: l10n.productivityScore,
+                      child: StatDescriptionWrapper(
+                        title: l10n.statDescProductivityScoreTitle,
+                        description: l10n.statDescProductivityScoreBody,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: ProductivityScoreCard(
+                            score: state.displayStats?.score ?? 0,
+                            scoreChange: state.scoreChange,
+                            title: l10n.productivityScore,
+                          ),
                         ),
                       ),
                     ),
 
                     // 3. Completion Ring Row (3개 미니 링)
                     SliverToBoxAdapter(
-                      child: CompletionRingRow(
-                        taskRate:
-                            state.displayStats?.taskCompletionRate ?? 0,
-                        timeBlockRate:
-                            state.displayStats?.timeBlockCompletionRate ?? 0,
-                        timeAccuracy:
-                            state.displayStats?.timeAccuracy ?? 0,
+                      child: StatDescriptionWrapper(
+                        title: l10n.statDescCompletionRingsTitle,
+                        description: l10n.statDescCompletionRingsBody,
+                        child: CompletionRingRow(
+                          taskRate:
+                              state.displayStats?.taskCompletionRate ?? 0,
+                          timeBlockRate:
+                              state.displayStats?.timeBlockCompletionRate ?? 0,
+                          timeAccuracy:
+                              state.displayStats?.timeAccuracy ?? 0,
+                        ),
                       ),
                     ),
 
                     // 4. Task Pipeline Funnel
                     SliverToBoxAdapter(
-                      child: TaskPipelineFunnel(
-                        stats: state.pipelineStats ??
-                            TaskPipelineStats.empty,
+                      child: StatDescriptionWrapper(
+                        title: l10n.statDescTaskPipelineTitle,
+                        description: l10n.statDescTaskPipelineBody,
+                        child: TaskPipelineFunnel(
+                          stats: state.pipelineStats ??
+                              TaskPipelineStats.empty,
+                        ),
                       ),
                     ),
 
@@ -137,8 +160,12 @@ class _StatisticsPageState extends State<StatisticsPage> {
                     if (state.currentPeriod != StatsPeriod.daily &&
                         state.periodSummaries.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: Top3StatsCard(
-                          dailySummaries: state.periodSummaries,
+                        child: StatDescriptionWrapper(
+                          title: l10n.statDescTop3StatsTitle,
+                          description: l10n.statDescTop3StatsBody,
+                          child: Top3StatsCard(
+                            dailySummaries: state.periodSummaries,
+                          ),
                         ),
                       ),
 
@@ -146,17 +173,25 @@ class _StatisticsPageState extends State<StatisticsPage> {
                     if (state.topSuccessTasks.isNotEmpty ||
                         state.topFailureTasks.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: TaskCompletionRankingCard(
-                          topSuccess: state.topSuccessTasks,
-                          topFailure: state.topFailureTasks,
+                        child: StatDescriptionWrapper(
+                          title: l10n.statDescTaskRankingTitle,
+                          description: l10n.statDescTaskRankingBody,
+                          child: TaskCompletionRankingCard(
+                            topSuccess: state.topSuccessTasks,
+                            topFailure: state.topFailureTasks,
+                          ),
                         ),
                       ),
 
                     // 7. Focus Summary Card
                     if (state.dailySummary != null)
                       SliverToBoxAdapter(
-                        child: FocusSummaryCard(
-                          summary: state.dailySummary!,
+                        child: StatDescriptionWrapper(
+                          title: l10n.statDescFocusSummaryTitle,
+                          description: l10n.statDescFocusSummaryBody,
+                          child: FocusSummaryCard(
+                            summary: state.dailySummary!,
+                          ),
                         ),
                       ),
 
@@ -164,27 +199,39 @@ class _StatisticsPageState extends State<StatisticsPage> {
                     if (state.currentPeriod != StatsPeriod.daily &&
                         state.periodStats.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: _buildTrendChart(context, state),
+                        child: StatDescriptionWrapper(
+                          title: l10n.statDescTrendChartTitle,
+                          description: l10n.statDescTrendChartBody,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: _buildTrendChart(context, state),
+                          ),
                         ),
                       ),
 
                     // 9. Tag Analysis Chart
                     if (state.tagStats.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: _buildTagChart(context, state),
+                        child: StatDescriptionWrapper(
+                          title: l10n.statDescTagAnalysisTitle,
+                          description: l10n.statDescTagAnalysisBody,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: _buildTagChart(context, state),
+                          ),
                         ),
                       ),
 
                     // 10. Top Insights (최대 3개)
                     if (state.insights.isNotEmpty)
                       SliverToBoxAdapter(
-                        child: TopInsightsSection(
-                          insights: state.insights,
-                          getIcon: _getInsightIcon,
+                        child: StatDescriptionWrapper(
+                          title: l10n.statDescInsightsTitle,
+                          description: l10n.statDescInsightsBody,
+                          child: TopInsightsSection(
+                            insights: state.insights,
+                            getIcon: _getInsightIcon,
+                          ),
                         ),
                       ),
 

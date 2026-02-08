@@ -208,18 +208,18 @@ class _TaskCardContent extends StatelessWidget {
                 ),
               ),
 
-              // 내일도 하기 버튼
+              // 이월 버튼 (내일로 이동 + rolloverCount 증가)
               if (!isDragging)
                 IconButton(
                   icon: const Icon(Icons.arrow_forward, size: 18),
-                  tooltip: l10n?.copyToTomorrow ?? 'Copy to tomorrow',
+                  tooltip: l10n?.copyToTomorrow ?? 'Rollover to tomorrow',
                   onPressed: () {
                     context.read<PlannerBloc>().add(
-                      CopyTaskToTomorrow(task.id),
+                      RolloverTaskEvent(task.id),
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(l10n?.copiedToTomorrow ?? 'Copied to tomorrow'),
+                        content: Text(l10n?.copiedToTomorrow ?? 'Rolled over to tomorrow'),
                         duration: const Duration(seconds: 2),
                       ),
                     );

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../config/routes/route_names.dart';
 import '../../l10n/app_localizations.dart';
 import 'ad_banner.dart';
 
 /// 메인 셸 위젯
 ///
 /// BottomNavigationBar를 포함한 앱의 기본 레이아웃
-/// ShellRoute와 함께 사용되어 하단 네비게이션을 제공
+/// StatefulShellRoute와 함께 사용되어 각 탭의 상태를 보존
 class MainShell extends StatelessWidget {
-  final Widget child;
+  final StatefulNavigationShell navigationShell;
 
   const MainShell({
     super.key,
-    required this.child,
+    required this.navigationShell,
   });
 
   @override
@@ -31,12 +30,13 @@ class MainShell extends StatelessWidget {
             child: AdBanner(),
           ),
           // 메인 콘텐츠
-          Expanded(child: child),
+          Expanded(child: navigationShell),
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _calculateSelectedIndex(context),
-        onDestinationSelected: (index) => _onItemTapped(context, index),
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: (index) =>
+            navigationShell.goBranch(index, initialLocation: index == navigationShell.currentIndex),
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.view_agenda_outlined),
@@ -63,33 +63,5 @@ class MainShell extends StatelessWidget {
         indicatorColor: theme.colorScheme.primaryContainer,
       ),
     );
-  }
-
-  int _calculateSelectedIndex(BuildContext context) {
-    final location = GoRouterState.of(context).uri.path;
-
-    if (location == RouteNames.home) return 0;
-    if (location == RouteNames.calendar) return 1;
-    if (location == RouteNames.statistics) return 2;
-    if (location == RouteNames.settings) return 3;
-
-    return 0;
-  }
-
-  void _onItemTapped(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        context.go(RouteNames.home);
-        break;
-      case 1:
-        context.go(RouteNames.calendar);
-        break;
-      case 2:
-        context.go(RouteNames.statistics);
-        break;
-      case 3:
-        context.go(RouteNames.settings);
-        break;
-    }
   }
 }

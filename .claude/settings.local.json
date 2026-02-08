@@ -12,7 +12,12 @@
       "Bash(ls:*)",
       "Bash(python3:*)",
       "Bash(flutter:*)",
-      "Bash(dart run:*)"
+      "Bash(dart run:*)",
+      "Bash(find:*)",
+      "Bash(while read file)",
+      "Bash(do grep -n \"[가-힣]\" \"$file\")",
+      "Bash(done)",
+      "Bash(kill:*)"
     ]
   }
 }

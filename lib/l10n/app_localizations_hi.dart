@@ -360,10 +360,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get planner => 'टाइमबॉक्स';
 
   @override
-  String get copyToTomorrow => 'कल भी करें';
+  String get copyToTomorrow => 'कल के लिए स्थानांतरित करें';
 
   @override
-  String get copiedToTomorrow => 'कल के लिए कॉपी किया गया';
+  String get copiedToTomorrow => 'कल के लिए स्थानांतरित किया गया';
 
   @override
   String rolloverBadge(int count) {
@@ -617,7 +617,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get statsRolledOver => 'स्थानांतरित';
 
   @override
-  String get statsEfficiency => 'दक्षता';
+  String get statsEfficiency => 'सटीकता';
+
+  @override
+  String get statsAccomplished => 'उपलब्धि';
 
   @override
   String get statsNoData => 'अभी तक कोई डेटा नहीं';
@@ -1007,4 +1010,89 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get demoModeClearing => 'डेमो डेटा हटाया जा रहा है...';
+
+  @override
+  String timeBlockStartAlarmTitle(String title, String time) {
+    return '$title - शुरू होने से $time पहले';
+  }
+
+  @override
+  String get timeBlockStartAlarmBody => 'जल्द ही शुरू होगा। तैयार हो जाइए!';
+
+  @override
+  String timeBlockEndAlarmTitle(String title, String time) {
+    return '$title - समाप्त होने से $time पहले';
+  }
+
+  @override
+  String get timeBlockEndAlarmBody => 'समाप्त करने का समय है।';
+
+  @override
+  String get focusSessionCompleteTitle => 'फोकस सत्र पूरा हुआ!';
+
+  @override
+  String get focusSessionCompleteBody => 'बहुत बढ़िया! थोड़ा आराम करें।';
+
+  @override
+  String get statDescProductivityScoreTitle => 'उत्पादकता स्कोर';
+
+  @override
+  String get statDescProductivityScoreBody =>
+      'पूर्णता दर, समय सटीकता और टाइम ब्लॉक निष्पादन को मिलाकर 0-100 अंकों का स्कोर।';
+
+  @override
+  String get statDescCompletionRingsTitle => 'पूर्णता रिंग';
+
+  @override
+  String get statDescCompletionRingsBody =>
+      'कार्य पूर्णता दर, टाइम ब्लॉक निष्पादन दर और समय सटीकता दिखाता है।';
+
+  @override
+  String get statDescTaskPipelineTitle => 'कार्य प्रवाह';
+
+  @override
+  String get statDescTaskPipelineBody =>
+      'कुल→शेड्यूल→पूर्ण→स्थानांतरित का प्रवाह दिखाता है।';
+
+  @override
+  String get statDescTop3StatsTitle => 'Top 3 उपलब्धि';
+
+  @override
+  String get statDescTop3StatsBody =>
+      'आपके 3 सबसे महत्वपूर्ण कार्यों की उपलब्धि स्थिति दिखाता है।';
+
+  @override
+  String get statDescTaskRankingTitle => 'कार्य रैंकिंग';
+
+  @override
+  String get statDescTaskRankingBody =>
+      'दोहराए जाने वाले कार्यों की पूर्णता सफलता/विफलता रैंकिंग।';
+
+  @override
+  String get statDescFocusSummaryTitle => 'फोकस विश्लेषण';
+
+  @override
+  String get statDescFocusSummaryBody =>
+      'फोकस मोड दक्षता, समय, सत्र संख्या और विराम अवधि।';
+
+  @override
+  String get statDescTrendChartTitle => 'उत्पादकता रुझान';
+
+  @override
+  String get statDescTrendChartBody =>
+      'दैनिक उत्पादकता स्कोर परिवर्तन को लाइन ग्राफ में दिखाता है।';
+
+  @override
+  String get statDescTagAnalysisTitle => 'टैग विश्लेषण';
+
+  @override
+  String get statDescTagAnalysisBody =>
+      'टैग के अनुसार कार्य संख्या और नियोजित समय दिखाता है।';
+
+  @override
+  String get statDescInsightsTitle => 'अंतर्दृष्टि';
+
+  @override
+  String get statDescInsightsBody =>
+      'आपके डेटा पर आधारित स्वचालित प्रदर्शन विश्लेषण।';
 }

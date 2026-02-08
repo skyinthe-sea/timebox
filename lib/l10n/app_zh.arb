@@ -134,8 +134,8 @@
   "dayStartTime": "一天开始时间",
   "dayEndTime": "一天结束时间",
   "planner": "时间盒",
-  "copyToTomorrow": "明天也做",
-  "copiedToTomorrow": "已复制到明天",
+  "copyToTomorrow": "移至明天",
+  "copiedToTomorrow": "已移至明天",
   "rolloverBadge": "顺延 {count}次",
   "@rolloverBadge": {
     "placeholders": {
@@ -249,7 +249,8 @@
   "statsScheduled": "已安排",
   "statsCompleted": "已完成",
   "statsRolledOver": "已顺延",
-  "statsEfficiency": "效率",
+  "statsEfficiency": "准确度",
+  "statsAccomplished": "达成",
   "statsNoData": "暂无数据",
   "statsTop3Performance": "Top 3 达成情况",
   "statsTop3Completed": "已完成",
@@ -390,5 +391,43 @@
   "demoModeEnabled": "演示模式已启用",
   "demoModeDisabled": "演示模式已禁用",
   "demoModeGenerating": "正在生成示例数据...",
-  "demoModeClearing": "正在清除演示数据..."
+  "demoModeClearing": "正在清除演示数据...",
+
+  "timeBlockStartAlarmTitle": "{title} - 开始前{time}",
+  "@timeBlockStartAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockStartAlarmBody": "即将开始，请做好准备！",
+  "timeBlockEndAlarmTitle": "{title} - 结束前{time}",
+  "@timeBlockEndAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockEndAlarmBody": "该收尾了。",
+  "focusSessionCompleteTitle": "专注时间完成！",
+  "focusSessionCompleteBody": "辛苦了，休息一下吧。",
+
+  "statDescProductivityScoreTitle": "生产力评分",
+  "statDescProductivityScoreBody": "综合完成率、时间准确度和时间块执行率的0-100分评分。",
+  "statDescCompletionRingsTitle": "完成率环",
+  "statDescCompletionRingsBody": "显示任务完成率、时间块执行率和时间准确度。",
+  "statDescTaskPipelineTitle": "任务流程",
+  "statDescTaskPipelineBody": "显示总数→已安排→已完成→已顺延的流程。",
+  "statDescTop3StatsTitle": "Top 3 达成",
+  "statDescTop3StatsBody": "显示最重要的3个任务的达成情况。",
+  "statDescTaskRankingTitle": "任务排名",
+  "statDescTaskRankingBody": "按完成成功/失败排列重复任务。",
+  "statDescFocusSummaryTitle": "专注分析",
+  "statDescFocusSummaryBody": "专注模式效率、时间、会话数和暂停时长。",
+  "statDescTrendChartTitle": "生产力趋势",
+  "statDescTrendChartBody": "以折线图展示每日生产力评分变化。",
+  "statDescTagAnalysisTitle": "标签分析",
+  "statDescTagAnalysisBody": "按标签显示任务数量和计划时间。",
+  "statDescInsightsTitle": "洞察",
+  "statDescInsightsBody": "基于数据自动生成的绩效分析。"
 }

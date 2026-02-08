@@ -361,10 +361,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get planner => 'Timebox';
 
   @override
-  String get copyToTomorrow => 'Faire aussi demain';
+  String get copyToTomorrow => 'Reporter à demain';
 
   @override
-  String get copiedToTomorrow => 'Copié pour demain';
+  String get copiedToTomorrow => 'Reporté à demain';
 
   @override
   String rolloverBadge(int count) {
@@ -624,7 +624,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get statsRolledOver => 'Reporté';
 
   @override
-  String get statsEfficiency => 'Efficacité';
+  String get statsEfficiency => 'Précision';
+
+  @override
+  String get statsAccomplished => 'Atteint';
 
   @override
   String get statsNoData => 'Pas encore de données';
@@ -1018,4 +1021,90 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get demoModeClearing => 'Suppression des données démo...';
+
+  @override
+  String timeBlockStartAlarmTitle(String title, String time) {
+    return '$title - $time avant le début';
+  }
+
+  @override
+  String get timeBlockStartAlarmBody => 'Ça commence bientôt. Préparez-vous !';
+
+  @override
+  String timeBlockEndAlarmTitle(String title, String time) {
+    return '$title - $time avant la fin';
+  }
+
+  @override
+  String get timeBlockEndAlarmBody => 'Il est temps de conclure.';
+
+  @override
+  String get focusSessionCompleteTitle => 'Session de concentration terminée !';
+
+  @override
+  String get focusSessionCompleteBody =>
+      'Excellent travail ! Prenez une courte pause.';
+
+  @override
+  String get statDescProductivityScoreTitle => 'Score de productivité';
+
+  @override
+  String get statDescProductivityScoreBody =>
+      'Score de 0 à 100 combinant taux de complétion, précision temporelle et exécution des blocs.';
+
+  @override
+  String get statDescCompletionRingsTitle => 'Anneaux de complétion';
+
+  @override
+  String get statDescCompletionRingsBody =>
+      'Affiche le taux de complétion des tâches, le taux d\'exécution des blocs et la précision temporelle.';
+
+  @override
+  String get statDescTaskPipelineTitle => 'Flux de tâches';
+
+  @override
+  String get statDescTaskPipelineBody =>
+      'Affiche le flux total → planifié → terminé → reporté.';
+
+  @override
+  String get statDescTop3StatsTitle => 'Réalisation Top 3';
+
+  @override
+  String get statDescTop3StatsBody =>
+      'Affiche l\'état de réalisation de vos 3 tâches les plus importantes.';
+
+  @override
+  String get statDescTaskRankingTitle => 'Classement des tâches';
+
+  @override
+  String get statDescTaskRankingBody =>
+      'Classe les tâches récurrentes par succès/échec de complétion.';
+
+  @override
+  String get statDescFocusSummaryTitle => 'Analyse de concentration';
+
+  @override
+  String get statDescFocusSummaryBody =>
+      'Efficacité du mode focus, temps, nombre de sessions et durée des pauses.';
+
+  @override
+  String get statDescTrendChartTitle => 'Tendance de productivité';
+
+  @override
+  String get statDescTrendChartBody =>
+      'Affiche l\'évolution quotidienne du score de productivité en graphique linéaire.';
+
+  @override
+  String get statDescTagAnalysisTitle => 'Analyse par tag';
+
+  @override
+  String get statDescTagAnalysisBody =>
+      'Affiche le nombre de tâches et le temps planifié par tag.';
+
+  @override
+  String get statDescInsightsTitle => 'Analyses';
+
+  @override
+  String get statDescInsightsBody =>
+      'Analyse de performance auto-générée basée sur vos données.';
 }

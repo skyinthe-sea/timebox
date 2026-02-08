@@ -58,7 +58,7 @@ class Top3StatsCard extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              if (stats.totalDays == 0)
+              if (stats.daysWithTop3 == 0)
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -125,20 +125,22 @@ class Top3StatsCard extends StatelessWidget {
     }
 
     int totalCompleted = 0;
+    int totalSlots = 0;
     int daysWithTop3 = 0;
     int perfectDays = 0;
 
     for (final summary in dailySummaries) {
-      final completed = summary.top3CompletedCount;
-      totalCompleted += completed;
-      daysWithTop3++;
+      if (summary.top3SetCount > 0) {
+        daysWithTop3++;
+        totalSlots += summary.top3SetCount;
+        totalCompleted += summary.top3CompletedCount;
 
-      if (completed == 3) {
-        perfectDays++;
+        if (summary.top3CompletedCount >= summary.top3SetCount) {
+          perfectDays++;
+        }
       }
     }
 
-    final totalSlots = daysWithTop3 * 3;
     final overallRate = totalSlots > 0 ? (totalCompleted / totalSlots) * 100 : 0.0;
 
     return _Top3Stats(
@@ -184,7 +186,7 @@ class Top3StatsCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '달성',
+                      AppLocalizations.of(context)!.statsAccomplished,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.outline,
                         fontSize: 10,

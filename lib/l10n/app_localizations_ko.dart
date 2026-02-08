@@ -358,10 +358,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get planner => '타임박스';
 
   @override
-  String get copyToTomorrow => '내일도 하기';
+  String get copyToTomorrow => '내일로 이월';
 
   @override
-  String get copiedToTomorrow => '내일로 복사되었습니다';
+  String get copiedToTomorrow => '내일로 이월되었습니다';
 
   @override
   String rolloverBadge(int count) {
@@ -614,7 +614,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get statsRolledOver => '이월';
 
   @override
-  String get statsEfficiency => '효율';
+  String get statsEfficiency => '정확도';
+
+  @override
+  String get statsAccomplished => '달성';
 
   @override
   String get statsNoData => '아직 데이터가 없어요';
@@ -998,4 +1001,82 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get demoModeClearing => '데모 데이터 삭제 중...';
+
+  @override
+  String timeBlockStartAlarmTitle(String title, String time) {
+    return '$title - 시작 $time 전';
+  }
+
+  @override
+  String get timeBlockStartAlarmBody => '곧 시작됩니다. 준비하세요!';
+
+  @override
+  String timeBlockEndAlarmTitle(String title, String time) {
+    return '$title - 종료 $time 전';
+  }
+
+  @override
+  String get timeBlockEndAlarmBody => '마무리할 시간입니다.';
+
+  @override
+  String get focusSessionCompleteTitle => '집중 시간 완료!';
+
+  @override
+  String get focusSessionCompleteBody => '수고하셨습니다. 잠시 쉬어가세요.';
+
+  @override
+  String get statDescProductivityScoreTitle => '생산성 점수';
+
+  @override
+  String get statDescProductivityScoreBody =>
+      '완료율, 시간 정확도, 타임블록 실행률을 종합한 0~100점 점수입니다.';
+
+  @override
+  String get statDescCompletionRingsTitle => '완료율 링';
+
+  @override
+  String get statDescCompletionRingsBody =>
+      'Task 완료 비율, 타임블록 실행 비율, 시간 정확도를 보여줍니다.';
+
+  @override
+  String get statDescTaskPipelineTitle => 'Task 흐름';
+
+  @override
+  String get statDescTaskPipelineBody => '전체→스케줄→완료→이월의 흐름을 보여줍니다.';
+
+  @override
+  String get statDescTop3StatsTitle => 'Top 3 달성';
+
+  @override
+  String get statDescTop3StatsBody => '가장 중요한 3가지 할 일의 달성 현황입니다.';
+
+  @override
+  String get statDescTaskRankingTitle => 'Task 랭킹';
+
+  @override
+  String get statDescTaskRankingBody => '반복 할 일의 완료 성공/실패 순위입니다.';
+
+  @override
+  String get statDescFocusSummaryTitle => '집중 분석';
+
+  @override
+  String get statDescFocusSummaryBody => '집중 모드 효율, 시간, 세션 수, 일시정지 시간입니다.';
+
+  @override
+  String get statDescTrendChartTitle => '생산성 트렌드';
+
+  @override
+  String get statDescTrendChartBody => '일별 생산성 점수 변화를 선 그래프로 보여줍니다.';
+
+  @override
+  String get statDescTagAnalysisTitle => '태그별 분석';
+
+  @override
+  String get statDescTagAnalysisBody => '태그별 할 일 수와 계획 시간을 보여줍니다.';
+
+  @override
+  String get statDescInsightsTitle => '인사이트';
+
+  @override
+  String get statDescInsightsBody => '데이터 기반 자동 생성 성과 분석입니다.';
 }

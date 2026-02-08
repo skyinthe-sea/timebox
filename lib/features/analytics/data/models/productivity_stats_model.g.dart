@@ -22,6 +22,8 @@ _$ProductivityStatsModelImpl _$$ProductivityStatsModelImplFromJson(
       focusTimeMinutes: (json['focusTimeMinutes'] as num).toInt(),
       averageTimeDifferenceMinutes:
           (json['averageTimeDifferenceMinutes'] as num).toInt(),
+      timeAccuracyPercent:
+          (json['timeAccuracyPercent'] as num?)?.toDouble() ?? -1.0,
     );
 
 Map<String, dynamic> _$$ProductivityStatsModelImplToJson(
@@ -39,4 +41,5 @@ Map<String, dynamic> _$$ProductivityStatsModelImplToJson(
       'totalActualTimeMinutes': instance.totalActualTimeMinutes,
       'focusTimeMinutes': instance.focusTimeMinutes,
       'averageTimeDifferenceMinutes': instance.averageTimeDifferenceMinutes,
+      'timeAccuracyPercent': instance.timeAccuracyPercent,
     };

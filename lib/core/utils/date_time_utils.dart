@@ -1,3 +1,5 @@
+import '../../../l10n/app_localizations.dart';
+
 /// 날짜/시간 유틸리티
 ///
 /// 날짜와 시간 관련 헬퍼 함수 모음
@@ -65,16 +67,16 @@ abstract class DateTimeUtils {
 
   /// Duration을 사람이 읽기 쉬운 형식으로 변환
   /// 예: "1시간 30분", "45분"
-  static String formatDuration(Duration duration) {
+  static String formatDuration(Duration duration, AppLocalizations l10n) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes % 60;
 
     if (hours > 0 && minutes > 0) {
-      return '$hours시간 $minutes분';
+      return l10n.durationFormat(hours, minutes);
     } else if (hours > 0) {
-      return '$hours시간';
+      return l10n.hoursShort(hours);
     } else {
-      return '$minutes분';
+      return l10n.minutesShort(minutes);
     }
   }
 }

@@ -254,7 +254,24 @@ class TimeBlockRepositoryImpl implements TimeBlockRepository {
         return Left(CacheFailure(message: 'TimeBlock not found'));
       }
 
-      final updatedModel = model.copyWith(status: status.name);
+      var updatedModel = model.copyWith(status: status.name);
+
+      // 완료 시 실제 시간 자동 기록 (정확도 측정용)
+      if (status == TimeBlockStatus.completed) {
+        final now = DateTime.now();
+        updatedModel = updatedModel.copyWith(
+          actualStart: model.actualStart ?? model.startTime,
+          // 블록 종료 시간이 이미 지났으면 계획 시간 사용, 아니면 현재 시간
+          actualEnd: now.isAfter(model.endTime) ? model.endTime : now,
+        );
+      } else if (model.status == 'completed') {
+        // 완료 → 다른 상태로 변경 시 실제 시간 초기화
+        updatedModel = updatedModel.copyWith(
+          actualStart: null,
+          actualEnd: null,
+        );
+      }
+
       final savedModel = await localDataSource.saveTimeBlock(updatedModel);
 
       // Write-through 통계 재계산

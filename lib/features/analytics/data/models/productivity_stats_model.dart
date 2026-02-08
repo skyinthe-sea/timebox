@@ -25,6 +25,7 @@ class ProductivityStatsModel with _$ProductivityStatsModel {
     required int totalActualTimeMinutes,
     required int focusTimeMinutes,
     required int averageTimeDifferenceMinutes,
+    @Default(-1.0) double timeAccuracyPercent,
   }) = _ProductivityStatsModel;
 
   factory ProductivityStatsModel.fromJson(Map<String, dynamic> json) =>
@@ -44,7 +45,8 @@ class ProductivityStatsModel with _$ProductivityStatsModel {
       totalPlannedTime: Duration(minutes: totalPlannedTimeMinutes),
       totalActualTime: Duration(minutes: totalActualTimeMinutes),
       focusTime: Duration(minutes: focusTimeMinutes),
-      averageTimeDifference: Duration(minutes: averageTimeDifferenceMinutes),
+      totalTimeDifference: Duration(minutes: averageTimeDifferenceMinutes),
+      timeAccuracyPercent: timeAccuracyPercent,
     );
   }
 
@@ -62,7 +64,8 @@ class ProductivityStatsModel with _$ProductivityStatsModel {
       totalPlannedTimeMinutes: entity.totalPlannedTime.inMinutes,
       totalActualTimeMinutes: entity.totalActualTime.inMinutes,
       focusTimeMinutes: entity.focusTime.inMinutes,
-      averageTimeDifferenceMinutes: entity.averageTimeDifference.inMinutes,
+      averageTimeDifferenceMinutes: entity.totalTimeDifference.inMinutes,
+      timeAccuracyPercent: entity.timeAccuracyPercent,
     );
   }
 }

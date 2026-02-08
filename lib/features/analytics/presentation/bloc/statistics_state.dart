@@ -18,6 +18,9 @@ enum StatisticsStatus {
   error,
 }
 
+/// copyWith에서 null 전달과 "미지정"을 구분하기 위한 sentinel
+const _sentinel = Object();
+
 /// Statistics BLoC 상태
 class StatisticsState extends Equatable {
   /// 현재 기간 (일간/주간/월간)
@@ -142,6 +145,15 @@ class StatisticsState extends Equatable {
         ? (totalCompletedBlocks / totalPlannedBlocks) * 100
         : 0.0;
 
+    // 블록별 시간 정확도 평균 (데이터가 있는 날만)
+    final accuracyStats =
+        validStats.where((s) => s.timeAccuracyPercent >= 0).toList();
+    final avgTimeAccuracy = accuracyStats.isNotEmpty
+        ? accuracyStats.fold<double>(
+              0, (sum, s) => sum + s.timeAccuracyPercent) /
+            accuracyStats.length
+        : -1.0;
+
     return ProductivityStats(
       date: selectedDate,
       score: avgScore,
@@ -154,7 +166,8 @@ class StatisticsState extends Equatable {
       totalPlannedTime: totalPlannedTime,
       totalActualTime: totalActualTime,
       focusTime: totalFocusTime,
-      averageTimeDifference: totalActualTime - totalPlannedTime,
+      totalTimeDifference: totalActualTime - totalPlannedTime,
+      timeAccuracyPercent: avgTimeAccuracy,
     );
   }
 
@@ -215,8 +228,8 @@ class StatisticsState extends Equatable {
     List<TaskCompletionRanking>? topFailureTasks,
     List<DailyStatsSummary>? periodSummaries,
     String? errorMessage,
-    PeriodCache? weeklyCache,
-    PeriodCache? monthlyCache,
+    Object? weeklyCache = _sentinel,
+    Object? monthlyCache = _sentinel,
   }) {
     return StatisticsState(
       currentPeriod: currentPeriod ?? this.currentPeriod,
@@ -236,8 +249,12 @@ class StatisticsState extends Equatable {
       topFailureTasks: topFailureTasks ?? this.topFailureTasks,
       periodSummaries: periodSummaries ?? this.periodSummaries,
       errorMessage: errorMessage ?? this.errorMessage,
-      weeklyCache: weeklyCache ?? this.weeklyCache,
-      monthlyCache: monthlyCache ?? this.monthlyCache,
+      weeklyCache: identical(weeklyCache, _sentinel)
+          ? this.weeklyCache
+          : weeklyCache as PeriodCache?,
+      monthlyCache: identical(monthlyCache, _sentinel)
+          ? this.monthlyCache
+          : monthlyCache as PeriodCache?,
     );
   }
 

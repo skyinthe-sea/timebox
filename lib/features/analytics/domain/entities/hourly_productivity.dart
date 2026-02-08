@@ -51,20 +51,14 @@ class HourlyProductivity extends Equatable {
     return (rateScore * 0.5 + freqScore * 0.5).clamp(0.0, 1.0);
   }
 
-  /// 요일 이름 (한국어)
-  String get dayNameKo {
-    const days = ['', '월', '화', '수', '목', '금', '토', '일'];
-    return days[dayOfWeek];
-  }
-
-  /// 요일 이름 (영어)
-  String get dayNameEn {
+  /// 요일 이름 (영어 약어)
+  String get dayNameShort {
     const days = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return days[dayOfWeek];
   }
 
-  /// 시간 레이블 (예: "14시")
-  String get hourLabel => '${hour}시';
+  /// 시간 레이블 (예: "14:00")
+  String get hourLabel => '$hour:00';
 
   /// 빈 데이터 생성
   factory HourlyProductivity.empty(int hour, int dayOfWeek) {

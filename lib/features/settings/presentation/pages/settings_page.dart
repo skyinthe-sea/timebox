@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -73,7 +74,8 @@ class SettingsPage extends StatelessWidget {
                   const Divider(),
                   // 데이터 섹션
                   _buildSectionHeader(theme, l10n.data),
-                  _buildDemoModeTile(context, state, l10n),
+                  if (kDebugMode)
+                    _buildDemoModeTile(context, state, l10n),
                   _buildResetTile(context, l10n),
                   const SizedBox(height: 24),
                   // 앱 정보

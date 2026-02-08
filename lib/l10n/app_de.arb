@@ -134,8 +134,8 @@
   "dayStartTime": "Tagesbeginn",
   "dayEndTime": "Tagesende",
   "planner": "Timebox",
-  "copyToTomorrow": "Auch morgen tun",
-  "copiedToTomorrow": "Für morgen kopiert",
+  "copyToTomorrow": "Auf morgen verschieben",
+  "copiedToTomorrow": "Auf morgen verschoben",
   "rolloverBadge": "Übertrag {count}x",
   "@rolloverBadge": {
     "placeholders": {
@@ -249,7 +249,8 @@
   "statsScheduled": "Geplant",
   "statsCompleted": "Abgeschlossen",
   "statsRolledOver": "Übertragen",
-  "statsEfficiency": "Effizienz",
+  "statsEfficiency": "Genauigkeit",
+  "statsAccomplished": "Erreicht",
   "statsNoData": "Noch keine Daten",
   "statsTop3Performance": "Top 3 Erreichung",
   "statsTop3Completed": "Abgeschlossen",
@@ -390,5 +391,43 @@
   "demoModeEnabled": "Demo-Modus aktiviert",
   "demoModeDisabled": "Demo-Modus deaktiviert",
   "demoModeGenerating": "Beispieldaten werden erstellt...",
-  "demoModeClearing": "Demo-Daten werden gelöscht..."
+  "demoModeClearing": "Demo-Daten werden gelöscht...",
+
+  "timeBlockStartAlarmTitle": "{title} - {time} vor Beginn",
+  "@timeBlockStartAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockStartAlarmBody": "Beginnt bald. Mach dich bereit!",
+  "timeBlockEndAlarmTitle": "{title} - {time} vor Ende",
+  "@timeBlockEndAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockEndAlarmBody": "Zeit zum Abschließen.",
+  "focusSessionCompleteTitle": "Fokus-Sitzung abgeschlossen!",
+  "focusSessionCompleteBody": "Gute Arbeit! Mach eine kurze Pause.",
+
+  "statDescProductivityScoreTitle": "Produktivitätswert",
+  "statDescProductivityScoreBody": "Ein 0–100 Score aus Abschlussrate, Zeitgenauigkeit und Zeitblock-Ausführung.",
+  "statDescCompletionRingsTitle": "Abschlussringe",
+  "statDescCompletionRingsBody": "Zeigt Aufgaben-Abschlussrate, Zeitblock-Ausführungsrate und Zeitgenauigkeit.",
+  "statDescTaskPipelineTitle": "Aufgabenfluss",
+  "statDescTaskPipelineBody": "Zeigt den Fluss von Gesamt → Geplant → Abgeschlossen → Übertragen.",
+  "statDescTop3StatsTitle": "Top 3 Erreichung",
+  "statDescTop3StatsBody": "Zeigt den Erreichungsstatus deiner 3 wichtigsten Aufgaben.",
+  "statDescTaskRankingTitle": "Aufgabenranking",
+  "statDescTaskRankingBody": "Rankt wiederkehrende Aufgaben nach Abschluss-Erfolg/-Misserfolg.",
+  "statDescFocusSummaryTitle": "Fokus-Analyse",
+  "statDescFocusSummaryBody": "Fokus-Effizienz, Zeit, Sitzungsanzahl und Pausendauer.",
+  "statDescTrendChartTitle": "Produktivitätstrend",
+  "statDescTrendChartBody": "Zeigt tägliche Produktivitätswert-Änderungen als Liniendiagramm.",
+  "statDescTagAnalysisTitle": "Tag-Analyse",
+  "statDescTagAnalysisBody": "Zeigt Aufgabenanzahl und geplante Zeit nach Tag.",
+  "statDescInsightsTitle": "Einblicke",
+  "statDescInsightsBody": "Automatisch generierte Leistungsanalyse basierend auf deinen Daten."
 }

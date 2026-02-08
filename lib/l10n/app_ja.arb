@@ -134,8 +134,8 @@
   "dayStartTime": "1日の開始時間",
   "dayEndTime": "1日の終了時間",
   "planner": "タイムボックス",
-  "copyToTomorrow": "明日も行う",
-  "copiedToTomorrow": "明日にコピーしました",
+  "copyToTomorrow": "明日に繰り越す",
+  "copiedToTomorrow": "明日に繰り越しました",
   "rolloverBadge": "繰越 {count}回",
   "@rolloverBadge": {
     "placeholders": {
@@ -249,7 +249,8 @@
   "statsScheduled": "スケジュール",
   "statsCompleted": "完了",
   "statsRolledOver": "繰り越し",
-  "statsEfficiency": "効率",
+  "statsEfficiency": "正確度",
+  "statsAccomplished": "達成",
   "statsNoData": "まだデータがありません",
   "statsTop3Performance": "Top 3 達成状況",
   "statsTop3Completed": "完了",
@@ -390,5 +391,43 @@
   "demoModeEnabled": "デモモードが有効になりました",
   "demoModeDisabled": "デモモードが無効になりました",
   "demoModeGenerating": "サンプルデータを生成中...",
-  "demoModeClearing": "デモデータを削除中..."
+  "demoModeClearing": "デモデータを削除中...",
+
+  "timeBlockStartAlarmTitle": "{title} - 開始{time}前",
+  "@timeBlockStartAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockStartAlarmBody": "まもなく開始です。準備しましょう！",
+  "timeBlockEndAlarmTitle": "{title} - 終了{time}前",
+  "@timeBlockEndAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockEndAlarmBody": "まとめの時間です。",
+  "focusSessionCompleteTitle": "集中時間完了！",
+  "focusSessionCompleteBody": "お疲れ様でした。少し休憩しましょう。",
+
+  "statDescProductivityScoreTitle": "生産性スコア",
+  "statDescProductivityScoreBody": "完了率、時間精度、タイムブロック実行率を総合した0〜100点のスコアです。",
+  "statDescCompletionRingsTitle": "完了率リング",
+  "statDescCompletionRingsBody": "タスク完了率、タイムブロック実行率、時間精度を表示します。",
+  "statDescTaskPipelineTitle": "タスクフロー",
+  "statDescTaskPipelineBody": "全体→スケジュール→完了→繰り越しの流れを表示します。",
+  "statDescTop3StatsTitle": "Top 3 達成",
+  "statDescTop3StatsBody": "最も重要な3つのタスクの達成状況です。",
+  "statDescTaskRankingTitle": "タスクランキング",
+  "statDescTaskRankingBody": "繰り返しタスクの完了成功/失敗ランキングです。",
+  "statDescFocusSummaryTitle": "集中分析",
+  "statDescFocusSummaryBody": "集中モードの効率、時間、セッション数、一時停止時間です。",
+  "statDescTrendChartTitle": "生産性トレンド",
+  "statDescTrendChartBody": "日別の生産性スコア推移を折れ線グラフで表示します。",
+  "statDescTagAnalysisTitle": "タグ別分析",
+  "statDescTagAnalysisBody": "タグ別のタスク数と計画時間を表示します。",
+  "statDescInsightsTitle": "インサイト",
+  "statDescInsightsBody": "データに基づく自動生成パフォーマンス分析です。"
 }

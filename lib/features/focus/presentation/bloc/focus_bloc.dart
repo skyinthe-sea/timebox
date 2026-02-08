@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/services/stats_update_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../analytics/data/datasources/analytics_local_datasource.dart';
 import '../../data/datasources/focus_session_local_datasource.dart';
 import '../../data/models/focus_session_model.dart';
@@ -23,12 +28,19 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
   final FocusSessionLocalDataSource? sessionDataSource;
   final AnalyticsLocalDataSource? analyticsDataSource;
   final StatsUpdateService? statsUpdateService;
+  final NotificationService? notificationService;
+  final SharedPreferences? prefs;
   static const _uuid = Uuid();
+
+  /// 현재 포커스 세션의 알림 ID (취소용)
+  int? _focusNotificationId;
 
   FocusBloc({
     this.sessionDataSource,
     this.analyticsDataSource,
     this.statsUpdateService,
+    this.notificationService,
+    this.prefs,
   }) : super(const FocusState()) {
     on<StartFocusSession>(_onStartSession);
     on<StartTimeBlockFocusSession>(_onStartTimeBlockSession);
@@ -46,8 +58,9 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
     StartFocusSession event,
     Emitter<FocusState> emit,
   ) {
+    final sessionId = _uuid.v4();
     final session = FocusSession(
-      id: _uuid.v4(),
+      id: sessionId,
       timeBlockId: event.timeBlockId,
       taskId: event.taskId,
       status: SessionStatus.inProgress,
@@ -63,6 +76,11 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
       remainingSeconds: event.duration.inSeconds,
     ));
 
+    _scheduleFocusCompleteNotification(
+      sessionId: sessionId,
+      completionTime: DateTime.now().add(event.duration),
+    );
+
     _startTimer();
   }
 
@@ -71,6 +89,7 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
     Emitter<FocusState> emit,
   ) {
     _timer?.cancel();
+    _cancelFocusNotification();
     emit(state.copyWith(status: FocusStateStatus.paused));
   }
 
@@ -79,6 +98,16 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
     Emitter<FocusState> emit,
   ) {
     emit(state.copyWith(status: FocusStateStatus.running));
+
+    if (state.currentSession != null) {
+      _scheduleFocusCompleteNotification(
+        sessionId: state.currentSession!.id,
+        completionTime: DateTime.now().add(
+          Duration(seconds: state.remainingSeconds),
+        ),
+      );
+    }
+
     _startTimer();
   }
 
@@ -87,6 +116,7 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
     Emitter<FocusState> emit,
   ) {
     _timer?.cancel();
+    _cancelFocusNotification();
     emit(state.copyWith(
       status: FocusStateStatus.completed,
       remainingSeconds: 0,
@@ -98,6 +128,7 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
     Emitter<FocusState> emit,
   ) {
     _timer?.cancel();
+    _cancelFocusNotification();
     emit(const FocusState());
   }
 
@@ -140,8 +171,9 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
       return;
     }
 
+    final sessionId = _uuid.v4();
     final session = FocusSession(
-      id: _uuid.v4(),
+      id: sessionId,
       timeBlockId: event.timeBlockId,
       taskId: event.taskId,
       status: SessionStatus.inProgress,
@@ -162,6 +194,11 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
       clearError: true,
     ));
 
+    _scheduleFocusCompleteNotification(
+      sessionId: sessionId,
+      completionTime: event.endTime,
+    );
+
     _startTimer();
   }
 
@@ -179,6 +216,7 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
     Emitter<FocusState> emit,
   ) async {
     _timer?.cancel();
+    _cancelFocusNotification();
 
     // 세션 완료 처리
     if (state.currentSession != null) {
@@ -194,6 +232,42 @@ class FocusBloc extends Bloc<FocusEvent, FocusState> {
       remainingSeconds: 0,
       showMathChallenge: false,
     ));
+  }
+
+  /// 포커스 세션 완료 알림 예약
+  void _scheduleFocusCompleteNotification({
+    required String sessionId,
+    required DateTime completionTime,
+  }) {
+    if (notificationService == null || !notificationService!.isAvailable) return;
+
+    final notificationId = NotificationIdGenerator.forFocusSession(sessionId);
+    _focusNotificationId = notificationId;
+
+    try {
+      // 저장된 locale로 다국어 문자열 가져오기 (동기)
+      final langCode = prefs?.getString('settings_locale') ?? 'ko';
+      final l10n = lookupAppLocalizations(Locale(langCode));
+
+      notificationService!.scheduleNotification(
+        id: notificationId,
+        title: l10n.focusSessionCompleteTitle,
+        body: l10n.focusSessionCompleteBody,
+        scheduledTime: completionTime,
+        channelType: NotificationChannelType.focus,
+        payload: jsonEncode({'type': 'focus_complete', 'sessionId': sessionId}),
+      );
+    } catch (e) {
+      debugPrint('[FocusBloc] Failed to schedule focus notification: $e');
+    }
+  }
+
+  /// 포커스 세션 알림 취소
+  void _cancelFocusNotification() {
+    if (_focusNotificationId != null && notificationService != null) {
+      notificationService!.cancelNotification(_focusNotificationId!);
+      _focusNotificationId = null;
+    }
   }
 
   /// 세션 저장

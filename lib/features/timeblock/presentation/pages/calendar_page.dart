@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../config/routes/route_names.dart';
+import '../../../../core/widgets/custom_toast.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../focus/presentation/widgets/focus_mode_transition.dart';
@@ -37,7 +38,11 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CalendarBloc>().add(WatchTimeBlocksStarted(DateTime.now()));
+    final bloc = context.read<CalendarBloc>();
+    // 이미 데이터가 로드된 상태면 기존 선택 날짜 유지
+    if (bloc.state.status == CalendarStateStatus.initial) {
+      bloc.add(WatchTimeBlocksStarted(DateTime.now()));
+    }
   }
 
   void _checkAndMarkExpiredBlocks(CalendarState state) {
@@ -101,7 +106,7 @@ class _CalendarPageState extends State<CalendarPage> {
                             WatchTimeBlocksStarted(calendarState.selectedDate),
                           );
                     },
-                    child: Text(l10n?.retry ?? 'Retry'),
+                    child: Text(l10n!.retry),
                   ),
                 ],
               ),
@@ -182,7 +187,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 bottom: 16,
                 child: FloatingActionButton(
                   onPressed: () => _handleFocusFAB(context, calendarState, l10n),
-                  tooltip: l10n?.focusModeTooltip ?? '버닝타임!',
+                  tooltip: l10n!.focusModeTooltip,
                   child: const Icon(Icons.local_fire_department),
                 ),
               ),
@@ -245,7 +250,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 if (!state.isToday)
                   IconButton(
                     icon: const Icon(Icons.today),
-                    tooltip: l10n?.today ?? 'Today',
+                    tooltip: l10n!.today,
                     onPressed: () {
                       context.read<CalendarBloc>().add(const GoToToday());
                     },
@@ -441,7 +446,7 @@ class _CalendarPageState extends State<CalendarPage> {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(l10n?.taskAssigned ?? 'Task assigned'),
+        content: Text(l10n!.taskAssigned),
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
@@ -530,34 +535,14 @@ class _CalendarPageState extends State<CalendarPage> {
 
   /// 진행 중인 타임블록이 없을 때 안내 메시지 표시
   void _showNoTimeBlockMessage(BuildContext context, AppLocalizations? l10n) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n?.noActiveTimeBlock ?? '진행 중인 타임블록이 없습니다',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              l10n?.createTimeBlockFirst ?? '캘린더에서 타임블록을 먼저 생성하세요',
-              style: const TextStyle(fontSize: 12),
-            ),
-          ],
-        ),
-        duration: const Duration(seconds: 3),
-        behavior: SnackBarBehavior.floating,
-        action: SnackBarAction(
-          label: l10n?.quickStart ?? '빠른 시작',
-          onPressed: () {
-            // 빠른 시작 - 타임블록 없이 집중 모드로 이동
-            context.push(RouteNames.focus);
-          },
-        ),
-      ),
+    CustomToast.show(
+      context,
+      title: l10n!.noActiveTimeBlock,
+      subtitle: l10n.createTimeBlockFirst,
+      actionLabel: l10n.quickStart,
+      onAction: () {
+        context.push(RouteNames.focus);
+      },
     );
   }
 

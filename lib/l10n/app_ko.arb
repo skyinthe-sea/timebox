@@ -148,8 +148,8 @@
   "dayStartTime": "하루 시작 시간",
   "dayEndTime": "하루 종료 시간",
   "planner": "타임박스",
-  "copyToTomorrow": "내일도 하기",
-  "copiedToTomorrow": "내일로 복사되었습니다",
+  "copyToTomorrow": "내일로 이월",
+  "copiedToTomorrow": "내일로 이월되었습니다",
   "rolloverBadge": "이월 {count}회",
   "@rolloverBadge": {
     "placeholders": {
@@ -263,7 +263,8 @@
   "statsScheduled": "스케줄",
   "statsCompleted": "완료",
   "statsRolledOver": "이월",
-  "statsEfficiency": "효율",
+  "statsEfficiency": "정확도",
+  "statsAccomplished": "달성",
   "statsNoData": "아직 데이터가 없어요",
   "statsTop3Performance": "가장 중요한 3가지 달성",
   "statsTop3Completed": "완료",
@@ -526,5 +527,43 @@
   "demoModeEnabled": "데모 모드가 활성화되었습니다",
   "demoModeDisabled": "데모 모드가 비활성화되었습니다",
   "demoModeGenerating": "샘플 데이터 생성 중...",
-  "demoModeClearing": "데모 데이터 삭제 중..."
+  "demoModeClearing": "데모 데이터 삭제 중...",
+
+  "timeBlockStartAlarmTitle": "{title} - 시작 {time} 전",
+  "@timeBlockStartAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockStartAlarmBody": "곧 시작됩니다. 준비하세요!",
+  "timeBlockEndAlarmTitle": "{title} - 종료 {time} 전",
+  "@timeBlockEndAlarmTitle": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "time": {"type": "String"}
+    }
+  },
+  "timeBlockEndAlarmBody": "마무리할 시간입니다.",
+  "focusSessionCompleteTitle": "집중 시간 완료!",
+  "focusSessionCompleteBody": "수고하셨습니다. 잠시 쉬어가세요.",
+
+  "statDescProductivityScoreTitle": "생산성 점수",
+  "statDescProductivityScoreBody": "완료율, 시간 정확도, 타임블록 실행률을 종합한 0~100점 점수입니다.",
+  "statDescCompletionRingsTitle": "완료율 링",
+  "statDescCompletionRingsBody": "Task 완료 비율, 타임블록 실행 비율, 시간 정확도를 보여줍니다.",
+  "statDescTaskPipelineTitle": "Task 흐름",
+  "statDescTaskPipelineBody": "전체→스케줄→완료→이월의 흐름을 보여줍니다.",
+  "statDescTop3StatsTitle": "Top 3 달성",
+  "statDescTop3StatsBody": "가장 중요한 3가지 할 일의 달성 현황입니다.",
+  "statDescTaskRankingTitle": "Task 랭킹",
+  "statDescTaskRankingBody": "반복 할 일의 완료 성공/실패 순위입니다.",
+  "statDescFocusSummaryTitle": "집중 분석",
+  "statDescFocusSummaryBody": "집중 모드 효율, 시간, 세션 수, 일시정지 시간입니다.",
+  "statDescTrendChartTitle": "생산성 트렌드",
+  "statDescTrendChartBody": "일별 생산성 점수 변화를 선 그래프로 보여줍니다.",
+  "statDescTagAnalysisTitle": "태그별 분석",
+  "statDescTagAnalysisBody": "태그별 할 일 수와 계획 시간을 보여줍니다.",
+  "statDescInsightsTitle": "인사이트",
+  "statDescInsightsBody": "데이터 기반 자동 생성 성과 분석입니다."
 }

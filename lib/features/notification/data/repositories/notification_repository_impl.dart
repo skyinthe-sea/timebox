@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/notification_service.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../timeblock/domain/entities/time_block.dart';
 import '../../domain/entities/notification_settings.dart';
 import '../../domain/repositories/notification_repository.dart';
@@ -14,12 +17,21 @@ import '../datasources/notification_local_datasource.dart';
 class NotificationRepositoryImpl implements NotificationRepository {
   final NotificationService _notificationService;
   final NotificationLocalDataSource _localDataSource;
+  final SharedPreferences _prefs;
 
   NotificationRepositoryImpl({
     required NotificationService notificationService,
     required NotificationLocalDataSource localDataSource,
+    required SharedPreferences prefs,
   })  : _notificationService = notificationService,
-        _localDataSource = localDataSource;
+        _localDataSource = localDataSource,
+        _prefs = prefs;
+
+  /// 저장된 locale에 기반한 AppLocalizations 인스턴스
+  AppLocalizations get _l10n {
+    final langCode = _prefs.getString('settings_locale') ?? 'ko';
+    return lookupAppLocalizations(Locale(langCode));
+  }
 
   @override
   Future<Either<Failure, NotificationSettings>> getSettings() async {
@@ -27,7 +39,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       final settings = _localDataSource.getSettings();
       return Right(settings);
     } catch (e) {
-      return Left(CacheFailure(message: '설정을 불러오는데 실패했습니다.'));
+      return Left(CacheFailure(message: 'Failed to load settings.'));
     }
   }
 
@@ -38,7 +50,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       await _localDataSource.saveSettings(settings);
       return const Right(null);
     } catch (e) {
-      return Left(CacheFailure(message: '설정 저장에 실패했습니다.'));
+      return Left(CacheFailure(message: 'Failed to save settings.'));
     }
   }
 
@@ -62,6 +74,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       final now = DateTime.now();
       final title = taskTitle ?? timeBlock.title ?? 'Timebox';
+      final l10n = _l10n;
 
       // 시작 알림 스케줄링
       if (settings.startAlarmEnabled) {
@@ -77,9 +90,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
           await _notificationService.scheduleNotification(
             id: NotificationIdGenerator.forTimeBlockStart(timeBlock.id, minutes),
-            title: _formatStartTitle(title, minutes),
-            body: _formatStartBody(title),
+            title: l10n.timeBlockStartAlarmTitle(title, _formatTimeLabel(minutes, l10n)),
+            body: l10n.timeBlockStartAlarmBody,
             scheduledTime: alarmTime,
+            channelType: NotificationChannelType.alarms,
             payload: jsonEncode({
               'type': 'timeblock_start',
               'timeBlockId': timeBlock.id,
@@ -103,9 +117,10 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
           await _notificationService.scheduleNotification(
             id: NotificationIdGenerator.forTimeBlockEnd(timeBlock.id, minutes),
-            title: _formatEndTitle(title, minutes),
-            body: _formatEndBody(title),
+            title: l10n.timeBlockEndAlarmTitle(title, _formatTimeLabel(minutes, l10n)),
+            body: l10n.timeBlockEndAlarmBody,
             scheduledTime: alarmTime,
+            channelType: NotificationChannelType.alarms,
             payload: jsonEncode({
               'type': 'timeblock_end',
               'timeBlockId': timeBlock.id,
@@ -118,7 +133,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return const Right(null);
     } catch (e) {
       debugPrint('Failed to schedule timeblock alarms: $e');
-      return Left(UnknownFailure(message: '알림 예약에 실패했습니다.'));
+      return Left(UnknownFailure(message: 'Failed to schedule notification.'));
     }
   }
 
@@ -141,7 +156,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return const Right(null);
     } catch (e) {
       debugPrint('Failed to cancel timeblock alarms: $e');
-      return Left(UnknownFailure(message: '알림 취소에 실패했습니다.'));
+      return Left(UnknownFailure(message: 'Failed to cancel notification.'));
     }
   }
 
@@ -212,13 +227,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
         title: dailyReminderTitle,
         body: dailyReminderBody,
         scheduledTime: scheduledTime,
+        channelType: NotificationChannelType.reminders,
         payload: jsonEncode({'type': 'daily_engagement'}),
       );
 
       return const Right(null);
     } catch (e) {
       debugPrint('Failed to schedule daily reminder: $e');
-      return Left(UnknownFailure(message: '일일 알림 예약에 실패했습니다.'));
+      return Left(UnknownFailure(message: 'Failed to schedule daily reminder.'));
     }
   }
 
@@ -229,7 +245,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
           .cancelNotification(NotificationIdGenerator.dailyEngagement);
       return const Right(null);
     } catch (e) {
-      return Left(UnknownFailure(message: '일일 알림 취소에 실패했습니다.'));
+      return Left(UnknownFailure(message: 'Failed to cancel daily reminder.'));
     }
   }
 
@@ -239,7 +255,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       await _notificationService.cancelAllNotifications();
       return const Right(null);
     } catch (e) {
-      return Left(UnknownFailure(message: '알림 취소에 실패했습니다.'));
+      return Left(UnknownFailure(message: 'Failed to cancel all notifications.'));
     }
   }
 
@@ -249,7 +265,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       final granted = await _notificationService.requestPermissions();
       return Right(granted);
     } catch (e) {
-      return Left(UnknownFailure(message: '권한 요청에 실패했습니다.'));
+      return Left(UnknownFailure(message: 'Failed to request permissions.'));
     }
   }
 
@@ -259,32 +275,16 @@ class NotificationRepositoryImpl implements NotificationRepository {
       final hasPerms = await _notificationService.hasPermissions();
       return Right(hasPerms);
     } catch (e) {
-      return Left(UnknownFailure(message: '권한 확인에 실패했습니다.'));
+      return Left(UnknownFailure(message: 'Failed to check permissions.'));
     }
   }
 
-  // 알림 메시지 포맷팅 헬퍼 메서드
-  String _formatStartTitle(String title, int minutes) {
+  /// 분 단위를 사람이 읽을 수 있는 시간 라벨로 변환
+  String _formatTimeLabel(int minutes, AppLocalizations l10n) {
     if (minutes >= 60) {
       final hours = minutes ~/ 60;
-      return '$title - ${hours}h before start';
+      return l10n.hoursShort(hours);
     }
-    return '$title - ${minutes}m before start';
-  }
-
-  String _formatStartBody(String title) {
-    return 'Starting soon. Get ready!';
-  }
-
-  String _formatEndTitle(String title, int minutes) {
-    if (minutes >= 60) {
-      final hours = minutes ~/ 60;
-      return '$title - ${hours}h before end';
-    }
-    return '$title - ${minutes}m before end';
-  }
-
-  String _formatEndBody(String title) {
-    return 'Time to wrap up.';
+    return l10n.minutesShort(minutes);
   }
 }

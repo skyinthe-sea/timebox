@@ -1,3 +1,5 @@
+import '../../l10n/app_localizations.dart';
+
 /// 시간 프리셋
 ///
 /// 타임박스 예상 소요 시간 선택에 사용되는 프리셋 값들
@@ -34,19 +36,18 @@ abstract class DurationPresets {
     halfDay,
   ];
 
-  /// 프리셋 라벨 (다국어 키로 대체 예정)
-  static String getLabel(Duration duration) {
-    // TODO: 다국어 지원으로 변경
+  /// 프리셋 라벨 (다국어 지원)
+  static String getLabel(Duration duration, AppLocalizations l10n) {
     final minutes = duration.inMinutes;
     if (minutes < 60) {
-      return '$minutes분';
+      return l10n.minutesShort(minutes);
     } else {
       final hours = minutes ~/ 60;
       final remainingMinutes = minutes % 60;
       if (remainingMinutes == 0) {
-        return '$hours시간';
+        return l10n.hoursShort(hours);
       }
-      return '$hours시간 $remainingMinutes분';
+      return l10n.durationFormat(hours, remainingMinutes);
     }
   }
 }

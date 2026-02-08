@@ -803,13 +803,13 @@ abstract class AppLocalizations {
   /// No description provided for @copyToTomorrow.
   ///
   /// In ko, this message translates to:
-  /// **'내일도 하기'**
+  /// **'내일로 이월'**
   String get copyToTomorrow;
 
   /// No description provided for @copiedToTomorrow.
   ///
   /// In ko, this message translates to:
-  /// **'내일로 복사되었습니다'**
+  /// **'내일로 이월되었습니다'**
   String get copiedToTomorrow;
 
   /// No description provided for @rolloverBadge.
@@ -1295,8 +1295,14 @@ abstract class AppLocalizations {
   /// No description provided for @statsEfficiency.
   ///
   /// In ko, this message translates to:
-  /// **'효율'**
+  /// **'정확도'**
   String get statsEfficiency;
+
+  /// No description provided for @statsAccomplished.
+  ///
+  /// In ko, this message translates to:
+  /// **'달성'**
+  String get statsAccomplished;
 
   /// No description provided for @statsNoData.
   ///
@@ -1951,6 +1957,150 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'데모 데이터 삭제 중...'**
   String get demoModeClearing;
+
+  /// No description provided for @timeBlockStartAlarmTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{title} - 시작 {time} 전'**
+  String timeBlockStartAlarmTitle(String title, String time);
+
+  /// No description provided for @timeBlockStartAlarmBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'곧 시작됩니다. 준비하세요!'**
+  String get timeBlockStartAlarmBody;
+
+  /// No description provided for @timeBlockEndAlarmTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{title} - 종료 {time} 전'**
+  String timeBlockEndAlarmTitle(String title, String time);
+
+  /// No description provided for @timeBlockEndAlarmBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'마무리할 시간입니다.'**
+  String get timeBlockEndAlarmBody;
+
+  /// No description provided for @focusSessionCompleteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 시간 완료!'**
+  String get focusSessionCompleteTitle;
+
+  /// No description provided for @focusSessionCompleteBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'수고하셨습니다. 잠시 쉬어가세요.'**
+  String get focusSessionCompleteBody;
+
+  /// No description provided for @statDescProductivityScoreTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'생산성 점수'**
+  String get statDescProductivityScoreTitle;
+
+  /// No description provided for @statDescProductivityScoreBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료율, 시간 정확도, 타임블록 실행률을 종합한 0~100점 점수입니다.'**
+  String get statDescProductivityScoreBody;
+
+  /// No description provided for @statDescCompletionRingsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료율 링'**
+  String get statDescCompletionRingsTitle;
+
+  /// No description provided for @statDescCompletionRingsBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'Task 완료 비율, 타임블록 실행 비율, 시간 정확도를 보여줍니다.'**
+  String get statDescCompletionRingsBody;
+
+  /// No description provided for @statDescTaskPipelineTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Task 흐름'**
+  String get statDescTaskPipelineTitle;
+
+  /// No description provided for @statDescTaskPipelineBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'전체→스케줄→완료→이월의 흐름을 보여줍니다.'**
+  String get statDescTaskPipelineBody;
+
+  /// No description provided for @statDescTop3StatsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Top 3 달성'**
+  String get statDescTop3StatsTitle;
+
+  /// No description provided for @statDescTop3StatsBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'가장 중요한 3가지 할 일의 달성 현황입니다.'**
+  String get statDescTop3StatsBody;
+
+  /// No description provided for @statDescTaskRankingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'Task 랭킹'**
+  String get statDescTaskRankingTitle;
+
+  /// No description provided for @statDescTaskRankingBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'반복 할 일의 완료 성공/실패 순위입니다.'**
+  String get statDescTaskRankingBody;
+
+  /// No description provided for @statDescFocusSummaryTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 분석'**
+  String get statDescFocusSummaryTitle;
+
+  /// No description provided for @statDescFocusSummaryBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 모드 효율, 시간, 세션 수, 일시정지 시간입니다.'**
+  String get statDescFocusSummaryBody;
+
+  /// No description provided for @statDescTrendChartTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'생산성 트렌드'**
+  String get statDescTrendChartTitle;
+
+  /// No description provided for @statDescTrendChartBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'일별 생산성 점수 변화를 선 그래프로 보여줍니다.'**
+  String get statDescTrendChartBody;
+
+  /// No description provided for @statDescTagAnalysisTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'태그별 분석'**
+  String get statDescTagAnalysisTitle;
+
+  /// No description provided for @statDescTagAnalysisBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'태그별 할 일 수와 계획 시간을 보여줍니다.'**
+  String get statDescTagAnalysisBody;
+
+  /// No description provided for @statDescInsightsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'인사이트'**
+  String get statDescInsightsTitle;
+
+  /// No description provided for @statDescInsightsBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'데이터 기반 자동 생성 성과 분석입니다.'**
+  String get statDescInsightsBody;
 }
 
 class _AppLocalizationsDelegate

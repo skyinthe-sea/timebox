@@ -93,6 +93,7 @@ Future<void> init() async {
     () => NotificationRepositoryImpl(
       notificationService: sl(),
       localDataSource: sl(),
+      prefs: sl(),
     ),
   );
 
@@ -231,6 +232,8 @@ Future<void> init() async {
       sessionDataSource: sl<FocusSessionLocalDataSource>(),
       analyticsDataSource: sl<AnalyticsLocalDataSource>(),
       statsUpdateService: sl<StatsUpdateService>(),
+      notificationService: sl<NotificationService>(),
+      prefs: sl<SharedPreferences>(),
     ),
   );
 

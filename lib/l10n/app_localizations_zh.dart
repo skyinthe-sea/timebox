@@ -358,10 +358,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get planner => '时间盒';
 
   @override
-  String get copyToTomorrow => '明天也做';
+  String get copyToTomorrow => '移至明天';
 
   @override
-  String get copiedToTomorrow => '已复制到明天';
+  String get copiedToTomorrow => '已移至明天';
 
   @override
   String rolloverBadge(int count) {
@@ -614,7 +614,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get statsRolledOver => '已顺延';
 
   @override
-  String get statsEfficiency => '效率';
+  String get statsEfficiency => '准确度';
+
+  @override
+  String get statsAccomplished => '达成';
 
   @override
   String get statsNoData => '暂无数据';
@@ -998,4 +1001,80 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get demoModeClearing => '正在清除演示数据...';
+
+  @override
+  String timeBlockStartAlarmTitle(String title, String time) {
+    return '$title - 开始前$time';
+  }
+
+  @override
+  String get timeBlockStartAlarmBody => '即将开始，请做好准备！';
+
+  @override
+  String timeBlockEndAlarmTitle(String title, String time) {
+    return '$title - 结束前$time';
+  }
+
+  @override
+  String get timeBlockEndAlarmBody => '该收尾了。';
+
+  @override
+  String get focusSessionCompleteTitle => '专注时间完成！';
+
+  @override
+  String get focusSessionCompleteBody => '辛苦了，休息一下吧。';
+
+  @override
+  String get statDescProductivityScoreTitle => '生产力评分';
+
+  @override
+  String get statDescProductivityScoreBody => '综合完成率、时间准确度和时间块执行率的0-100分评分。';
+
+  @override
+  String get statDescCompletionRingsTitle => '完成率环';
+
+  @override
+  String get statDescCompletionRingsBody => '显示任务完成率、时间块执行率和时间准确度。';
+
+  @override
+  String get statDescTaskPipelineTitle => '任务流程';
+
+  @override
+  String get statDescTaskPipelineBody => '显示总数→已安排→已完成→已顺延的流程。';
+
+  @override
+  String get statDescTop3StatsTitle => 'Top 3 达成';
+
+  @override
+  String get statDescTop3StatsBody => '显示最重要的3个任务的达成情况。';
+
+  @override
+  String get statDescTaskRankingTitle => '任务排名';
+
+  @override
+  String get statDescTaskRankingBody => '按完成成功/失败排列重复任务。';
+
+  @override
+  String get statDescFocusSummaryTitle => '专注分析';
+
+  @override
+  String get statDescFocusSummaryBody => '专注模式效率、时间、会话数和暂停时长。';
+
+  @override
+  String get statDescTrendChartTitle => '生产力趋势';
+
+  @override
+  String get statDescTrendChartBody => '以折线图展示每日生产力评分变化。';
+
+  @override
+  String get statDescTagAnalysisTitle => '标签分析';
+
+  @override
+  String get statDescTagAnalysisBody => '按标签显示任务数量和计划时间。';
+
+  @override
+  String get statDescInsightsTitle => '洞察';
+
+  @override
+  String get statDescInsightsBody => '基于数据自动生成的绩效分析。';
 }

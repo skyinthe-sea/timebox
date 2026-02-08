@@ -107,7 +107,7 @@ class _BrainDumpViewState extends State<BrainDumpView> {
                               onPressed: _submitTask,
                             ),
                           ),
-                          textInputAction: TextInputAction.done,
+                          textInputAction: TextInputAction.send,
                           onSubmitted: (_) => _submitTask(),
                         ),
                       ),
@@ -180,7 +180,7 @@ class _BrainDumpViewState extends State<BrainDumpView> {
         ));
 
     _textController.clear();
-    _focusNode.unfocus();
+    _focusNode.requestFocus();
   }
 
   void _submitTask() {
@@ -194,7 +194,7 @@ class _BrainDumpViewState extends State<BrainDumpView> {
         ));
 
     _textController.clear();
-    _focusNode.unfocus();
+    _focusNode.requestFocus();
   }
 }
 

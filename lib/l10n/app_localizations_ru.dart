@@ -360,10 +360,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get planner => 'Таймбокс';
 
   @override
-  String get copyToTomorrow => 'Повторить завтра';
+  String get copyToTomorrow => 'Перенести на завтра';
 
   @override
-  String get copiedToTomorrow => 'Скопировано на завтра';
+  String get copiedToTomorrow => 'Перенесено на завтра';
 
   @override
   String rolloverBadge(int count) {
@@ -618,7 +618,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get statsRolledOver => 'Перенесено';
 
   @override
-  String get statsEfficiency => 'Эффективность';
+  String get statsEfficiency => 'Точность';
+
+  @override
+  String get statsAccomplished => 'Достигнуто';
 
   @override
   String get statsNoData => 'Пока нет данных';
@@ -1006,4 +1009,89 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get demoModeClearing => 'Удаление демо данных...';
+
+  @override
+  String timeBlockStartAlarmTitle(String title, String time) {
+    return '$title - за $time до начала';
+  }
+
+  @override
+  String get timeBlockStartAlarmBody => 'Скоро начнётся. Подготовьтесь!';
+
+  @override
+  String timeBlockEndAlarmTitle(String title, String time) {
+    return '$title - за $time до окончания';
+  }
+
+  @override
+  String get timeBlockEndAlarmBody => 'Пора завершать.';
+
+  @override
+  String get focusSessionCompleteTitle => 'Сессия фокусировки завершена!';
+
+  @override
+  String get focusSessionCompleteBody =>
+      'Отличная работа! Сделайте короткий перерыв.';
+
+  @override
+  String get statDescProductivityScoreTitle => 'Балл продуктивности';
+
+  @override
+  String get statDescProductivityScoreBody =>
+      'Оценка от 0 до 100, объединяющая процент выполнения, точность времени и исполнение таймблоков.';
+
+  @override
+  String get statDescCompletionRingsTitle => 'Кольца выполнения';
+
+  @override
+  String get statDescCompletionRingsBody =>
+      'Показывает процент выполнения задач, таймблоков и точность времени.';
+
+  @override
+  String get statDescTaskPipelineTitle => 'Поток задач';
+
+  @override
+  String get statDescTaskPipelineBody =>
+      'Показывает поток: всего → запланировано → выполнено → перенесено.';
+
+  @override
+  String get statDescTop3StatsTitle => 'Достижение Топ 3';
+
+  @override
+  String get statDescTop3StatsBody => 'Статус достижения 3 самых важных задач.';
+
+  @override
+  String get statDescTaskRankingTitle => 'Рейтинг задач';
+
+  @override
+  String get statDescTaskRankingBody =>
+      'Ранжирует повторяющиеся задачи по успешности выполнения.';
+
+  @override
+  String get statDescFocusSummaryTitle => 'Анализ фокуса';
+
+  @override
+  String get statDescFocusSummaryBody =>
+      'Эффективность фокуса, время, количество сессий и длительность пауз.';
+
+  @override
+  String get statDescTrendChartTitle => 'Тренд продуктивности';
+
+  @override
+  String get statDescTrendChartBody =>
+      'Показывает ежедневные изменения балла продуктивности в виде графика.';
+
+  @override
+  String get statDescTagAnalysisTitle => 'Анализ по тегам';
+
+  @override
+  String get statDescTagAnalysisBody =>
+      'Показывает количество задач и запланированное время по тегам.';
+
+  @override
+  String get statDescInsightsTitle => 'Инсайты';
+
+  @override
+  String get statDescInsightsBody =>
+      'Автоматический анализ эффективности на основе ваших данных.';
 }

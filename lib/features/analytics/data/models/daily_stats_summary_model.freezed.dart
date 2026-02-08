@@ -35,7 +35,11 @@ mixin _$DailyStatsSummaryModel {
   int get totalFocusDurationMinutes => throw _privateConstructorUsedError;
   int get totalPauseDurationMinutes =>
       throw _privateConstructorUsedError; // Top 3 달성
-  int get top3CompletedCount => throw _privateConstructorUsedError; // 생산성 점수
+  int get top3SetCount => throw _privateConstructorUsedError;
+  int get top3CompletedCount =>
+      throw _privateConstructorUsedError; // 시간 정확도 (블록별 평균, -1 = 데이터 없음)
+  double get timeAccuracyPercent =>
+      throw _privateConstructorUsedError; // 생산성 점수
   int get productivityScore => throw _privateConstructorUsedError; // 메타데이터
   DateTime get calculatedAt => throw _privateConstructorUsedError;
 
@@ -64,7 +68,9 @@ abstract class $DailyStatsSummaryModelCopyWith<$Res> {
       int focusSessionCount,
       int totalFocusDurationMinutes,
       int totalPauseDurationMinutes,
+      int top3SetCount,
       int top3CompletedCount,
+      double timeAccuracyPercent,
       int productivityScore,
       DateTime calculatedAt});
 }
@@ -95,7 +101,9 @@ class _$DailyStatsSummaryModelCopyWithImpl<$Res,
     Object? focusSessionCount = null,
     Object? totalFocusDurationMinutes = null,
     Object? totalPauseDurationMinutes = null,
+    Object? top3SetCount = null,
     Object? top3CompletedCount = null,
+    Object? timeAccuracyPercent = null,
     Object? productivityScore = null,
     Object? calculatedAt = null,
   }) {
@@ -148,10 +156,18 @@ class _$DailyStatsSummaryModelCopyWithImpl<$Res,
           ? _value.totalPauseDurationMinutes
           : totalPauseDurationMinutes // ignore: cast_nullable_to_non_nullable
               as int,
+      top3SetCount: null == top3SetCount
+          ? _value.top3SetCount
+          : top3SetCount // ignore: cast_nullable_to_non_nullable
+              as int,
       top3CompletedCount: null == top3CompletedCount
           ? _value.top3CompletedCount
           : top3CompletedCount // ignore: cast_nullable_to_non_nullable
               as int,
+      timeAccuracyPercent: null == timeAccuracyPercent
+          ? _value.timeAccuracyPercent
+          : timeAccuracyPercent // ignore: cast_nullable_to_non_nullable
+              as double,
       productivityScore: null == productivityScore
           ? _value.productivityScore
           : productivityScore // ignore: cast_nullable_to_non_nullable
@@ -186,7 +202,9 @@ abstract class _$$DailyStatsSummaryModelImplCopyWith<$Res>
       int focusSessionCount,
       int totalFocusDurationMinutes,
       int totalPauseDurationMinutes,
+      int top3SetCount,
       int top3CompletedCount,
+      double timeAccuracyPercent,
       int productivityScore,
       DateTime calculatedAt});
 }
@@ -216,7 +234,9 @@ class __$$DailyStatsSummaryModelImplCopyWithImpl<$Res>
     Object? focusSessionCount = null,
     Object? totalFocusDurationMinutes = null,
     Object? totalPauseDurationMinutes = null,
+    Object? top3SetCount = null,
     Object? top3CompletedCount = null,
+    Object? timeAccuracyPercent = null,
     Object? productivityScore = null,
     Object? calculatedAt = null,
   }) {
@@ -269,10 +289,18 @@ class __$$DailyStatsSummaryModelImplCopyWithImpl<$Res>
           ? _value.totalPauseDurationMinutes
           : totalPauseDurationMinutes // ignore: cast_nullable_to_non_nullable
               as int,
+      top3SetCount: null == top3SetCount
+          ? _value.top3SetCount
+          : top3SetCount // ignore: cast_nullable_to_non_nullable
+              as int,
       top3CompletedCount: null == top3CompletedCount
           ? _value.top3CompletedCount
           : top3CompletedCount // ignore: cast_nullable_to_non_nullable
               as int,
+      timeAccuracyPercent: null == timeAccuracyPercent
+          ? _value.timeAccuracyPercent
+          : timeAccuracyPercent // ignore: cast_nullable_to_non_nullable
+              as double,
       productivityScore: null == productivityScore
           ? _value.productivityScore
           : productivityScore // ignore: cast_nullable_to_non_nullable
@@ -301,7 +329,9 @@ class _$DailyStatsSummaryModelImpl extends _DailyStatsSummaryModel {
       this.focusSessionCount = 0,
       this.totalFocusDurationMinutes = 0,
       this.totalPauseDurationMinutes = 0,
+      this.top3SetCount = 0,
       this.top3CompletedCount = 0,
+      this.timeAccuracyPercent = -1.0,
       required this.productivityScore,
       required this.calculatedAt})
       : super._();
@@ -343,7 +373,14 @@ class _$DailyStatsSummaryModelImpl extends _DailyStatsSummaryModel {
 // Top 3 달성
   @override
   @JsonKey()
+  final int top3SetCount;
+  @override
+  @JsonKey()
   final int top3CompletedCount;
+// 시간 정확도 (블록별 평균, -1 = 데이터 없음)
+  @override
+  @JsonKey()
+  final double timeAccuracyPercent;
 // 생산성 점수
   @override
   final int productivityScore;
@@ -353,7 +390,7 @@ class _$DailyStatsSummaryModelImpl extends _DailyStatsSummaryModel {
 
   @override
   String toString() {
-    return 'DailyStatsSummaryModel(id: $id, date: $date, totalPlannedTasks: $totalPlannedTasks, completedTasks: $completedTasks, rolledOverTasks: $rolledOverTasks, totalTimeBlocks: $totalTimeBlocks, completedTimeBlocks: $completedTimeBlocks, totalPlannedDurationMinutes: $totalPlannedDurationMinutes, totalActualDurationMinutes: $totalActualDurationMinutes, focusSessionCount: $focusSessionCount, totalFocusDurationMinutes: $totalFocusDurationMinutes, totalPauseDurationMinutes: $totalPauseDurationMinutes, top3CompletedCount: $top3CompletedCount, productivityScore: $productivityScore, calculatedAt: $calculatedAt)';
+    return 'DailyStatsSummaryModel(id: $id, date: $date, totalPlannedTasks: $totalPlannedTasks, completedTasks: $completedTasks, rolledOverTasks: $rolledOverTasks, totalTimeBlocks: $totalTimeBlocks, completedTimeBlocks: $completedTimeBlocks, totalPlannedDurationMinutes: $totalPlannedDurationMinutes, totalActualDurationMinutes: $totalActualDurationMinutes, focusSessionCount: $focusSessionCount, totalFocusDurationMinutes: $totalFocusDurationMinutes, totalPauseDurationMinutes: $totalPauseDurationMinutes, top3SetCount: $top3SetCount, top3CompletedCount: $top3CompletedCount, timeAccuracyPercent: $timeAccuracyPercent, productivityScore: $productivityScore, calculatedAt: $calculatedAt)';
   }
 
   @override
@@ -389,8 +426,12 @@ class _$DailyStatsSummaryModelImpl extends _DailyStatsSummaryModel {
             (identical(other.totalPauseDurationMinutes,
                     totalPauseDurationMinutes) ||
                 other.totalPauseDurationMinutes == totalPauseDurationMinutes) &&
+            (identical(other.top3SetCount, top3SetCount) ||
+                other.top3SetCount == top3SetCount) &&
             (identical(other.top3CompletedCount, top3CompletedCount) ||
                 other.top3CompletedCount == top3CompletedCount) &&
+            (identical(other.timeAccuracyPercent, timeAccuracyPercent) ||
+                other.timeAccuracyPercent == timeAccuracyPercent) &&
             (identical(other.productivityScore, productivityScore) ||
                 other.productivityScore == productivityScore) &&
             (identical(other.calculatedAt, calculatedAt) ||
@@ -413,7 +454,9 @@ class _$DailyStatsSummaryModelImpl extends _DailyStatsSummaryModel {
       focusSessionCount,
       totalFocusDurationMinutes,
       totalPauseDurationMinutes,
+      top3SetCount,
       top3CompletedCount,
+      timeAccuracyPercent,
       productivityScore,
       calculatedAt);
 
@@ -446,7 +489,9 @@ abstract class _DailyStatsSummaryModel extends DailyStatsSummaryModel {
       final int focusSessionCount,
       final int totalFocusDurationMinutes,
       final int totalPauseDurationMinutes,
+      final int top3SetCount,
       final int top3CompletedCount,
+      final double timeAccuracyPercent,
       required final int productivityScore,
       required final DateTime calculatedAt}) = _$DailyStatsSummaryModelImpl;
   const _DailyStatsSummaryModel._() : super._();
@@ -479,7 +524,11 @@ abstract class _DailyStatsSummaryModel extends DailyStatsSummaryModel {
   @override
   int get totalPauseDurationMinutes;
   @override // Top 3 달성
+  int get top3SetCount;
+  @override
   int get top3CompletedCount;
+  @override // 시간 정확도 (블록별 평균, -1 = 데이터 없음)
+  double get timeAccuracyPercent;
   @override // 생산성 점수
   int get productivityScore;
   @override // 메타데이터

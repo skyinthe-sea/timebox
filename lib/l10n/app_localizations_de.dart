@@ -360,10 +360,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get planner => 'Timebox';
 
   @override
-  String get copyToTomorrow => 'Auch morgen tun';
+  String get copyToTomorrow => 'Auf morgen verschieben';
 
   @override
-  String get copiedToTomorrow => 'Für morgen kopiert';
+  String get copiedToTomorrow => 'Auf morgen verschoben';
 
   @override
   String rolloverBadge(int count) {
@@ -620,7 +620,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get statsRolledOver => 'Übertragen';
 
   @override
-  String get statsEfficiency => 'Effizienz';
+  String get statsEfficiency => 'Genauigkeit';
+
+  @override
+  String get statsAccomplished => 'Erreicht';
 
   @override
   String get statsNoData => 'Noch keine Daten';
@@ -1008,4 +1011,89 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get demoModeClearing => 'Demo-Daten werden gelöscht...';
+
+  @override
+  String timeBlockStartAlarmTitle(String title, String time) {
+    return '$title - $time vor Beginn';
+  }
+
+  @override
+  String get timeBlockStartAlarmBody => 'Beginnt bald. Mach dich bereit!';
+
+  @override
+  String timeBlockEndAlarmTitle(String title, String time) {
+    return '$title - $time vor Ende';
+  }
+
+  @override
+  String get timeBlockEndAlarmBody => 'Zeit zum Abschließen.';
+
+  @override
+  String get focusSessionCompleteTitle => 'Fokus-Sitzung abgeschlossen!';
+
+  @override
+  String get focusSessionCompleteBody => 'Gute Arbeit! Mach eine kurze Pause.';
+
+  @override
+  String get statDescProductivityScoreTitle => 'Produktivitätswert';
+
+  @override
+  String get statDescProductivityScoreBody =>
+      'Ein 0–100 Score aus Abschlussrate, Zeitgenauigkeit und Zeitblock-Ausführung.';
+
+  @override
+  String get statDescCompletionRingsTitle => 'Abschlussringe';
+
+  @override
+  String get statDescCompletionRingsBody =>
+      'Zeigt Aufgaben-Abschlussrate, Zeitblock-Ausführungsrate und Zeitgenauigkeit.';
+
+  @override
+  String get statDescTaskPipelineTitle => 'Aufgabenfluss';
+
+  @override
+  String get statDescTaskPipelineBody =>
+      'Zeigt den Fluss von Gesamt → Geplant → Abgeschlossen → Übertragen.';
+
+  @override
+  String get statDescTop3StatsTitle => 'Top 3 Erreichung';
+
+  @override
+  String get statDescTop3StatsBody =>
+      'Zeigt den Erreichungsstatus deiner 3 wichtigsten Aufgaben.';
+
+  @override
+  String get statDescTaskRankingTitle => 'Aufgabenranking';
+
+  @override
+  String get statDescTaskRankingBody =>
+      'Rankt wiederkehrende Aufgaben nach Abschluss-Erfolg/-Misserfolg.';
+
+  @override
+  String get statDescFocusSummaryTitle => 'Fokus-Analyse';
+
+  @override
+  String get statDescFocusSummaryBody =>
+      'Fokus-Effizienz, Zeit, Sitzungsanzahl und Pausendauer.';
+
+  @override
+  String get statDescTrendChartTitle => 'Produktivitätstrend';
+
+  @override
+  String get statDescTrendChartBody =>
+      'Zeigt tägliche Produktivitätswert-Änderungen als Liniendiagramm.';
+
+  @override
+  String get statDescTagAnalysisTitle => 'Tag-Analyse';
+
+  @override
+  String get statDescTagAnalysisBody =>
+      'Zeigt Aufgabenanzahl und geplante Zeit nach Tag.';
+
+  @override
+  String get statDescInsightsTitle => 'Einblicke';
+
+  @override
+  String get statDescInsightsBody =>
+      'Automatisch generierte Leistungsanalyse basierend auf deinen Daten.';
 }
