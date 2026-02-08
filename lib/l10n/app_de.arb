@@ -429,5 +429,35 @@
   "statDescTagAnalysisTitle": "Tag-Analyse",
   "statDescTagAnalysisBody": "Zeigt Aufgabenanzahl und geplante Zeit nach Tag.",
   "statDescInsightsTitle": "Einblicke",
-  "statDescInsightsBody": "Automatisch generierte Leistungsanalyse basierend auf deinen Daten."
+  "statDescInsightsBody": "Automatisch generierte Leistungsanalyse basierend auf deinen Daten.",
+
+  "statDescPriorityBreakdownBody": "Zeigt die Abschlussrate nach Priorität (Hoch/Mittel/Niedrig).",
+
+  "insightPeriodRolloverTitle": "{count} übertragene Aufgaben",
+  "@insightPeriodRolloverTitle": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "insightPeriodRolloverDesc": "Weniger übertragene Aufgaben verbessern die Produktivität",
+
+  "insightPeriodFocusTitle": "{minutes}min Fokuszeit",
+  "@insightPeriodFocusTitle": {
+    "placeholders": {
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightPeriodFocusHighDesc": "Gute Fokuszeit in diesem Zeitraum",
+  "insightPeriodFocusLowDesc": "Nutze den Fokusmodus häufiger",
+
+  "insightPeriodTop3Title": "Top 3 Abschluss {rate}%",
+  "@insightPeriodTop3Title": {
+    "placeholders": {
+      "rate": {"type": "String"},
+      "completed": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "insightPeriodTop3HighDesc": "Du erledigst wichtige Aufgaben gut",
+  "insightPeriodTop3LowDesc": "Konzentriere dich mehr auf deine Top 3 Aufgaben"
 }

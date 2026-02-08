@@ -1107,4 +1107,43 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get statDescInsightsBody =>
       'Analyse de performance auto-générée basée sur vos données.';
+
+  @override
+  String get statDescPriorityBreakdownBody =>
+      'Affiche le taux de complétion par priorité (Haute/Moyenne/Basse).';
+
+  @override
+  String insightPeriodRolloverTitle(String count) {
+    return '$count tâches reportées';
+  }
+
+  @override
+  String get insightPeriodRolloverDesc =>
+      'Réduire les tâches reportées améliore la productivité';
+
+  @override
+  String insightPeriodFocusTitle(String minutes) {
+    return '${minutes}min de concentration';
+  }
+
+  @override
+  String get insightPeriodFocusHighDesc =>
+      'Bon temps de concentration cette période';
+
+  @override
+  String get insightPeriodFocusLowDesc =>
+      'Essayez d\'utiliser le mode concentration plus souvent';
+
+  @override
+  String insightPeriodTop3Title(String rate, String completed, String total) {
+    return 'Complétion Top 3 : $rate%';
+  }
+
+  @override
+  String get insightPeriodTop3HighDesc =>
+      'Vous complétez bien les tâches importantes';
+
+  @override
+  String get insightPeriodTop3LowDesc =>
+      'Concentrez-vous davantage sur vos tâches Top 3';
 }

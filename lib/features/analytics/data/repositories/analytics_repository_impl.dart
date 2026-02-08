@@ -323,7 +323,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
                     pause.resumeTime!.difference(pause.pauseTime).inMinutes;
               }
             }
-            totalMinutes += duration.inMinutes - pauseMinutes;
+            totalMinutes += (duration.inMinutes - pauseMinutes).clamp(0, duration.inMinutes);
           }
         }
         currentDate = currentDate.add(const Duration(days: 1));
@@ -439,7 +439,7 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
                 pause.resumeTime!.difference(pause.pauseTime).inMinutes;
           }
         }
-        focusMinutes += duration - sessionPauseMinutes;
+        focusMinutes += (duration - sessionPauseMinutes).clamp(0, duration);
       }
     }
 
@@ -865,19 +865,38 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     DateTime end,
   ) async {
     try {
-      var totalTasks = 0;
-      var completedTasks = 0;
-      var rolledOverTasks = 0;
-      var scheduledTasks = 0;
+      // 유니크 Task ID 기반 추적 (task-days 중복 카운트 방지)
+      final allTaskIds = <String>{};
+      final scheduledIds = <String>{};
+      final completedIds = <String>{};
+      final rolledOverIds = <String>{};
 
       var currentDate = start;
       while (!currentDate.isAfter(end)) {
         final tasks = await taskDataSource.getTasksByDate(currentDate);
-        totalTasks += tasks.length;
-        rolledOverTasks += _countRolledOverTasks(tasks, currentDate);
-
         final timeBlocks =
             await timeBlockDataSource.getTimeBlocksForDay(currentDate);
+
+        for (final task in tasks) {
+          allTaskIds.add(task.id);
+        }
+
+        // 이월 판정
+        final normalizedDate = DateTime(currentDate.year, currentDate.month, currentDate.day);
+        for (final task in tasks) {
+          if (task.rolloverCount > 0) {
+            rolledOverIds.add(task.id);
+          } else {
+            final createdDate = DateTime(
+              task.createdAt.year,
+              task.createdAt.month,
+              task.createdAt.day,
+            );
+            if (createdDate.isBefore(normalizedDate)) {
+              rolledOverIds.add(task.id);
+            }
+          }
+        }
 
         // 완료 판정: TimeBlock 완료 OR Task status == 'done' (union)
         final completedByTb = timeBlocks
@@ -888,26 +907,32 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
             .where((t) => t.status == 'done')
             .map((t) => t.id)
             .toSet();
-        final completedIds = completedByTb.union(completedByTask);
-        completedTasks += tasks.where((t) => completedIds.contains(t.id)).length;
+        final dayCompletedIds = completedByTb.union(completedByTask);
+        for (final task in tasks) {
+          if (dayCompletedIds.contains(task.id)) {
+            completedIds.add(task.id);
+          }
+        }
 
         // 해당 날짜의 TimeBlock에 연결된 Task ID 집합
         final scheduledIdsForDay = timeBlocks
             .where((b) => b.taskId != null)
             .map((b) => b.taskId!)
             .toSet();
-        // 해당 날짜의 Task 중 스케줄된 Task 수 (날짜별 카운트)
-        scheduledTasks +=
-            tasks.where((t) => scheduledIdsForDay.contains(t.id)).length;
+        for (final task in tasks) {
+          if (scheduledIdsForDay.contains(task.id)) {
+            scheduledIds.add(task.id);
+          }
+        }
 
         currentDate = currentDate.add(const Duration(days: 1));
       }
 
       return Right(TaskPipelineStats(
-        totalTasks: totalTasks,
-        scheduledTasks: scheduledTasks,
-        completedTasks: completedTasks,
-        rolledOverTasks: rolledOverTasks,
+        totalTasks: allTaskIds.length,
+        scheduledTasks: scheduledIds.length,
+        completedTasks: completedIds.length,
+        rolledOverTasks: rolledOverIds.length,
       ));
     } on CacheException catch (e) {
       return Left(CacheFailure(message: e.message));

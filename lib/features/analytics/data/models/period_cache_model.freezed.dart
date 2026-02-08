@@ -38,6 +38,10 @@ mixin _$PeriodCacheModel {
   TaskPipelineStatsModel? get pipelineStats =>
       throw _privateConstructorUsedError;
 
+  /// 우선순위별 성과 통계
+  PriorityBreakdownStatsModel? get priorityBreakdown =>
+      throw _privateConstructorUsedError;
+
   /// 일별 요약 목록
   List<DailyStatsSummaryModel> get periodSummaries =>
       throw _privateConstructorUsedError;
@@ -72,12 +76,14 @@ abstract class $PeriodCacheModelCopyWith<$Res> {
       List<ProductivityStatsModel> periodStats,
       List<TagTimeComparisonModel> tagStats,
       TaskPipelineStatsModel? pipelineStats,
+      PriorityBreakdownStatsModel? priorityBreakdown,
       List<DailyStatsSummaryModel> periodSummaries,
       List<TimeComparisonModel> timeComparisons,
       List<TaskCompletionRankingModel> topSuccessTasks,
       List<TaskCompletionRankingModel> topFailureTasks});
 
   $TaskPipelineStatsModelCopyWith<$Res>? get pipelineStats;
+  $PriorityBreakdownStatsModelCopyWith<$Res>? get priorityBreakdown;
 }
 
 /// @nodoc
@@ -98,6 +104,7 @@ class _$PeriodCacheModelCopyWithImpl<$Res, $Val extends PeriodCacheModel>
     Object? periodStats = null,
     Object? tagStats = null,
     Object? pipelineStats = freezed,
+    Object? priorityBreakdown = freezed,
     Object? periodSummaries = null,
     Object? timeComparisons = null,
     Object? topSuccessTasks = null,
@@ -124,6 +131,10 @@ class _$PeriodCacheModelCopyWithImpl<$Res, $Val extends PeriodCacheModel>
           ? _value.pipelineStats
           : pipelineStats // ignore: cast_nullable_to_non_nullable
               as TaskPipelineStatsModel?,
+      priorityBreakdown: freezed == priorityBreakdown
+          ? _value.priorityBreakdown
+          : priorityBreakdown // ignore: cast_nullable_to_non_nullable
+              as PriorityBreakdownStatsModel?,
       periodSummaries: null == periodSummaries
           ? _value.periodSummaries
           : periodSummaries // ignore: cast_nullable_to_non_nullable
@@ -155,6 +166,19 @@ class _$PeriodCacheModelCopyWithImpl<$Res, $Val extends PeriodCacheModel>
       return _then(_value.copyWith(pipelineStats: value) as $Val);
     });
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $PriorityBreakdownStatsModelCopyWith<$Res>? get priorityBreakdown {
+    if (_value.priorityBreakdown == null) {
+      return null;
+    }
+
+    return $PriorityBreakdownStatsModelCopyWith<$Res>(_value.priorityBreakdown!,
+        (value) {
+      return _then(_value.copyWith(priorityBreakdown: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -171,6 +195,7 @@ abstract class _$$PeriodCacheModelImplCopyWith<$Res>
       List<ProductivityStatsModel> periodStats,
       List<TagTimeComparisonModel> tagStats,
       TaskPipelineStatsModel? pipelineStats,
+      PriorityBreakdownStatsModel? priorityBreakdown,
       List<DailyStatsSummaryModel> periodSummaries,
       List<TimeComparisonModel> timeComparisons,
       List<TaskCompletionRankingModel> topSuccessTasks,
@@ -178,6 +203,8 @@ abstract class _$$PeriodCacheModelImplCopyWith<$Res>
 
   @override
   $TaskPipelineStatsModelCopyWith<$Res>? get pipelineStats;
+  @override
+  $PriorityBreakdownStatsModelCopyWith<$Res>? get priorityBreakdown;
 }
 
 /// @nodoc
@@ -196,6 +223,7 @@ class __$$PeriodCacheModelImplCopyWithImpl<$Res>
     Object? periodStats = null,
     Object? tagStats = null,
     Object? pipelineStats = freezed,
+    Object? priorityBreakdown = freezed,
     Object? periodSummaries = null,
     Object? timeComparisons = null,
     Object? topSuccessTasks = null,
@@ -222,6 +250,10 @@ class __$$PeriodCacheModelImplCopyWithImpl<$Res>
           ? _value.pipelineStats
           : pipelineStats // ignore: cast_nullable_to_non_nullable
               as TaskPipelineStatsModel?,
+      priorityBreakdown: freezed == priorityBreakdown
+          ? _value.priorityBreakdown
+          : priorityBreakdown // ignore: cast_nullable_to_non_nullable
+              as PriorityBreakdownStatsModel?,
       periodSummaries: null == periodSummaries
           ? _value._periodSummaries
           : periodSummaries // ignore: cast_nullable_to_non_nullable
@@ -251,6 +283,7 @@ class _$PeriodCacheModelImpl extends _PeriodCacheModel {
       required final List<ProductivityStatsModel> periodStats,
       required final List<TagTimeComparisonModel> tagStats,
       this.pipelineStats,
+      this.priorityBreakdown,
       required final List<DailyStatsSummaryModel> periodSummaries,
       required final List<TimeComparisonModel> timeComparisons,
       required final List<TaskCompletionRankingModel> topSuccessTasks,
@@ -300,6 +333,10 @@ class _$PeriodCacheModelImpl extends _PeriodCacheModel {
   @override
   final TaskPipelineStatsModel? pipelineStats;
 
+  /// 우선순위별 성과 통계
+  @override
+  final PriorityBreakdownStatsModel? priorityBreakdown;
+
   /// 일별 요약 목록
   final List<DailyStatsSummaryModel> _periodSummaries;
 
@@ -346,7 +383,7 @@ class _$PeriodCacheModelImpl extends _PeriodCacheModel {
 
   @override
   String toString() {
-    return 'PeriodCacheModel(cacheKey: $cacheKey, createdAt: $createdAt, periodStats: $periodStats, tagStats: $tagStats, pipelineStats: $pipelineStats, periodSummaries: $periodSummaries, timeComparisons: $timeComparisons, topSuccessTasks: $topSuccessTasks, topFailureTasks: $topFailureTasks)';
+    return 'PeriodCacheModel(cacheKey: $cacheKey, createdAt: $createdAt, periodStats: $periodStats, tagStats: $tagStats, pipelineStats: $pipelineStats, priorityBreakdown: $priorityBreakdown, periodSummaries: $periodSummaries, timeComparisons: $timeComparisons, topSuccessTasks: $topSuccessTasks, topFailureTasks: $topFailureTasks)';
   }
 
   @override
@@ -363,6 +400,8 @@ class _$PeriodCacheModelImpl extends _PeriodCacheModel {
             const DeepCollectionEquality().equals(other._tagStats, _tagStats) &&
             (identical(other.pipelineStats, pipelineStats) ||
                 other.pipelineStats == pipelineStats) &&
+            (identical(other.priorityBreakdown, priorityBreakdown) ||
+                other.priorityBreakdown == priorityBreakdown) &&
             const DeepCollectionEquality()
                 .equals(other._periodSummaries, _periodSummaries) &&
             const DeepCollectionEquality()
@@ -382,6 +421,7 @@ class _$PeriodCacheModelImpl extends _PeriodCacheModel {
       const DeepCollectionEquality().hash(_periodStats),
       const DeepCollectionEquality().hash(_tagStats),
       pipelineStats,
+      priorityBreakdown,
       const DeepCollectionEquality().hash(_periodSummaries),
       const DeepCollectionEquality().hash(_timeComparisons),
       const DeepCollectionEquality().hash(_topSuccessTasks),
@@ -409,6 +449,7 @@ abstract class _PeriodCacheModel extends PeriodCacheModel {
           required final List<ProductivityStatsModel> periodStats,
           required final List<TagTimeComparisonModel> tagStats,
           final TaskPipelineStatsModel? pipelineStats,
+          final PriorityBreakdownStatsModel? priorityBreakdown,
           required final List<DailyStatsSummaryModel> periodSummaries,
           required final List<TimeComparisonModel> timeComparisons,
           required final List<TaskCompletionRankingModel> topSuccessTasks,
@@ -439,6 +480,10 @@ abstract class _PeriodCacheModel extends PeriodCacheModel {
 
   /// Task Pipeline 통계
   TaskPipelineStatsModel? get pipelineStats;
+  @override
+
+  /// 우선순위별 성과 통계
+  PriorityBreakdownStatsModel? get priorityBreakdown;
   @override
 
   /// 일별 요약 목록

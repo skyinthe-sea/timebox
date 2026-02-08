@@ -6,12 +6,15 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../config/themes/app_colors.dart';
 import '../../../../core/widgets/loading_indicator.dart';
 import '../../domain/entities/insight.dart';
+import '../../domain/entities/priority_breakdown_stats.dart';
+import '../../domain/entities/productivity_stats.dart';
 import '../../domain/entities/task_pipeline_stats.dart';
 import '../bloc/statistics_bloc.dart';
 import '../bloc/statistics_event.dart';
 import '../bloc/statistics_state.dart';
 import '../widgets/completion_ring_row.dart';
 import '../widgets/focus_summary_card.dart';
+import '../widgets/priority_breakdown_card.dart';
 import '../widgets/productivity_score_card.dart';
 import '../widgets/task_completion_ranking_card.dart';
 import '../widgets/task_pipeline_funnel.dart';
@@ -156,6 +159,19 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       ),
                     ),
 
+                    // 4.5. Priority Breakdown Card
+                    if (state.priorityBreakdown != null &&
+                        state.priorityBreakdown != PriorityBreakdownStats.empty)
+                      SliverToBoxAdapter(
+                        child: StatDescriptionWrapper(
+                          title: l10n.statsPriorityBreakdown,
+                          description: l10n.statDescPriorityBreakdownBody,
+                          child: PriorityBreakdownCard(
+                            stats: state.priorityBreakdown!,
+                          ),
+                        ),
+                      ),
+
                     // 5. Top 3 통계 (주간/월간만)
                     if (state.currentPeriod != StatsPeriod.daily &&
                         state.periodSummaries.isNotEmpty)
@@ -184,13 +200,13 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       ),
 
                     // 7. Focus Summary Card
-                    if (state.dailySummary != null)
+                    if (state.displaySummary != null)
                       SliverToBoxAdapter(
                         child: StatDescriptionWrapper(
                           title: l10n.statDescFocusSummaryTitle,
                           description: l10n.statDescFocusSummaryBody,
                           child: FocusSummaryCard(
-                            summary: state.dailySummary!,
+                            summary: state.displaySummary!,
                           ),
                         ),
                       ),
@@ -304,6 +320,26 @@ class _StatisticsPageState extends State<StatisticsPage> {
     final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
 
+    // 유효 데이터가 있는 날만 필터링 (score=0이고 tasks/blocks 모두 0인 날 제외)
+    final validEntries = <int, ProductivityStats>{};
+    for (var i = 0; i < state.periodStats.length; i++) {
+      final s = state.periodStats[i];
+      if (s.score > 0 || s.totalPlannedTasks > 0 || s.totalPlannedTimeBlocks > 0) {
+        validEntries[i] = s;
+      }
+    }
+
+    if (validEntries.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final spots = validEntries.entries.map((entry) {
+      return FlSpot(
+        entry.key.toDouble(),
+        entry.value.score.toDouble(),
+      );
+    }).toList();
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -390,13 +426,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                   maxY: 100,
                   lineBarsData: [
                     LineChartBarData(
-                      spots:
-                          state.periodStats.asMap().entries.map((entry) {
-                        return FlSpot(
-                          entry.key.toDouble(),
-                          entry.value.score.toDouble(),
-                        );
-                      }).toList(),
+                      spots: spots,
                       isCurved: true,
                       color: theme.colorScheme.primary,
                       barWidth: 3,
@@ -404,9 +434,14 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       dotData: FlDotData(
                         show: true,
                         getDotPainter: (spot, percent, barData, index) {
+                          // 유효 데이터가 있는 점만 표시
+                          final origIndex = spot.x.toInt();
+                          final hasData = validEntries.containsKey(origIndex);
                           return FlDotCirclePainter(
-                            radius: 4,
-                            color: theme.colorScheme.primary,
+                            radius: hasData ? 4 : 2,
+                            color: hasData
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.outline.withValues(alpha: 0.3),
                             strokeWidth: 2,
                             strokeColor: theme.colorScheme.surface,
                           );
@@ -476,12 +511,16 @@ class _StatisticsPageState extends State<StatisticsPage> {
             ),
             const SizedBox(height: 20),
 
-            // 태그별 바 차트
+            // 태그별 바 차트 (계획/실제 이중 바)
             ...tagStats.map((tag) {
               final percentage = totalMinutes > 0
                   ? (tag.totalPlannedTime.inMinutes / totalMinutes * 100)
                   : 0.0;
+              final actualPercentage = totalMinutes > 0
+                  ? (tag.totalActualTime.inMinutes / totalMinutes * 100)
+                  : 0.0;
               final tagColor = Color(tag.colorValue);
+              final hasActual = tag.totalActualTime.inMinutes > 0;
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
@@ -511,7 +550,9 @@ class _StatisticsPageState extends State<StatisticsPage> {
                           ],
                         ),
                         Text(
-                          '${tag.taskCount}${l10n.task} / ${_formatDuration(tag.totalPlannedTime)}',
+                          hasActual
+                              ? '${_formatDuration(tag.totalPlannedTime)} → ${_formatDuration(tag.totalActualTime)}'
+                              : '${tag.taskCount}${l10n.task} / ${_formatDuration(tag.totalPlannedTime)}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.outline,
                           ),
@@ -519,16 +560,34 @@ class _StatisticsPageState extends State<StatisticsPage> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    // 진행 바
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: percentage / 100,
-                        backgroundColor:
-                            theme.colorScheme.surfaceContainerHighest,
-                        valueColor: AlwaysStoppedAnimation<Color>(tagColor),
-                        minHeight: 8,
-                      ),
+                    // 이중 바: 계획(전체 바) + 실제(오버레이)
+                    Stack(
+                      children: [
+                        // 계획 시간 바 (배경)
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: percentage / 100,
+                            backgroundColor:
+                                theme.colorScheme.surfaceContainerHighest,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                tagColor.withValues(alpha: 0.3)),
+                            minHeight: 8,
+                          ),
+                        ),
+                        // 실제 시간 바 (오버레이)
+                        if (hasActual)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: LinearProgressIndicator(
+                              value: actualPercentage / 100,
+                              backgroundColor: Colors.transparent,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(tagColor),
+                              minHeight: 8,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),

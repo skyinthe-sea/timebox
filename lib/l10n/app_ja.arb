@@ -429,5 +429,35 @@
   "statDescTagAnalysisTitle": "タグ別分析",
   "statDescTagAnalysisBody": "タグ別のタスク数と計画時間を表示します。",
   "statDescInsightsTitle": "インサイト",
-  "statDescInsightsBody": "データに基づく自動生成パフォーマンス分析です。"
+  "statDescInsightsBody": "データに基づく自動生成パフォーマンス分析です。",
+
+  "statDescPriorityBreakdownBody": "優先度（高/中/低）別のタスク完了率を表示します。",
+
+  "insightPeriodRolloverTitle": "繰り越しタスク {count}件",
+  "@insightPeriodRolloverTitle": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "insightPeriodRolloverDesc": "繰り越しタスクを減らすと生産性が向上します",
+
+  "insightPeriodFocusTitle": "集中時間 {minutes}分",
+  "@insightPeriodFocusTitle": {
+    "placeholders": {
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightPeriodFocusHighDesc": "十分な集中時間です",
+  "insightPeriodFocusLowDesc": "集中モードをもっと活用しましょう",
+
+  "insightPeriodTop3Title": "Top 3 達成率 {rate}%",
+  "@insightPeriodTop3Title": {
+    "placeholders": {
+      "rate": {"type": "String"},
+      "completed": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "insightPeriodTop3HighDesc": "重要なタスクをしっかり完了できています",
+  "insightPeriodTop3LowDesc": "Top 3タスクにもっと集中しましょう"
 }

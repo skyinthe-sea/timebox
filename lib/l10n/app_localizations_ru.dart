@@ -1094,4 +1094,42 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get statDescInsightsBody =>
       'Автоматический анализ эффективности на основе ваших данных.';
+
+  @override
+  String get statDescPriorityBreakdownBody =>
+      'Показывает процент выполнения задач по приоритету (Высокий/Средний/Низкий).';
+
+  @override
+  String insightPeriodRolloverTitle(String count) {
+    return '$count перенесённых задач';
+  }
+
+  @override
+  String get insightPeriodRolloverDesc =>
+      'Уменьшение перенесённых задач повышает продуктивность';
+
+  @override
+  String insightPeriodFocusTitle(String minutes) {
+    return '$minutes мин фокуса';
+  }
+
+  @override
+  String get insightPeriodFocusHighDesc =>
+      'Хорошее время фокуса за этот период';
+
+  @override
+  String get insightPeriodFocusLowDesc =>
+      'Попробуйте чаще использовать режим фокуса';
+
+  @override
+  String insightPeriodTop3Title(String rate, String completed, String total) {
+    return 'Top 3 выполнение $rate%';
+  }
+
+  @override
+  String get insightPeriodTop3HighDesc => 'Вы хорошо выполняете важные задачи';
+
+  @override
+  String get insightPeriodTop3LowDesc =>
+      'Уделяйте больше внимания задачам Top 3';
 }

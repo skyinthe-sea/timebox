@@ -81,6 +81,14 @@ class InsightLocalizer {
       'insightMonthAvgLowDesc' => l10n.insightMonthAvgLowDesc,
       'insightMonthBestTitle' => l10n.insightMonthBestTitle(params['month'] ?? '', params['day'] ?? ''),
       'insightMonthBestDesc' => l10n.insightMonthBestDesc(params['score'] ?? ''),
+      'insightPeriodRolloverTitle' => l10n.insightPeriodRolloverTitle(params['count'] ?? ''),
+      'insightPeriodRolloverDesc' => l10n.insightPeriodRolloverDesc,
+      'insightPeriodFocusTitle' => l10n.insightPeriodFocusTitle(params['minutes'] ?? ''),
+      'insightPeriodFocusHighDesc' => l10n.insightPeriodFocusHighDesc,
+      'insightPeriodFocusLowDesc' => l10n.insightPeriodFocusLowDesc,
+      'insightPeriodTop3Title' => l10n.insightPeriodTop3Title(params['rate'] ?? '', params['completed'] ?? '', params['total'] ?? ''),
+      'insightPeriodTop3HighDesc' => l10n.insightPeriodTop3HighDesc,
+      'insightPeriodTop3LowDesc' => l10n.insightPeriodTop3LowDesc,
       _ => key,
     };
   }

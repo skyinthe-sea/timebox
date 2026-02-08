@@ -1097,4 +1097,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get statDescInsightsBody =>
       'Auto-generated performance analysis based on your data.';
+
+  @override
+  String get statDescPriorityBreakdownBody =>
+      'Shows task completion rate by priority (High/Medium/Low).';
+
+  @override
+  String insightPeriodRolloverTitle(String count) {
+    return '$count rolled-over tasks';
+  }
+
+  @override
+  String get insightPeriodRolloverDesc =>
+      'Reducing rolled-over tasks improves productivity';
+
+  @override
+  String insightPeriodFocusTitle(String minutes) {
+    return '${minutes}min focus time';
+  }
+
+  @override
+  String get insightPeriodFocusHighDesc => 'Great focus time this period';
+
+  @override
+  String get insightPeriodFocusLowDesc => 'Try using focus mode more often';
+
+  @override
+  String insightPeriodTop3Title(String rate, String completed, String total) {
+    return 'Top 3 completion $rate%';
+  }
+
+  @override
+  String get insightPeriodTop3HighDesc =>
+      'You\'re completing important tasks well';
+
+  @override
+  String get insightPeriodTop3LowDesc => 'Focus more on your Top 3 tasks';
 }

@@ -429,5 +429,35 @@
   "statDescTagAnalysisTitle": "टैग विश्लेषण",
   "statDescTagAnalysisBody": "टैग के अनुसार कार्य संख्या और नियोजित समय दिखाता है।",
   "statDescInsightsTitle": "अंतर्दृष्टि",
-  "statDescInsightsBody": "आपके डेटा पर आधारित स्वचालित प्रदर्शन विश्लेषण।"
+  "statDescInsightsBody": "आपके डेटा पर आधारित स्वचालित प्रदर्शन विश्लेषण।",
+
+  "statDescPriorityBreakdownBody": "प्राथमिकता (उच्च/मध्यम/निम्न) के अनुसार कार्य पूर्णता दर दिखाता है।",
+
+  "insightPeriodRolloverTitle": "{count} स्थानांतरित कार्य",
+  "@insightPeriodRolloverTitle": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "insightPeriodRolloverDesc": "स्थानांतरित कार्य कम करने से उत्पादकता बढ़ती है",
+
+  "insightPeriodFocusTitle": "{minutes} मिनट फोकस समय",
+  "@insightPeriodFocusTitle": {
+    "placeholders": {
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightPeriodFocusHighDesc": "इस अवधि में अच्छा फोकस समय",
+  "insightPeriodFocusLowDesc": "फोकस मोड का अधिक उपयोग करें",
+
+  "insightPeriodTop3Title": "Top 3 पूर्णता {rate}%",
+  "@insightPeriodTop3Title": {
+    "placeholders": {
+      "rate": {"type": "String"},
+      "completed": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "insightPeriodTop3HighDesc": "आप महत्वपूर्ण कार्य अच्छी तरह पूरा कर रहे हैं",
+  "insightPeriodTop3LowDesc": "अपने Top 3 कार्यों पर अधिक ध्यान दें"
 }

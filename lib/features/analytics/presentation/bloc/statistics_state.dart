@@ -145,13 +145,20 @@ class StatisticsState extends Equatable {
         ? (totalCompletedBlocks / totalPlannedBlocks) * 100
         : 0.0;
 
-    // 블록별 시간 정확도 평균 (데이터가 있는 날만)
+    // 블록별 시간 정확도 가중 평균 (블록 수 기반, 데이터가 있는 날만)
     final accuracyStats =
         validStats.where((s) => s.timeAccuracyPercent >= 0).toList();
-    final avgTimeAccuracy = accuracyStats.isNotEmpty
-        ? accuracyStats.fold<double>(
-              0, (sum, s) => sum + s.timeAccuracyPercent) /
-            accuracyStats.length
+    double weightedSum = 0;
+    double totalWeight = 0;
+    for (final s in accuracyStats) {
+      final weight = s.totalPlannedTimeBlocks.toDouble();
+      if (weight > 0) {
+        weightedSum += s.timeAccuracyPercent * weight;
+        totalWeight += weight;
+      }
+    }
+    final avgTimeAccuracy = totalWeight > 0
+        ? weightedSum / totalWeight
         : -1.0;
 
     return ProductivityStats(
@@ -190,6 +197,68 @@ class StatisticsState extends Equatable {
 
   /// 총 Task 수
   int get totalTasks => dailySummary?.totalPlannedTasks ?? todayStats?.totalPlannedTasks ?? 0;
+
+  /// 현재 기간에 맞는 표시용 요약
+  /// daily: dailySummary, weekly/monthly: periodSummaries 집계
+  DailyStatsSummary? get displaySummary {
+    if (currentPeriod == StatsPeriod.daily || periodSummaries.isEmpty) {
+      return dailySummary;
+    }
+    // periodSummaries를 집계하여 반환
+    final summaries = periodSummaries;
+    final totalPlannedTasks = summaries.fold<int>(0, (sum, s) => sum + s.totalPlannedTasks);
+    final completedTasks = summaries.fold<int>(0, (sum, s) => sum + s.completedTasks);
+    final rolledOverTasks = summaries.fold<int>(0, (sum, s) => sum + s.rolledOverTasks);
+    final totalTimeBlocks = summaries.fold<int>(0, (sum, s) => sum + s.totalTimeBlocks);
+    final completedTimeBlocks = summaries.fold<int>(0, (sum, s) => sum + s.completedTimeBlocks);
+    final totalPlannedDuration = summaries.fold<Duration>(Duration.zero, (sum, s) => sum + s.totalPlannedDuration);
+    final totalActualDuration = summaries.fold<Duration>(Duration.zero, (sum, s) => sum + s.totalActualDuration);
+    final focusSessionCount = summaries.fold<int>(0, (sum, s) => sum + s.focusSessionCount);
+    final totalFocusDuration = summaries.fold<Duration>(Duration.zero, (sum, s) => sum + s.totalFocusDuration);
+    final totalPauseDuration = summaries.fold<Duration>(Duration.zero, (sum, s) => sum + s.totalPauseDuration);
+    final top3SetCount = summaries.fold<int>(0, (sum, s) => sum + s.top3SetCount);
+    final top3CompletedCount = summaries.fold<int>(0, (sum, s) => sum + s.top3CompletedCount);
+
+    // 시간 정확도: 가중 평균 (블록 수 기반)
+    double weightedAccuracySum = 0;
+    double totalAccuracyWeight = 0;
+    for (final s in summaries) {
+      if (s.timeAccuracyPercent >= 0 && s.totalTimeBlocks > 0) {
+        final weight = s.totalTimeBlocks.toDouble();
+        weightedAccuracySum += s.timeAccuracyPercent * weight;
+        totalAccuracyWeight += weight;
+      }
+    }
+    final avgAccuracy = totalAccuracyWeight > 0
+        ? weightedAccuracySum / totalAccuracyWeight
+        : -1.0;
+
+    // 생산성 점수: 유효 데이터 날만 평균
+    final validScores = summaries.where((s) => s.productivityScore > 0).toList();
+    final avgScore = validScores.isNotEmpty
+        ? validScores.fold<int>(0, (sum, s) => sum + s.productivityScore) ~/ validScores.length
+        : 0;
+
+    return DailyStatsSummary(
+      id: 'aggregate_${selectedDate.toIso8601String()}',
+      date: selectedDate,
+      totalPlannedTasks: totalPlannedTasks,
+      completedTasks: completedTasks,
+      rolledOverTasks: rolledOverTasks,
+      totalTimeBlocks: totalTimeBlocks,
+      completedTimeBlocks: completedTimeBlocks,
+      totalPlannedDuration: totalPlannedDuration,
+      totalActualDuration: totalActualDuration,
+      focusSessionCount: focusSessionCount,
+      totalFocusDuration: totalFocusDuration,
+      totalPauseDuration: totalPauseDuration,
+      top3SetCount: top3SetCount,
+      top3CompletedCount: top3CompletedCount,
+      timeAccuracyPercent: avgAccuracy,
+      productivityScore: avgScore,
+      calculatedAt: DateTime.now(),
+    );
+  }
 
   /// 총 집중 시간 (분)
   int get focusMinutes => todayStats?.focusTime.inMinutes ?? 0;
@@ -287,6 +356,7 @@ class PeriodCache extends Equatable {
   final List<ProductivityStats> periodStats;
   final List<TagTimeComparison> tagStats;
   final TaskPipelineStats? pipelineStats;
+  final PriorityBreakdownStats? priorityBreakdown;
   final List<DailyStatsSummary> periodSummaries;
   final List<TimeComparison> timeComparisons;
   final List<TaskCompletionRanking> topSuccessTasks;
@@ -296,6 +366,7 @@ class PeriodCache extends Equatable {
     required this.periodStats,
     required this.tagStats,
     this.pipelineStats,
+    this.priorityBreakdown,
     required this.periodSummaries,
     required this.timeComparisons,
     required this.topSuccessTasks,
@@ -307,6 +378,7 @@ class PeriodCache extends Equatable {
         periodStats,
         tagStats,
         pipelineStats,
+        priorityBreakdown,
         periodSummaries,
         timeComparisons,
         topSuccessTasks,

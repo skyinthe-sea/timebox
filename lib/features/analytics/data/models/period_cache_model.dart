@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../presentation/bloc/statistics_state.dart';
 import 'daily_stats_summary_model.dart';
+import 'priority_breakdown_stats_model.dart';
 import 'productivity_stats_model.dart';
 import 'tag_time_comparison_model.dart';
 import 'task_completion_ranking_model.dart';
@@ -34,6 +35,9 @@ class PeriodCacheModel with _$PeriodCacheModel {
     /// Task Pipeline 통계
     TaskPipelineStatsModel? pipelineStats,
 
+    /// 우선순위별 성과 통계
+    PriorityBreakdownStatsModel? priorityBreakdown,
+
     /// 일별 요약 목록
     required List<DailyStatsSummaryModel> periodSummaries,
 
@@ -56,6 +60,7 @@ class PeriodCacheModel with _$PeriodCacheModel {
       periodStats: periodStats.map((m) => m.toEntity()).toList(),
       tagStats: tagStats.map((m) => m.toEntity()).toList(),
       pipelineStats: pipelineStats?.toEntity(),
+      priorityBreakdown: priorityBreakdown?.toEntity(),
       periodSummaries: periodSummaries.map((m) => m.toEntity()).toList(),
       timeComparisons: timeComparisons.map((m) => m.toEntity()).toList(),
       topSuccessTasks: topSuccessTasks.map((m) => m.toEntity()).toList(),
@@ -79,6 +84,9 @@ class PeriodCacheModel with _$PeriodCacheModel {
           .toList(),
       pipelineStats: cache.pipelineStats != null
           ? TaskPipelineStatsModel.fromEntity(cache.pipelineStats!)
+          : null,
+      priorityBreakdown: cache.priorityBreakdown != null
+          ? PriorityBreakdownStatsModel.fromEntity(cache.priorityBreakdown!)
           : null,
       periodSummaries: cache.periodSummaries
           .map((e) => DailyStatsSummaryModel.fromEntity(e))

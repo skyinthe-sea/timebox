@@ -1077,4 +1077,37 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get statDescInsightsBody => '基于数据自动生成的绩效分析。';
+
+  @override
+  String get statDescPriorityBreakdownBody => '按优先级（高/中/低）显示任务完成率。';
+
+  @override
+  String insightPeriodRolloverTitle(String count) {
+    return '$count个顺延任务';
+  }
+
+  @override
+  String get insightPeriodRolloverDesc => '减少顺延任务可以提高生产力';
+
+  @override
+  String insightPeriodFocusTitle(String minutes) {
+    return '专注时间 $minutes分钟';
+  }
+
+  @override
+  String get insightPeriodFocusHighDesc => '本期专注时间充足';
+
+  @override
+  String get insightPeriodFocusLowDesc => '尝试更多地使用专注模式';
+
+  @override
+  String insightPeriodTop3Title(String rate, String completed, String total) {
+    return 'Top 3 完成率 $rate%';
+  }
+
+  @override
+  String get insightPeriodTop3HighDesc => '重要任务完成得很好';
+
+  @override
+  String get insightPeriodTop3LowDesc => '请更关注Top 3任务';
 }

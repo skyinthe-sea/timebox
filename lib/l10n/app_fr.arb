@@ -429,5 +429,35 @@
   "statDescTagAnalysisTitle": "Analyse par tag",
   "statDescTagAnalysisBody": "Affiche le nombre de tâches et le temps planifié par tag.",
   "statDescInsightsTitle": "Analyses",
-  "statDescInsightsBody": "Analyse de performance auto-générée basée sur vos données."
+  "statDescInsightsBody": "Analyse de performance auto-générée basée sur vos données.",
+
+  "statDescPriorityBreakdownBody": "Affiche le taux de complétion par priorité (Haute/Moyenne/Basse).",
+
+  "insightPeriodRolloverTitle": "{count} tâches reportées",
+  "@insightPeriodRolloverTitle": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "insightPeriodRolloverDesc": "Réduire les tâches reportées améliore la productivité",
+
+  "insightPeriodFocusTitle": "{minutes}min de concentration",
+  "@insightPeriodFocusTitle": {
+    "placeholders": {
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightPeriodFocusHighDesc": "Bon temps de concentration cette période",
+  "insightPeriodFocusLowDesc": "Essayez d'utiliser le mode concentration plus souvent",
+
+  "insightPeriodTop3Title": "Complétion Top 3 : {rate}%",
+  "@insightPeriodTop3Title": {
+    "placeholders": {
+      "rate": {"type": "String"},
+      "completed": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "insightPeriodTop3HighDesc": "Vous complétez bien les tâches importantes",
+  "insightPeriodTop3LowDesc": "Concentrez-vous davantage sur vos tâches Top 3"
 }

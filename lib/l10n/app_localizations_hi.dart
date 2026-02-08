@@ -1095,4 +1095,40 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get statDescInsightsBody =>
       'आपके डेटा पर आधारित स्वचालित प्रदर्शन विश्लेषण।';
+
+  @override
+  String get statDescPriorityBreakdownBody =>
+      'प्राथमिकता (उच्च/मध्यम/निम्न) के अनुसार कार्य पूर्णता दर दिखाता है।';
+
+  @override
+  String insightPeriodRolloverTitle(String count) {
+    return '$count स्थानांतरित कार्य';
+  }
+
+  @override
+  String get insightPeriodRolloverDesc =>
+      'स्थानांतरित कार्य कम करने से उत्पादकता बढ़ती है';
+
+  @override
+  String insightPeriodFocusTitle(String minutes) {
+    return '$minutes मिनट फोकस समय';
+  }
+
+  @override
+  String get insightPeriodFocusHighDesc => 'इस अवधि में अच्छा फोकस समय';
+
+  @override
+  String get insightPeriodFocusLowDesc => 'फोकस मोड का अधिक उपयोग करें';
+
+  @override
+  String insightPeriodTop3Title(String rate, String completed, String total) {
+    return 'Top 3 पूर्णता $rate%';
+  }
+
+  @override
+  String get insightPeriodTop3HighDesc =>
+      'आप महत्वपूर्ण कार्य अच्छी तरह पूरा कर रहे हैं';
+
+  @override
+  String get insightPeriodTop3LowDesc => 'अपने Top 3 कार्यों पर अधिक ध्यान दें';
 }

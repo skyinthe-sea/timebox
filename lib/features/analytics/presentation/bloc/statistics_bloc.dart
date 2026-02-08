@@ -8,6 +8,7 @@ import '../../data/datasources/analytics_local_datasource.dart';
 import '../../data/models/period_cache_model.dart';
 import '../../domain/entities/daily_stats_summary.dart';
 import '../../domain/entities/insight.dart';
+import '../../domain/entities/priority_breakdown_stats.dart';
 import '../../domain/entities/productivity_stats.dart';
 import '../../domain/entities/task_completion_ranking.dart';
 import '../../domain/entities/time_comparison.dart';
@@ -88,13 +89,14 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       final yesterday = event.date.subtract(const Duration(days: 1));
       final dailyRange = _getDateRange(event.date, StatsPeriod.daily);
 
-      // 일간 기본 데이터 + 최소 필요 데이터만 빠르게 로드 (5개 쿼리)
+      // 일간 기본 데이터 + 최소 필요 데이터만 빠르게 로드 (6개 쿼리)
       final results = await Future.wait([
         _analyticsRepository.getDailyStats(event.date),
         _analyticsRepository.getDailyStats(yesterday),
         _analyticsRepository.getDailyStatsSummary(event.date),
         _loadTagStats(event.date, StatsPeriod.daily),
         _analyticsRepository.getTaskPipelineStats(dailyRange.$1, dailyRange.$2),
+        _analyticsRepository.getPriorityBreakdownStats(dailyRange.$1, dailyRange.$2),
       ]);
 
       final todayStats = (results[0] as dynamic).fold(
@@ -114,6 +116,10 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         (failure) => null,
         (stats) => stats,
       );
+      final priorityBreakdown = (results[5] as dynamic).fold(
+        (failure) => null,
+        (stats) => stats,
+      ) as PriorityBreakdownStats?;
 
       // 인사이트 생성
       final allInsights = _generateInsights(
@@ -135,6 +141,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         periodStats: const [],
         tagStats: tagStats,
         pipelineStats: pipelineStats,
+        priorityBreakdown: priorityBreakdown,
         periodSummaries: const [],
         timeComparisons: const [],
         topSuccessTasks: const [],
@@ -143,7 +150,49 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         errorMessage: null,
       ));
 
-      // 프리로드 제거 - 사용자가 탭 전환 시에만 해당 기간 데이터 로드
+      // event.period != daily이면 기간별 데이터도 즉시 로드
+      if (event.period != StatsPeriod.daily) {
+        try {
+          final periodData = await _loadPeriodData(event.date, event.period);
+
+          final periodInsights = _generateInsights(
+            date: event.date,
+            period: event.period,
+            todayStats: todayStats,
+            yesterdayStats: yesterdayStats,
+            dailySummary: dailySummary,
+            periodStats: periodData.periodStats,
+            periodSummaries: periodData.periodSummaries,
+          );
+
+          final newCache = PeriodCache(
+            periodStats: periodData.periodStats,
+            tagStats: periodData.tagStats,
+            pipelineStats: periodData.pipelineStats,
+            priorityBreakdown: periodData.priorityBreakdown,
+            periodSummaries: periodData.periodSummaries,
+            timeComparisons: periodData.timeComparisons,
+            topSuccessTasks: periodData.topSuccessTasks,
+            topFailureTasks: periodData.topFailureTasks,
+          );
+
+          emit(state.copyWith(
+            periodStats: periodData.periodStats,
+            tagStats: periodData.tagStats,
+            pipelineStats: periodData.pipelineStats,
+            priorityBreakdown: periodData.priorityBreakdown,
+            periodSummaries: periodData.periodSummaries,
+            timeComparisons: periodData.timeComparisons,
+            topSuccessTasks: periodData.topSuccessTasks,
+            topFailureTasks: periodData.topFailureTasks,
+            insights: periodInsights.take(3).toList(),
+            weeklyCache: event.period == StatsPeriod.weekly ? newCache : state.weeklyCache,
+            monthlyCache: event.period == StatsPeriod.monthly ? newCache : state.monthlyCache,
+          ));
+        } catch (e) {
+          debugPrint('[StatisticsBloc] Period data load failed: $e');
+        }
+      }
     } catch (e) {
       emit(state.copyWith(
         status: StatisticsStatus.error,
@@ -215,6 +264,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         yesterdayStats: state.yesterdayStats,
         dailySummary: state.dailySummary,
         periodStats: cache.periodStats,
+        periodSummaries: cache.periodSummaries,
       );
       final insights = allInsights.take(3).toList();
 
@@ -223,6 +273,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         periodStats: cache.periodStats,
         tagStats: cache.tagStats,
         pipelineStats: cache.pipelineStats,
+        priorityBreakdown: cache.priorityBreakdown,
         periodSummaries: cache.periodSummaries,
         timeComparisons: cache.timeComparisons,
         topSuccessTasks: cache.topSuccessTasks,
@@ -249,6 +300,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         yesterdayStats: state.yesterdayStats,
         dailySummary: state.dailySummary,
         periodStats: periodData.periodStats,
+        periodSummaries: periodData.periodSummaries,
       );
       final insights = allInsights.take(3).toList();
 
@@ -257,6 +309,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         periodStats: periodData.periodStats,
         tagStats: periodData.tagStats,
         pipelineStats: periodData.pipelineStats,
+        priorityBreakdown: periodData.priorityBreakdown,
         periodSummaries: periodData.periodSummaries,
         timeComparisons: periodData.timeComparisons,
         topSuccessTasks: periodData.topSuccessTasks,
@@ -281,6 +334,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
         periodStats: periodData.periodStats,
         tagStats: periodData.tagStats,
         pipelineStats: periodData.pipelineStats,
+        priorityBreakdown: periodData.priorityBreakdown,
         periodSummaries: periodData.periodSummaries,
         timeComparisons: periodData.timeComparisons,
         topSuccessTasks: periodData.topSuccessTasks,
@@ -319,6 +373,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       yesterdayStats: state.yesterdayStats,
       dailySummary: state.dailySummary,
       periodStats: state.periodStats,
+      periodSummaries: state.periodSummaries,
     );
     emit(state.copyWith(insights: insights));
   }
@@ -467,6 +522,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
             periodStats: weeklyData.periodStats,
             tagStats: weeklyData.tagStats,
             pipelineStats: weeklyData.pipelineStats,
+            priorityBreakdown: weeklyData.priorityBreakdown,
             periodSummaries: weeklyData.periodSummaries,
             timeComparisons: weeklyData.timeComparisons,
             topSuccessTasks: weeklyData.topSuccessTasks,
@@ -508,6 +564,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
             periodStats: monthlyData.periodStats,
             tagStats: monthlyData.tagStats,
             pipelineStats: monthlyData.pipelineStats,
+            priorityBreakdown: monthlyData.priorityBreakdown,
             periodSummaries: monthlyData.periodSummaries,
             timeComparisons: monthlyData.timeComparisons,
             topSuccessTasks: monthlyData.topSuccessTasks,
@@ -544,6 +601,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       _analyticsRepository.getTaskPipelineStats(dateRange.$1, dateRange.$2),
       _analyticsRepository.getTimeComparisons(dateRange.$1, dateRange.$2),
       _analyticsRepository.getTaskCompletionRankings(dateRange.$1, dateRange.$2),
+      _analyticsRepository.getPriorityBreakdownStats(dateRange.$1, dateRange.$2),
       if (period != StatsPeriod.daily)
         _analyticsRepository.getDailyStatsSummaries(dateRange.$1, dateRange.$2),
     ]);
@@ -567,10 +625,14 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       (failure) => <TaskCompletionRanking>[],
       (rankings) => rankings.topFailure,
     );
+    final priorityBreakdown = (results[5] as dynamic).fold(
+      (failure) => null,
+      (stats) => stats,
+    ) as PriorityBreakdownStats?;
 
     List<DailyStatsSummary> periodSummaries = [];
-    if (period != StatsPeriod.daily && results.length > 5) {
-      periodSummaries = (results[5] as dynamic).fold(
+    if (period != StatsPeriod.daily && results.length > 6) {
+      periodSummaries = (results[6] as dynamic).fold(
         (failure) => <DailyStatsSummary>[],
         (summaries) => summaries,
       );
@@ -580,6 +642,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
       periodStats: periodStats,
       tagStats: tagStats,
       pipelineStats: pipelineStats,
+      priorityBreakdown: priorityBreakdown,
       periodSummaries: periodSummaries,
       timeComparisons: timeComparisons,
       topSuccessTasks: topSuccessTasks,
@@ -649,6 +712,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     ProductivityStats? yesterdayStats,
     DailyStatsSummary? dailySummary,
     List<ProductivityStats> periodStats = const [],
+    List<DailyStatsSummary> periodSummaries = const [],
   }) {
     final insights = <Insight>[];
     final now = DateTime.now();
@@ -658,7 +722,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
     // 1. 점수 변화 (어제 대비)
     if (todayStats != null && yesterdayStats != null) {
       final scoreDiff = todayStats.score - yesterdayStats.score;
-      if (scoreDiff.abs() >= 1) {
+      if (scoreDiff.abs() >= 5) {
         insights.add(Insight.productivityChange(
           id: 'insight_score_${now.millisecondsSinceEpoch}',
           scoreDiff: scoreDiff,
@@ -854,6 +918,73 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           }
         }
       }
+
+      // 주간 기간별 요약 인사이트 (periodSummaries 기반)
+      if (periodSummaries.isNotEmpty) {
+        // 12. 기간 내 총 이월 Task 수
+        final totalRollover = periodSummaries.fold<int>(0, (sum, s) => sum + s.rolledOverTasks);
+        if (totalRollover > 0) {
+          insights.add(Insight(
+            id: 'insight_weekrollover_${now.millisecondsSinceEpoch}',
+            type: InsightType.rolloverWarning,
+            priority: totalRollover >= 5 ? InsightPriority.high : InsightPriority.medium,
+            titleKey: 'insightPeriodRolloverTitle',
+            descriptionKey: 'insightPeriodRolloverDesc',
+            params: {'count': '$totalRollover'},
+            value: totalRollover.toDouble(),
+            unitKey: 'insightUnitCount',
+            iconCodePoint: 0xe002,
+            isPositive: false,
+            createdAt: now,
+          ));
+        }
+
+        // 13. 기간 내 총 집중 시간
+        final totalFocusMinutes = periodSummaries.fold<int>(0, (sum, s) => sum + s.totalFocusDuration.inMinutes);
+        if (totalFocusMinutes > 0) {
+          insights.add(Insight(
+            id: 'insight_weekfocus_${now.millisecondsSinceEpoch}',
+            type: InsightType.focusTime,
+            priority: InsightPriority.medium,
+            titleKey: 'insightPeriodFocusTitle',
+            descriptionKey: totalFocusMinutes >= 120
+                ? 'insightPeriodFocusHighDesc'
+                : 'insightPeriodFocusLowDesc',
+            params: {'minutes': '$totalFocusMinutes'},
+            value: totalFocusMinutes.toDouble(),
+            unitKey: 'insightUnitMinutes',
+            iconCodePoint: 0xe425,
+            isPositive: totalFocusMinutes >= 60,
+            createdAt: now,
+          ));
+        }
+
+        // 14. Top3 종합 달성률
+        final totalTop3Set = periodSummaries.fold<int>(0, (sum, s) => sum + s.top3SetCount);
+        final totalTop3Completed = periodSummaries.fold<int>(0, (sum, s) => sum + s.top3CompletedCount);
+        if (totalTop3Set > 0) {
+          final top3Rate = (totalTop3Completed / totalTop3Set * 100).round();
+          insights.add(Insight(
+            id: 'insight_wektop3_${now.millisecondsSinceEpoch}',
+            type: InsightType.completionRate,
+            priority: InsightPriority.medium,
+            titleKey: 'insightPeriodTop3Title',
+            descriptionKey: top3Rate >= 70
+                ? 'insightPeriodTop3HighDesc'
+                : 'insightPeriodTop3LowDesc',
+            params: {
+              'completed': '$totalTop3Completed',
+              'total': '$totalTop3Set',
+              'rate': '$top3Rate',
+            },
+            value: top3Rate.toDouble(),
+            unitKey: 'insightUnitPercent',
+            iconCodePoint: 0xe838,
+            isPositive: top3Rate >= 50,
+            createdAt: now,
+          ));
+        }
+      }
     }
 
     // === 월간(Monthly) 인사이트 ===
@@ -903,6 +1034,73 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
           createdAt: now,
         ));
       }
+
+      // 월간 기간별 요약 인사이트 (periodSummaries 기반)
+      if (periodSummaries.isNotEmpty) {
+        // 14. 기간 내 총 이월 Task 수
+        final totalRollover = periodSummaries.fold<int>(0, (sum, s) => sum + s.rolledOverTasks);
+        if (totalRollover > 0) {
+          insights.add(Insight(
+            id: 'insight_monthrollover_${now.millisecondsSinceEpoch}',
+            type: InsightType.rolloverWarning,
+            priority: totalRollover >= 10 ? InsightPriority.high : InsightPriority.medium,
+            titleKey: 'insightPeriodRolloverTitle',
+            descriptionKey: 'insightPeriodRolloverDesc',
+            params: {'count': '$totalRollover'},
+            value: totalRollover.toDouble(),
+            unitKey: 'insightUnitCount',
+            iconCodePoint: 0xe002,
+            isPositive: false,
+            createdAt: now,
+          ));
+        }
+
+        // 15. 기간 내 총 집중 시간
+        final totalFocusMinutes = periodSummaries.fold<int>(0, (sum, s) => sum + s.totalFocusDuration.inMinutes);
+        if (totalFocusMinutes > 0) {
+          insights.add(Insight(
+            id: 'insight_monthfocus_${now.millisecondsSinceEpoch}',
+            type: InsightType.focusTime,
+            priority: InsightPriority.medium,
+            titleKey: 'insightPeriodFocusTitle',
+            descriptionKey: totalFocusMinutes >= 300
+                ? 'insightPeriodFocusHighDesc'
+                : 'insightPeriodFocusLowDesc',
+            params: {'minutes': '$totalFocusMinutes'},
+            value: totalFocusMinutes.toDouble(),
+            unitKey: 'insightUnitMinutes',
+            iconCodePoint: 0xe425,
+            isPositive: totalFocusMinutes >= 120,
+            createdAt: now,
+          ));
+        }
+
+        // 16. Top3 종합 달성률
+        final totalTop3Set = periodSummaries.fold<int>(0, (sum, s) => sum + s.top3SetCount);
+        final totalTop3Completed = periodSummaries.fold<int>(0, (sum, s) => sum + s.top3CompletedCount);
+        if (totalTop3Set > 0) {
+          final top3Rate = (totalTop3Completed / totalTop3Set * 100).round();
+          insights.add(Insight(
+            id: 'insight_monthtop3_${now.millisecondsSinceEpoch}',
+            type: InsightType.completionRate,
+            priority: InsightPriority.medium,
+            titleKey: 'insightPeriodTop3Title',
+            descriptionKey: top3Rate >= 70
+                ? 'insightPeriodTop3HighDesc'
+                : 'insightPeriodTop3LowDesc',
+            params: {
+              'completed': '$totalTop3Completed',
+              'total': '$totalTop3Set',
+              'rate': '$top3Rate',
+            },
+            value: top3Rate.toDouble(),
+            unitKey: 'insightUnitPercent',
+            iconCodePoint: 0xe838,
+            isPositive: top3Rate >= 50,
+            createdAt: now,
+          ));
+        }
+      }
     }
 
     // 인사이트가 전혀 없으면 기본 메시지 추가
@@ -934,6 +1132,7 @@ class _PeriodData {
   final List<ProductivityStats> periodStats;
   final List<TagTimeComparison> tagStats;
   final dynamic pipelineStats;
+  final PriorityBreakdownStats? priorityBreakdown;
   final List<DailyStatsSummary> periodSummaries;
   final List<TimeComparison> timeComparisons;
   final List<TaskCompletionRanking> topSuccessTasks;
@@ -943,6 +1142,7 @@ class _PeriodData {
     required this.periodStats,
     required this.tagStats,
     this.pipelineStats,
+    this.priorityBreakdown,
     required this.periodSummaries,
     required this.timeComparisons,
     required this.topSuccessTasks,

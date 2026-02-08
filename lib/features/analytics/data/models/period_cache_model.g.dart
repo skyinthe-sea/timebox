@@ -23,6 +23,10 @@ _$PeriodCacheModelImpl _$$PeriodCacheModelImplFromJson(
           ? null
           : TaskPipelineStatsModel.fromJson(
               json['pipelineStats'] as Map<String, dynamic>),
+      priorityBreakdown: json['priorityBreakdown'] == null
+          ? null
+          : PriorityBreakdownStatsModel.fromJson(
+              json['priorityBreakdown'] as Map<String, dynamic>),
       periodSummaries: (json['periodSummaries'] as List<dynamic>)
           .map(
               (e) => DailyStatsSummaryModel.fromJson(e as Map<String, dynamic>))
@@ -48,6 +52,7 @@ Map<String, dynamic> _$$PeriodCacheModelImplToJson(
       'periodStats': instance.periodStats.map((e) => e.toJson()).toList(),
       'tagStats': instance.tagStats.map((e) => e.toJson()).toList(),
       'pipelineStats': instance.pipelineStats?.toJson(),
+      'priorityBreakdown': instance.priorityBreakdown?.toJson(),
       'periodSummaries':
           instance.periodSummaries.map((e) => e.toJson()).toList(),
       'timeComparisons':

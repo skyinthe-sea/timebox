@@ -1078,4 +1078,37 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get statDescInsightsBody => 'データに基づく自動生成パフォーマンス分析です。';
+
+  @override
+  String get statDescPriorityBreakdownBody => '優先度（高/中/低）別のタスク完了率を表示します。';
+
+  @override
+  String insightPeriodRolloverTitle(String count) {
+    return '繰り越しタスク $count件';
+  }
+
+  @override
+  String get insightPeriodRolloverDesc => '繰り越しタスクを減らすと生産性が向上します';
+
+  @override
+  String insightPeriodFocusTitle(String minutes) {
+    return '集中時間 $minutes分';
+  }
+
+  @override
+  String get insightPeriodFocusHighDesc => '十分な集中時間です';
+
+  @override
+  String get insightPeriodFocusLowDesc => '集中モードをもっと活用しましょう';
+
+  @override
+  String insightPeriodTop3Title(String rate, String completed, String total) {
+    return 'Top 3 達成率 $rate%';
+  }
+
+  @override
+  String get insightPeriodTop3HighDesc => '重要なタスクをしっかり完了できています';
+
+  @override
+  String get insightPeriodTop3LowDesc => 'Top 3タスクにもっと集中しましょう';
 }

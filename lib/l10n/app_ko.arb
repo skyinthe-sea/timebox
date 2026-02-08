@@ -565,5 +565,35 @@
   "statDescTagAnalysisTitle": "태그별 분석",
   "statDescTagAnalysisBody": "태그별 할 일 수와 계획 시간을 보여줍니다.",
   "statDescInsightsTitle": "인사이트",
-  "statDescInsightsBody": "데이터 기반 자동 생성 성과 분석입니다."
+  "statDescInsightsBody": "데이터 기반 자동 생성 성과 분석입니다.",
+
+  "statDescPriorityBreakdownBody": "우선순위(높음/보통/낮음)별 할 일 완료율을 보여줍니다.",
+
+  "insightPeriodRolloverTitle": "이월 작업 {count}건",
+  "@insightPeriodRolloverTitle": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "insightPeriodRolloverDesc": "이월 작업을 줄이면 생산성이 향상됩니다",
+
+  "insightPeriodFocusTitle": "집중 시간 {minutes}분",
+  "@insightPeriodFocusTitle": {
+    "placeholders": {
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightPeriodFocusHighDesc": "집중 시간이 충분합니다",
+  "insightPeriodFocusLowDesc": "집중 모드를 더 활용해보세요",
+
+  "insightPeriodTop3Title": "Top 3 달성률 {rate}%",
+  "@insightPeriodTop3Title": {
+    "placeholders": {
+      "rate": {"type": "String"},
+      "completed": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "insightPeriodTop3HighDesc": "중요한 작업을 잘 완수하고 있어요",
+  "insightPeriodTop3LowDesc": "Top 3 작업에 더 집중해보세요"
 }

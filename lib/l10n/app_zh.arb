@@ -429,5 +429,35 @@
   "statDescTagAnalysisTitle": "标签分析",
   "statDescTagAnalysisBody": "按标签显示任务数量和计划时间。",
   "statDescInsightsTitle": "洞察",
-  "statDescInsightsBody": "基于数据自动生成的绩效分析。"
+  "statDescInsightsBody": "基于数据自动生成的绩效分析。",
+
+  "statDescPriorityBreakdownBody": "按优先级（高/中/低）显示任务完成率。",
+
+  "insightPeriodRolloverTitle": "{count}个顺延任务",
+  "@insightPeriodRolloverTitle": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "insightPeriodRolloverDesc": "减少顺延任务可以提高生产力",
+
+  "insightPeriodFocusTitle": "专注时间 {minutes}分钟",
+  "@insightPeriodFocusTitle": {
+    "placeholders": {
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightPeriodFocusHighDesc": "本期专注时间充足",
+  "insightPeriodFocusLowDesc": "尝试更多地使用专注模式",
+
+  "insightPeriodTop3Title": "Top 3 完成率 {rate}%",
+  "@insightPeriodTop3Title": {
+    "placeholders": {
+      "rate": {"type": "String"},
+      "completed": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "insightPeriodTop3HighDesc": "重要任务完成得很好",
+  "insightPeriodTop3LowDesc": "请更关注Top 3任务"
 }

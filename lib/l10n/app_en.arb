@@ -429,5 +429,35 @@
   "statDescTagAnalysisTitle": "Tag Analysis",
   "statDescTagAnalysisBody": "Shows task count and planned time by tag.",
   "statDescInsightsTitle": "Insights",
-  "statDescInsightsBody": "Auto-generated performance analysis based on your data."
+  "statDescInsightsBody": "Auto-generated performance analysis based on your data.",
+
+  "statDescPriorityBreakdownBody": "Shows task completion rate by priority (High/Medium/Low).",
+
+  "insightPeriodRolloverTitle": "{count} rolled-over tasks",
+  "@insightPeriodRolloverTitle": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "insightPeriodRolloverDesc": "Reducing rolled-over tasks improves productivity",
+
+  "insightPeriodFocusTitle": "{minutes}min focus time",
+  "@insightPeriodFocusTitle": {
+    "placeholders": {
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightPeriodFocusHighDesc": "Great focus time this period",
+  "insightPeriodFocusLowDesc": "Try using focus mode more often",
+
+  "insightPeriodTop3Title": "Top 3 completion {rate}%",
+  "@insightPeriodTop3Title": {
+    "placeholders": {
+      "rate": {"type": "String"},
+      "completed": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "insightPeriodTop3HighDesc": "You're completing important tasks well",
+  "insightPeriodTop3LowDesc": "Focus more on your Top 3 tasks"
 }

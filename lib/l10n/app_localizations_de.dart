@@ -1096,4 +1096,40 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get statDescInsightsBody =>
       'Automatisch generierte Leistungsanalyse basierend auf deinen Daten.';
+
+  @override
+  String get statDescPriorityBreakdownBody =>
+      'Zeigt die Abschlussrate nach Priorität (Hoch/Mittel/Niedrig).';
+
+  @override
+  String insightPeriodRolloverTitle(String count) {
+    return '$count übertragene Aufgaben';
+  }
+
+  @override
+  String get insightPeriodRolloverDesc =>
+      'Weniger übertragene Aufgaben verbessern die Produktivität';
+
+  @override
+  String insightPeriodFocusTitle(String minutes) {
+    return '${minutes}min Fokuszeit';
+  }
+
+  @override
+  String get insightPeriodFocusHighDesc => 'Gute Fokuszeit in diesem Zeitraum';
+
+  @override
+  String get insightPeriodFocusLowDesc => 'Nutze den Fokusmodus häufiger';
+
+  @override
+  String insightPeriodTop3Title(String rate, String completed, String total) {
+    return 'Top 3 Abschluss $rate%';
+  }
+
+  @override
+  String get insightPeriodTop3HighDesc => 'Du erledigst wichtige Aufgaben gut';
+
+  @override
+  String get insightPeriodTop3LowDesc =>
+      'Konzentriere dich mehr auf deine Top 3 Aufgaben';
 }

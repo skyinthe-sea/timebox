@@ -565,5 +565,35 @@
   "statDescTagAnalysisTitle": "Анализ по тегам",
   "statDescTagAnalysisBody": "Показывает количество задач и запланированное время по тегам.",
   "statDescInsightsTitle": "Инсайты",
-  "statDescInsightsBody": "Автоматический анализ эффективности на основе ваших данных."
+  "statDescInsightsBody": "Автоматический анализ эффективности на основе ваших данных.",
+
+  "statDescPriorityBreakdownBody": "Показывает процент выполнения задач по приоритету (Высокий/Средний/Низкий).",
+
+  "insightPeriodRolloverTitle": "{count} перенесённых задач",
+  "@insightPeriodRolloverTitle": {
+    "placeholders": {
+      "count": {"type": "String"}
+    }
+  },
+  "insightPeriodRolloverDesc": "Уменьшение перенесённых задач повышает продуктивность",
+
+  "insightPeriodFocusTitle": "{minutes} мин фокуса",
+  "@insightPeriodFocusTitle": {
+    "placeholders": {
+      "minutes": {"type": "String"}
+    }
+  },
+  "insightPeriodFocusHighDesc": "Хорошее время фокуса за этот период",
+  "insightPeriodFocusLowDesc": "Попробуйте чаще использовать режим фокуса",
+
+  "insightPeriodTop3Title": "Top 3 выполнение {rate}%",
+  "@insightPeriodTop3Title": {
+    "placeholders": {
+      "rate": {"type": "String"},
+      "completed": {"type": "String"},
+      "total": {"type": "String"}
+    }
+  },
+  "insightPeriodTop3HighDesc": "Вы хорошо выполняете важные задачи",
+  "insightPeriodTop3LowDesc": "Уделяйте больше внимания задачам Top 3"
 }

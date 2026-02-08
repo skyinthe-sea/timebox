@@ -1079,4 +1079,37 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get statDescInsightsBody => '데이터 기반 자동 생성 성과 분석입니다.';
+
+  @override
+  String get statDescPriorityBreakdownBody => '우선순위(높음/보통/낮음)별 할 일 완료율을 보여줍니다.';
+
+  @override
+  String insightPeriodRolloverTitle(String count) {
+    return '이월 작업 $count건';
+  }
+
+  @override
+  String get insightPeriodRolloverDesc => '이월 작업을 줄이면 생산성이 향상됩니다';
+
+  @override
+  String insightPeriodFocusTitle(String minutes) {
+    return '집중 시간 $minutes분';
+  }
+
+  @override
+  String get insightPeriodFocusHighDesc => '집중 시간이 충분합니다';
+
+  @override
+  String get insightPeriodFocusLowDesc => '집중 모드를 더 활용해보세요';
+
+  @override
+  String insightPeriodTop3Title(String rate, String completed, String total) {
+    return 'Top 3 달성률 $rate%';
+  }
+
+  @override
+  String get insightPeriodTop3HighDesc => '중요한 작업을 잘 완수하고 있어요';
+
+  @override
+  String get insightPeriodTop3LowDesc => 'Top 3 작업에 더 집중해보세요';
 }

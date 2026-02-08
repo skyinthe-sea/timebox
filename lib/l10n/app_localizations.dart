@@ -2101,6 +2101,60 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'데이터 기반 자동 생성 성과 분석입니다.'**
   String get statDescInsightsBody;
+
+  /// No description provided for @statDescPriorityBreakdownBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'우선순위(높음/보통/낮음)별 할 일 완료율을 보여줍니다.'**
+  String get statDescPriorityBreakdownBody;
+
+  /// No description provided for @insightPeriodRolloverTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'이월 작업 {count}건'**
+  String insightPeriodRolloverTitle(String count);
+
+  /// No description provided for @insightPeriodRolloverDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'이월 작업을 줄이면 생산성이 향상됩니다'**
+  String get insightPeriodRolloverDesc;
+
+  /// No description provided for @insightPeriodFocusTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 시간 {minutes}분'**
+  String insightPeriodFocusTitle(String minutes);
+
+  /// No description provided for @insightPeriodFocusHighDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 시간이 충분합니다'**
+  String get insightPeriodFocusHighDesc;
+
+  /// No description provided for @insightPeriodFocusLowDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'집중 모드를 더 활용해보세요'**
+  String get insightPeriodFocusLowDesc;
+
+  /// No description provided for @insightPeriodTop3Title.
+  ///
+  /// In ko, this message translates to:
+  /// **'Top 3 달성률 {rate}%'**
+  String insightPeriodTop3Title(String rate, String completed, String total);
+
+  /// No description provided for @insightPeriodTop3HighDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'중요한 작업을 잘 완수하고 있어요'**
+  String get insightPeriodTop3HighDesc;
+
+  /// No description provided for @insightPeriodTop3LowDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'Top 3 작업에 더 집중해보세요'**
+  String get insightPeriodTop3LowDesc;
 }
 
 class _AppLocalizationsDelegate
