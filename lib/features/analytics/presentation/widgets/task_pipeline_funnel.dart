@@ -119,11 +119,16 @@ class _FunnelBar extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 56,
-          child: Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.outline,
+          width: 72,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.outline,
+              ),
+              maxLines: 1,
             ),
           ),
         ),

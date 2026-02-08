@@ -185,11 +185,14 @@ class Top3StatsCard extends StatelessWidget {
                         color: color,
                       ),
                     ),
-                    Text(
-                      AppLocalizations.of(context)!.statsAccomplished,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.outline,
-                        fontSize: 10,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        AppLocalizations.of(context)!.statsAccomplished,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                          fontSize: 10,
+                        ),
                       ),
                     ),
                   ],
@@ -224,10 +227,14 @@ class _StatRow extends StatelessWidget {
       children: [
         Icon(icon, size: 16, color: iconColor),
         const SizedBox(width: 8),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.outline,
+        Flexible(
+          child: Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.outline,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
         const Spacer(),

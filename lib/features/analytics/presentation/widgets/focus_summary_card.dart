@@ -96,12 +96,15 @@ class FocusSummaryCard extends StatelessWidget {
                                       color: primaryColor,
                                     ),
                                   ),
-                                  Text(
-                                    l10n.statsEfficiency,
-                                    style:
-                                        theme.textTheme.bodySmall?.copyWith(
-                                      color: theme.colorScheme.outline,
-                                      fontSize: 10,
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      l10n.statsEfficiency,
+                                      style:
+                                          theme.textTheme.bodySmall?.copyWith(
+                                        color: theme.colorScheme.outline,
+                                        fontSize: 10,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -187,10 +190,14 @@ class _StatLine extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 4),
-        Text(
-          sublabel,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: theme.colorScheme.outline,
+        Flexible(
+          child: Text(
+            sublabel,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.outline,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
       ],
